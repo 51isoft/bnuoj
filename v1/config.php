@@ -1,0 +1,21 @@
+<?php
+	$numperrow=20;
+	$problemperpage=100;
+    $mailperpage=20;
+	$problemcontestadd=20;
+    $pstatuserperpage=20;
+	$userperpage=50;
+    $maxrunid=1000000000;
+	$conperpage=20;
+    $discussperpage=20;
+    $srefresh=-1;
+    $submitstring="yoursubmitstring";
+    $rejudgestring="yourrejudgestring";
+    $reerrorstring="yourerrorjudgestring";
+    $server_port=5566;
+    $vserver_port=5907;
+	$db_user="bnuojuser";
+	$db_pass="bnuojpassword";
+	$db_table="bnuoj";
+    $db_addr="127.0.0.1";
+?>

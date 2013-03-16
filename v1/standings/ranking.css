@@ -1,0 +1,59 @@
+table.stdtb {
+background:#e6e9f2;
+}
+
+th.stdti {
+	background:#D3DCE3 none repeat scroll 0 0;
+	color:#000000;
+	font-weight:bold;
+}
+
+table tr.odd th, .odd {
+	 background: #DDFFED;
+height:50px;
+}
+
+table tr.our {
+	background: yellow;
+}
+
+table tr.even th, .even {
+	height:50px;
+}
+
+/* odd table rows 1,3,5,7,... */
+table tr.odd td,table tr.odd,table tr.even td,table tr.even {
+ text-align: center;
+}
+
+table tr.odd td.name,table tr.even td.name {
+	text-align: left;
+}
+
+table tr td.ac {
+	background:#00FF00;
+}
+table tr td.try {
+	background:#FF0000;
+}
+
+table tr td.fb {
+    background:#007F00;
+    color:#ffffff;
+}
+
+table tr td.notry {
+	background:#FFFFFF;
+}
+
+/* hovered items */
+table tr.odd:hover,table tr.even:hover,.hover {
+ background: #CCDDCC;
+ color: #000000;
+}
+
+/* hovered table rows */
+table tr.odd:hover th,table tr.even:hover th,table tr.hover th {
+ background: #CCDDCC;
+ color: #000000;
+}

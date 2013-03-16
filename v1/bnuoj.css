@@ -1,0 +1,164 @@
+body {
+background-image: url("background.jpg");
+/*background:#e6e9f2;*/
+}
+
+h1 {font-size:46px;margin-bottom:20px;margin-top:20px;color: #000099;}
+h2 {font-size:30px;color:darkblue;margin-bottom:0px;}
+h3 {color:darkblue;margin-bottom:0px;}
+
+pre.discuss{
+white-space:pre-wrap; /* css-3 */
+white-space:-moz-pre-wrap; /* Mozilla, since 1999 */
+white-space:-pre-wrap; /* Opera 4-6 */
+white-space:-o-pre-wrap; /* Opera 7 */
+word-wrap:break-word; /* Internet Explorer 5.5+ */
+}
+
+.welc {font-size:36px;text-align:center;color:red;}
+
+.warn {font-size:42px;text-align:center;color:red;}
+.note {font-size:42px;text-align:center;color:darkblue;}
+
+table.webtop {font-family: arial;}
+th.webtop {font-size:20px;font-weight: normal;}
+td.webtop {font-size:18px;}
+.webtop .fail {color:#FF0000;}
+
+table.reglist {font-family: arial;}
+th.reglist {font-size:20px;font-weight: normal;}
+td.reglist {font-size:18px;}
+
+table.menu  {font-family: arial;}
+th.menu {font-size:20px;font-weight: normal;}
+td.menu {font-size:18px;}
+.menu .fail {color:#FF0000;}
+
+table.plist {caption-side:top;}
+caption.plist {font-size:22px;}
+th.plist {font-size:24px;text-align:center;}
+td.plist {font-size:18px;text-align:center;}
+
+table.rlist {
+caption-side:top;
+word-break: break-all;
+overflow:hidden;
+table-layout:fixed;
+}
+caption.rlist {font-size:18px;}
+th.rlist {font-size:24px;}
+td.rlist {
+font-size:18px;
+text-align:center;
+word-break: break-all;
+word-wrap: break-word;
+table-layout:fixed;
+overflow:hidden;
+}
+
+table.standing {caption-side:top;border:1px solid #DFDFDF;border-collapse:collapse;}
+caption.standing {margin-top:20px;font-size:20px;color:darkblue;}
+th.standing {font-size:18px;border:1px solid #DFDFDF;}
+td.standing {font-size:16px;text-align:center;border:1px solid #DFDFDF;}
+
+table.mail {caption-side:top;border:2px solid #FFFFFF;border-collapse:collapse;}
+caption.mail {margin-top:20px;font-size:20px;color:darkblue;font-weight:bold;}
+th.mail {font-size:18px;border:2px solid #FFFFFF;}
+td.mail {font-size:16px;border:2px solid #FFFFFF;}
+
+table.pstat {caption-side:top;border:1px solid #FFFFFF;border-collapse:collapse;}
+td.pstat {font-size:14px;border:1px solid #FFFFFF;}
+td.pstatstand {font-size:14px;text-align:center;border:1px solid #FFFFFF;}
+th.pstat {font:14px;border:1px solid #FFFFFF;}
+caption.pstat {text-align:center;font-size:22px;}
+
+table.status {margin-top:5px;}
+td.status {font-size:14px;text-align:center;}
+
+.substitle{color:red;}
+
+th.clist_title {font-size:24px;color:darkblue;}
+th.clist {font-size:24px;}
+.clist td {text-align:center;}
+
+.ac {color: blue !important; }
+.wa {color: red !important;}
+.tle {color: red !important;}
+.mle {color: red !important;}
+.ole {color: red !important;}
+.pe {color: red !important;}
+.ce {color: green !important;}
+.rf {color: black !important;}
+.re {color: red !important;}
+td.ceinfo {text-align:left;}
+
+td.pcontent {text-align:left;}
+
+.data {font-family:monospace;}
+
+table.cshow {caption-side:top;}
+caption.cshow {font-size:18px;}
+th.cshow {font-size:22px;}
+td.cshow {font-size:22px;text-align:center;}
+.ctitle {font-size:30px;text-align:center;color:darkblue;margin-bottom:5px;margin-top:5px;}
+.ctime {font-size:18px;text-align:center;color:black;margin-bottom:5px;margin-top:5px;}
+.cpublic {color:blue;}
+.cprivate {color:red;}
+.crunning {color:red;}
+.cscheduled {color:blue;}
+.cpassed {color:green;}
+
+A:link {font-size:16px;COLOR:black ;TEXT-DECORATION: none;}
+A:visited {font-size:16px;COLOR:black ;TEXT-DECORATION: none;}
+A:hover {font-size:16px;COLOR:red ;TEXT-DECORATION: none;}
+A:active {font-size:16px;COLOR:red ;TEXT-DECORATION: none;}
+
+A.substitle:link {font-size:16px;COLOR:red ;TEXT-DECORATION: none;}
+A.substitle:visited {font-size:16px;COLOR:red ;TEXT-DECORATION: none;}
+A.substitle:hover {font-size:16px;COLOR:red ;TEXT-DECORATION: underline;}
+A.substitle:active {font-size:16px;COLOR:red ;TEXT-DECORATION: none;}
+
+A.menu:link {font-size:20px;COLOR:black ;TEXT-DECORATION: none;}
+A.menu:visited {font-size:20px;COLOR:black ;TEXT-DECORATION: none;}
+A.menu:hover {font-size:20px;COLOR:red ;TEXT-DECORATION: none;}
+A.menu:active {font-size:20px;COLOR:red ;TEXT-DECORATION: none;}
+
+A.ce:link {TEXT-DECORATION: none;}
+A.ce:visited {TEXT-DECORATION: none;}
+A.ce:hover {TEXT-DECORATION: underline;}
+A.ce:active {TEXT-DECORATION: none;}
+
+A.runid_link:link {TEXT-DECORATION: underline;}
+A.runid_link:visited {TEXT-DECORATION: underline;}
+A.runid_link:hover {TEXT-DECORATION: underline;}
+A.runid_link:active {TEXT-DECORATION: none;}
+
+A.bottom_link:link {font-size:16px;color:blue;TEXT-DECORATION: none;}
+A.bottom_link:visited {font-size:16px;color:blue;TEXT-DECORATION: none;}
+A.bottom_link:hover {font-size:16px;color:red;TEXT-DECORATION: underline;}
+A.bottom_link:active {font-size:16px;TEXT-DECORATION: none;}
+
+A.list_link:link {font-size:20px;COLOR:black ;TEXT-DECORATION: none;}
+A.list_link:visited {font-size:20px;COLOR:black ;TEXT-DECORATION: none;}
+A.list_link:hover {font-size:20px;COLOR:red ;TEXT-DECORATION: none;}
+A.list_link:active {font-size:20px;COLOR:red ;TEXT-DECORATION: none;}
+
+A.list2_link:link {font-size:18px;COLOR:black ;TEXT-DECORATION: none;}
+A.list2_link:visited {font-size:18px;COLOR:black ;TEXT-DECORATION: none;}
+A.list2_link:hover {font-size:18px;COLOR:red ;TEXT-DECORATION: none;}
+A.list2_link:active {font-size:18px;COLOR:red ;TEXT-DECORATION: none;}
+
+A.standing:link {font-size:18px;COLOR:black ;TEXT-DECORATION: none;}
+A.standing:visited {font-size:18px;COLOR:black ;TEXT-DECORATION: none;}
+A.standing:hover {font-size:18px;COLOR:red ;TEXT-DECORATION: none;}
+A.standing:active {font-size:18px;COLOR:red ;TEXT-DECORATION: none;}
+
+A.pstat:link {font-size:14px;COLOR:black ;TEXT-DECORATION: none;}
+A.pstat:visited {font-size:14px;COLOR:black ;TEXT-DECORATION: none;}
+A.pstat:hover {font-size:14px;COLOR:red ;TEXT-DECORATION: none;}
+A.pstat:active {font-size:14px;COLOR:red ;TEXT-DECORATION: none;}
+
+A.pstat2:link {font-size:14px;COLOR:black ;TEXT-DECORATION: underline;}
+A.pstat2:visited {font-size:14px;COLOR:black ;TEXT-DECORATION: underline;}
+A.pstat2:hover {font-size:14px;COLOR:red ;TEXT-DECORATION: underline;}
+A.pstat2:active {font-size:14px;COLOR:red ;TEXT-DECORATION: underline;}
