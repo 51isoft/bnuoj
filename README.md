@@ -1,6 +1,8 @@
 BNU Online Judge
 ==================
 
+Older releases: (Google Code)[http://code.google.com/p.bnuoj]
+
 An Online Judge system for Beijing Normal University, featuring following awesome functions
 
 *  Basic online judge functions;
