@@ -1,3 +1,6 @@
+BNU Online Judge
+==================
+
 An Online Judge system for Beijing Normal University, featuring following awesome functions
 
 *  Basic online judge functions;
