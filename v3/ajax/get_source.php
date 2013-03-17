@@ -8,17 +8,21 @@ $runid = convert_str($_GET['runid']);
 $cid = run_get_val($runid,"contest_belong");
 $uname = run_get_val($runid,"username");
 
-$ret["code"]=1;
+
+$query="select result,memory_used,time_used,username,source,language,pid,isshared,contest_belong from status where runid='$runid'";
+$ret=$db->get_row($query,ARRAY_A);
+
 if (!$current_user->is_valid()) {
+    unset($ret);
+    $ret["code"]=1;
     $ret["msg"]="Permission denined. Please login.";
 }
-else if (!(($isshared==TRUE&&($cid=="0"||contest_passed($cid)))||$current_user->match($uname)||$current_user->is_codeviewer())) {
+else if (!(($ret["isshared"]==TRUE&&($cid=="0"||contest_passed($cid)))||$current_user->match($uname)||$current_user->is_codeviewer())) {
+    unset($ret);
+    $ret["code"]=1;
     $ret["msg"]="Permission denined.";
 }
 else {
-    $query="select result,memory_used,time_used,username,source,language,pid,isshared,contest_belong from status where runid='$runid'";
-    $ret=$db->get_row($query,ARRAY_A);
-
     $ret["source"]=htmlspecialchars($ret["source"]);
     $ret["language"]=match_lang($ret["language"]);
     if ($current_user->match($uname)||$current_user->is_root()) $ret["control"]=1;
