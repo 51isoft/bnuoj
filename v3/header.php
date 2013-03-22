@@ -95,7 +95,7 @@ include_once("functions/users.php");
 <?php
 if ($current_user->is_root()) {
 ?>
-                  <li><a href="admin_index.php" id="admin">Administration</a></li>
+                  <li><a href="admin.php" id="admin">Administration</a></li>
 <?php
 }
 ?>
