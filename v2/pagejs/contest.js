@@ -252,7 +252,7 @@ else {
     $("#showcnonreplay").click();
 }
 
-if (getURLPara("open")==1) $("#arrangevdialog").modal("show");
+if (getURLPara("open")==1) $("#arrangevdialog").dialog("open");
 if (getURLPara("virtual")==1) {
     $("#showvirtual").click();
 }
