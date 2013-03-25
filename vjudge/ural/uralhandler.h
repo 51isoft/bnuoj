@@ -108,7 +108,7 @@ void init() {
     strcat(judger_string,"\nUral");
     corrlang["1"]="10";
     corrlang["2"]="9";
-    corrlang["3"]="7";
+    corrlang["3"]="12";
     corrlang["4"]="3";
     corrlang["6"]="11";
 }

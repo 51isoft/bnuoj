@@ -119,7 +119,7 @@ function check_lightoj() {
         foreach ($res as $row) {
             $result=$row->find("td",6)->plaintext;
             // echo $result;
-            if (stristr($result,"queu")||stristr($result,"waiting")) $num++;
+            if (stristr($result,"not judged yet")||stristr($result,"waiting")) $num++;
         }
         if ($num>$maxwaitnum) return "Possibly down: more than $maxwaitnum queuings.";
         return "Normal";
@@ -230,7 +230,7 @@ function check_fzu() {
 
 function check_nbut() {
     global $maxwaitnum;
-    $html=file_get_html("http://cdn.ac.nbutoj.com/Problem/status.xhtml");
+    $html=file_get_html("http://ac.nbutoj.com/Problem/status.xhtml");
     if ($html==null||$html->find("table",0)==null) return "Down: cannot connect.";
     else {
         $num=0;
@@ -262,6 +262,22 @@ function check_whu() {
     }
 }
 
+function check_sysu() {
+    global $maxwaitnum;
+    $html=file_get_html("http://soj.me/status.php");
+    if ($html==null||$html->find("table",0)==null) return "Down: cannot connect.";
+    else {
+        $num=0;
+        $res=$html->find("table tr");
+        foreach ($res as $row) {
+            $result=$row->find("td",5)->plaintext;
+            // echo $result;
+            if (stristr($result,"queu")||stristr($result,"waiting")) $num++;
+        }
+        if ($num>$maxwaitnum) return "Possibly down: more than $maxwaitnum queuings.";
+        return "Normal";
+    }
+}
 
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_pku())."' where name='PKU'";
 mysql_query($sql);
@@ -275,7 +291,7 @@ $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_sgu())."' w
 mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_lightoj())."' where name='LightOJ'";
 mysql_query($sql);
-$sql="update ojinfo set lastcheck=now(), status='".convert_str(check_ural())."' where name='Ural'";
+$sql="update ojinfo set lastcheck=now(), status='".convert_str(check_ural())."' where name='Ural'"; 
 mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_zju())."' where name='ZJU'";
 mysql_query($sql);
@@ -290,6 +306,8 @@ mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_nbut())."' where name='NBUT'";
 mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_whu())."' where name='WHU'";
+mysql_query($sql);
+$sql="update ojinfo set lastcheck=now(), status='".convert_str(check_sysu())."' where name='SYSU'";
 mysql_query($sql);
 
 // echo check_pku();
@@ -306,5 +324,5 @@ mysql_query($sql);
 // echo check_fzu();
 // echo check_nbut();
 // echo check_whu();
-
+// echo check_sysu();
 ?>

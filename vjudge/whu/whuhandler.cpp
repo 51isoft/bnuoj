@@ -29,6 +29,7 @@ string getLastLineFromFile(char *filename) {
 }
 
 string getSeed() {
+    system("rm whu.cookie");
     FILE * fp=fopen(tfilename,"w+");
     curl = curl_easy_init();
     if(curl) {
@@ -56,7 +57,9 @@ string getSeed() {
 
 bool login() {
     string seed=getSeed();
-    string passenc=hex_md5(password)+seed;
+    string passenc=password;
+    cout<<"======== "<<passenc <<" ========"<<endl;
+    passenc=hex_md5(passenc)+seed;
     passenc=hex_md5(passenc);
     FILE * fp=fopen(tfilename,"w+");
     curl = curl_easy_init();
@@ -77,7 +80,7 @@ bool login() {
     fclose(fp);
     if (res) return false;
     string ts=getAllFromFile(tfilename);
-    //cout<<ts;
+    cout<<ts;
     if (ts.find("<a href=\"/land/user/logout\">Logout</a>")==string::npos) return false;
     return true;
 }
@@ -111,8 +114,8 @@ problem_id=1001&lang=2&source=%23include+%3Cstdio.h%3E+%0D%0Aint+main%28%29+%0D%
     fclose(fp);
     if (res) return false;
     string ts=getAllFromFile(tfilename);
-    //cout<<ts;
-    if (ts.find("This problem does not exist in Land")!=string::npos||ts.find("The page is temporarily unavailable")!=string::npos) return false;
+    cout<<ts;
+    if (ts.find("This problem does not exist in Land")!=string::npos||ts.find("The page is temporarily unavailable")!=string::npos||ts.find("<a href=\"/land/user/login\">Login</a>")!=string::npos) return false;
     return true;
 }
 
@@ -280,13 +283,14 @@ void judge(string pid,string lang,string runid,string src) {
     if (!submit(pid,lang,src)) {
         writelog("Submit error! Assume not logged in.\n");
         if (!login()) {
+            logged=false;
             writelog("Login error!\n");
             toBottFile(runid,"0","0","Judge Error","");
             return;
         }
         if (!submit(pid,lang,src)) {
             writelog("Assume should wait a while. Sleep 2 seconds.\n");
-            //usleep(2000000);
+            usleep(2000000);
             if (!submit(pid,lang,src)) {
                 writelog("Submit error!\n");
                 toBottFile(runid,"0","0","Judge Error","");

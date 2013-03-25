@@ -119,7 +119,7 @@ check=0
     string ts=getAllFromFile(tfilename);
     //cout<<ts;
     //writelog((char *)ts.c_str());
-    if (ts.find("Connect(0) to MySQL Server failed.")!=string::npos||ts.find("<b>One or more following ERROR(s) occurred.")!=string::npos||ts.find("<h2>The requested URL could not be retrieved</h2>")!=string::npos||ts.find("PHP: Maximum execution time of")!=string::npos) return false;
+    if (ts.find("Connect(0) to MySQL Server failed.")!=string::npos||ts.find("<b>One or more following ERROR(s) occurred.")!=string::npos||ts.find("<h2>The requested URL could not be retrieved</h2>")!=string::npos||ts.find("PHP: Maximum execution time of")!=string::npos||ts.find("<DIV>Exercise Is Closed Now!</DIV>")!=string::npos) return false;
     return true;
 }
 
@@ -221,7 +221,7 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
         //writelog((char *)ts.c_str());
         /*if (ts.find("alert(\"Login failed!)")!=string::npos) return false;
         */
-        if (ts.find("Connect(0) to MySQL Server failed.")!=string::npos||ts.find("<b>One or more following ERROR(s) occurred.")!=string::npos||ts.find("<h2>The requested URL could not be retrieved</h2>")!=string::npos||ts.find("PHP: Maximum execution time of")!=string::npos) {
+        if (ts.find("Connect(0) to MySQL Server failed.")!=string::npos||ts.find("<b>One or more following ERROR(s) occurred.")!=string::npos||ts.find("<h2>The requested URL could not be retrieved</h2>")!=string::npos||ts.find("PHP: Maximum execution time of")!=string::npos||ts.find("<DIV>Exercise Is Closed Now!</DIV>")!=string::npos) {
             tried++;
             if (tried>=MAX_TRY_TIME) return false;
             continue;
