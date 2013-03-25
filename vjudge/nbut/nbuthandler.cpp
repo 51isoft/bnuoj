@@ -67,7 +67,7 @@ string getPara() {
     fclose(fp);
     if (res) return "";
     string ts=getHiddenLineFromFile(tfilename);
-    //cout<<ts;
+    cout<<ts;
     return ts;
 }
 
@@ -81,9 +81,9 @@ bool login() {
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
         //curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl");
         //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
-        curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "nbut.cookie");
+        //curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "nbut.cookie");
         curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "nbut.cookie");
-        curl_easy_setopt(curl, CURLOPT_URL, "http://acm.nbut.cn:8081/User/chklogin.xhtml");
+        curl_easy_setopt(curl, CURLOPT_URL, "http://ac.nbutoj.com/User/chklogin.xhtml");
         post=post+"username="+username+"&password="+escapeURL(password);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
@@ -113,7 +113,7 @@ bool submit(string pid,string lang,string source) {
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "nbut.cookie");
-        curl_easy_setopt(curl, CURLOPT_URL, "http://acm.nbut.cn:8081/Problem/submitok.xhtml");
+        curl_easy_setopt(curl, CURLOPT_URL, "http://ac.nbutoj.com/Problem/submitok.xhtml");
 /*
 language=1000&id=1000&code=fsafgvasfadsvgds%0AGfd%0Ah%0Aefh%0Afd%0Ahdf%0Ajh%0Afe
 */
@@ -160,7 +160,7 @@ string getCEinfo(string runid) {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "nbut.cookie");
-        string url=(string)"http://acm.nbut.cn:8081/Problem/viewce.xhtml?submitid="+runid;
+        string url=(string)"http://ac.nbutoj.com/Problem/viewce.xhtml?submitid="+runid;
         //cout<<url;
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         res = curl_easy_perform(curl);
@@ -242,7 +242,7 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
             curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "nbut.cookie");
-            string url=(string)"http://acm.nbut.cn:8081/Problem/status.xhtml?username="+username+"&problemid="+pid+"&language="+lang;
+            string url=(string)"http://ac.nbutoj.com/Problem/status.xhtml?username="+username+"&problemid="+pid+"&language="+lang;
             //cout<<url<<endl;
             curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
             res = curl_easy_perform(curl);
