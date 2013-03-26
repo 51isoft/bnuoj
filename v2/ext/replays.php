@@ -84,16 +84,36 @@ function deal_myexcel($data) {
         for ($j=0;$j<$pnum;$j++) {
             $value=trim($data->val($i,$j+2));
             if ($value=="0/--"||$value=="") continue;
-            if (strstr($value,'--')===false) {
-                $tnum=strstr($value,'/',true);
-                $act=intval(substr(strstr($value,'/'),1));
-//                echo $uname." ".$_POST['pid'.$j]." ".$tnum." * ".date("Y-m-d H:i:s",$sttime+$act*60)."<br />\n";
-                insac($tnum-1,$sttime,intval($act)*60,$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+            if (stripos($value,":")===false&&stripos($value,"(")===false) {
+                if (strstr($value,'--')===false) {
+                    $tnum=strstr($value,'/',true);
+                    $act=intval(substr(strstr($value,'/'),1));
+    //                echo $uname." ".$_POST['pid'.$j]." ".$tnum." * ".date("Y-m-d H:i:s",$sttime+$act*60)."<br />\n";
+                    insac($tnum-1,$sttime,intval($act)*60,$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+                }
+                else {
+                    $tnum=strstr($value,'/',true);
+    //                echo $uname." ".$_POST['pid'.$j]." ".$tnum." * ".date("Y-m-d H:i:s",$edtime-10)."<br />\n";
+                    inswa($tnum,$sttime,$edtime,$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+                }
             }
             else {
-                $tnum=strstr($value,'/',true);
-//                echo $uname." ".$_POST['pid'.$j]." ".$tnum." * ".date("Y-m-d H:i:s",$edtime-10)."<br />\n";
-                inswa($tnum,$sttime,$edtime,$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+                if ($value[0]=='(') {
+                    $tnum=intval(substr($value,2,-1));
+    //                echo $uname." ".$_POST['pid'.$j]." ".$tnum." * ".date("Y-m-d H:i:s",$edtime-10)."<br />\n";
+                    inswa($tnum,$sttime,$edtime,$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+                }
+                else {
+                    $tnum=0;
+    //                echo $uname." ".$_POST['pid'.$j]." ".$value."<br />\n";
+                    if (strstr($value,'(')) {
+                        $act=strstr($value,'(',true);
+                        $tnum=substr(strstr($value,'('),2,-1);
+                    }
+                    else $act=$value;
+    //                echo $uname." ".$_POST['pid'.$j]." ".date("Y-m-d H:i:s",$sttime+tosecond($act)-10)." * $tnum + ".date("Y-m-d H:i:s",$sttime+tosecond($act))."<br />\n";
+                    insac($tnum,$sttime,tosecond($act),$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+                }
             }
         }
     }
