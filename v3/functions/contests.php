@@ -49,8 +49,8 @@ function contest_get_pid_from_label($cid,$label) {
 function contest_get_label_from_pid($cid,$pid) {
     global $db;
     $sql="select lable from contest_problem where cid='$cid' and pid='$pid'";
-    list($lable)=@$db->get_row($sql,ARRAY_N);
-    return $lable;
+    list($label)=@$db->get_row($sql,ARRAY_N);
+    return $label;
 }
 
 function contest_get_status_before_time($cid,$time) {
@@ -105,6 +105,13 @@ function contest_get_visible_clarify($cid,$user) {
     if (!contest_exist($cid)) return null;
     $query="select * from contest_clarify where cid='$cid' and (username='$user' or ispublic=1) order by ccid desc";
     return $db->get_results($query,ARRAY_A);
+}
+
+
+function contest_has_user($cid,$username) {
+    global $db;
+    $result = $db->query("select * from contest_user where cid = '$cid' and username='".$db->escape($username)."'");
+    return $db->num_rows;
 }
 
 $contest_infos=array();

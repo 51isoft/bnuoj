@@ -21,13 +21,12 @@ function resetndetail() {
 }
 
 function probload(pid) {
-    $.get('fetch_problem.php?pid='+pid+"&rand="+Math.random(),function(data) {
-//      alert(data);
-        if ($.trim(data)=='Error!') {
-            alert(data);
+    $.get('ajax/admin_get_problem.php?pid='+pid+"&rand="+Math.random(),function(data) {
+        data=eval('('+data+')');
+        if (data.code!=0) {
+            alert(data.msg);
         }
         else {
-            data=eval('('+data+')');
             $("input[name='p_id']").val(data.pid);
             $("input[name='p_name']").val(data.title);
             $("input[name='time_limit']").val(data.tl);
@@ -58,58 +57,95 @@ function probload(pid) {
         }
     });
 }
+function conload(cid) {
+    $.get('ajax/admin_get_contest.php?cid='+cid+"&rand="+Math.random(),function(data) {
+        data=eval('('+data+')');
+        if (data.code!=0) {
+            alert(data.msg);
+        }
+        else {
+            $("#cdetail").populate(data);
+            CKEDITOR.instances.treport.setData(data.report);
+            var ctp=$("input[name='ctype']:checked").val();
+            if (ctp=='0') {
+                $(".selptype , .selpara").hide();
+            } else if (ctp=='1') {
+                $(".tc").hide();
+                $(".cf").show();
+                $(".paraa").val('2');
+                $(".parab").val('50');
+                $(".selptype , .selpara").show();
+                $(".typenote").text("In CF, Parameter A represents the points lost per minute. Parameter B represents the points lost for each incorrect submit.");
+            }
+            if ($("input[name='has_cha']:checked").val()=="1") $(".chatimerow").show();
+            else $(".chatimerow").hide();
+        }
+    });
+}
+
+function newsload(nnid) {
+    $.get('ajax/get_news.php?nnid='+nnid+"&rand="+Math.random(),function(data) {
+        data=eval('('+data+')');
+        if (data.code!=0) {
+            alert(data.msg);
+        }
+        else {
+            $("#ndetail").populate(data);
+            CKEDITOR.instances.tncontent.setData(data.ncontent);
+        }
+    });
+}
+
+function deal(id,oj,$target) {
+    $.get("api/get_pinfo_admin.php?vid="+id+"&vname="+oj+"&randomid="+Math.random(),function(data) {
+        if ($.trim(data)=="Error!") {
+            //$target.prev().val(id);
+            if (id==$target.prev().val()) {
+                $target.val("");
+                $target.next().next().html("Error!");
+            }
+        }
+        else {
+            var p=eval('('+data+')');
+            //$target.prev().val(id);
+            if (id==$target.prev().val()) {
+                $target.val(p.pid);
+                $target.next().next().html("<a href='problem_show.php?pid="+p.pid+"' target='_blank'>"+p.title+"</a>");
+            }
+        }
+    });
+}
+
 $(document).ready(function() {
+
+    $("#notiform").bind("correct",function() {
+        $("input:submit,button:submit,.btn",this).removeAttr("disabled").removeClass("disabled");
+    });
+
+    $("#pdetail").bind("preprocess",function() {
+        CKEDITOR.instances.tdescription.updateElement();
+        CKEDITOR.instances.tinput.updateElement();
+        CKEDITOR.instances.toutput.updateElement();
+        CKEDITOR.instances.thint.updateElement();
+    });
+    $("#pdetail").bind("correct",function() {
+        $("input:submit,button:submit,.btn",this).removeAttr("disabled").removeClass("disabled");
+        resetpdetail();
+    });
+
     $("#pload").submit(function() {
         probload($("#npid").val());
         return false;
     });
 
-    $("#pdetail").submit(function() {
-        $("button:submit",this).attr("disabled", true).addClass("ui-state-disabled");
-        CKEDITOR.instances.tdescription.updateElement();
-        CKEDITOR.instances.tinput.updateElement();
-        CKEDITOR.instances.toutput.updateElement();
-        CKEDITOR.instances.thint.updateElement();
-        $.post('admin_deal_problem.php',$("#pdetail").serialize(),function(data) {
-            alert(data);
-            $("#pdetail button:submit").attr("disabled", false).removeClass("ui-state-disabled");
-            if ($.trim(data)!='Failed.') resetpdetail();
-        });
-        return false;
-    });
 
-    $("#notiform").submit(function() {
-        $.post('admin_deal_notify.php',$("#notiform").serialize(),function(data) {
-            alert(data);
-        });
-        return false;
+    $("#cdetail").bind("preprocess",function() {
+        CKEDITOR.instances.treport.updateElement();
     });
-
-    function conload(cid) {
-        $.get('fetch_contest.php?cid='+cid+"&rand="+Math.random(),function(data) {
-            if ($.trim(data)=='Error!') {
-                alert(data);
-            }
-            else {
-                data=eval('('+data+')');
-                $("#cdetail").populate(data);
-                CKEDITOR.instances.treport.setData(data.report);
-                var ctp=$("input[name='ctype']:checked").val();
-                if (ctp=='0') {
-                    $(".selptype , .selpara").hide();
-                } else if (ctp=='1') {
-                    $(".tc").hide();
-                    $(".cf").show();
-                    $(".paraa").val('2');
-                    $(".parab").val('50');
-                    $(".selptype , .selpara").show();
-                    $(".typenote").text("In CF, Parameter A represents the points lost per minute. Parameter B represents the points lost for each incorrect submit.");
-                }
-                if ($("input[name='has_cha']:checked").val()=="1") $(".chatimerow").show();
-                else $(".chatimerow").hide();
-            }
-        });
-    }
+    $("#cdetail").bind("correct",function() {
+        $("input:submit,button:submit,.btn",this).removeAttr("disabled").removeClass("disabled");
+        resetcdetail();
+    });
 
     $("#cload").submit(function() {
         conload($("#ncid").val());
@@ -117,113 +153,34 @@ $(document).ready(function() {
     });
 
     $("#clockp").click(function() {
-        $.get('admin_deal_lock.php?hide=1&cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
-            alert(data);
+        $.get('ajax/admin_deal_lock.php?hide=1&cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
+            data=eval('('+data+')');
+            alert(data.msg);
         });
     });
     $("#culockp").click(function() {
-        $.get('admin_deal_lock.php?hide=0&cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
-            alert(data);
+        $.get('ajax/admin_deal_lock.php?hide=0&cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
+            data=eval('('+data+')');
+            alert(data.msg);
         });
     });
     $("#cshare").click(function() {
-        $.get('admin_deal_share.php?share=1&cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
-            alert(data);
+        $.get('ajax/admin_deal_share.php?share=1&cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
+            data=eval('('+data+')');
+            alert(data.msg);
         });
     });
     $("#cunshare").click(function() {
-        $.get('admin_deal_share.php?share=0&cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
-            alert(data);
+        $.get('ajax/admin_deal_share.php?share=0&cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
+            data=eval('('+data+')');
+            alert(data.msg);
         });
     });
 
     $("#ctestall").click(function() {
-        $.get('admin_deal_testall.php?cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
-            alert(data);
-        });
-    });
-
-    $("#cdetail").submit(function() {
-        $("button:submit",this).attr("disabled", true).addClass("ui-state-disabled");
-        CKEDITOR.instances.treport.updateElement();
-        $.post('admin_deal_contest.php',$("#cdetail").serialize(),function(data) {
-            alert(data);
-            $("#cdetail button:submit").attr("disabled", false).removeClass("ui-state-disabled");
-            if ($.trim(data)!='Failed.') resetcdetail();
-        });
-        return false;
-    });
-
-    function newsload(nnid) {
-        $.get('fetch_news.php?nnid='+nnid+"&rand="+Math.random(),function(data) {
-            if ($.trim(data)=='Error!') {
-                alert(data);
-            }
-            else {
-                data=eval('('+data+')');
-                $("#ndetail").populate(data);
-                CKEDITOR.instances.tncontent.setData(data.ncontent);
-            }
-        });
-    }
-
-    $("#nload").submit(function() {
-        newsload($("#nnid").val());
-        return false;
-    });
-
-    $("#ndetail").submit(function() {
-        $("button:submit",this).attr("disabled", true).addClass("ui-state-disabled");
-        CKEDITOR.instances.tncontent.updateElement();
-        $.post('admin_deal_news.php',$("#ndetail").serialize(),function(data) {
-            alert(data);
-            $("#ndetail button:submit").attr("disabled", false).removeClass("ui-state-disabled");
-            if ($.trim(data)!='Failed.') resetndetail();
-        });
-        return false;
-    });
-
-    $("#crej").submit(function() {
-        $.get('admin_deal_rejudge.php?type=1&cid='+$("#rejcid").val()+'&pid='+$("#rejpid").val()+"&rac="+$("input[name='rejac']:checked").val()+"&rand="+Math.random(),function(data) {
-            alert(data);
-        });
-        return false;
-    });
-    $("#cprej").submit(function() {
-        $.get('admin_deal_rejudge.php?type=2&cid='+$("#rcid").val()+'&pid='+$("#rpid").val()+"&rac="+$("input[name='rac']:checked").val()+"&rand="+Math.random(),function(data) {
-            alert(data);
-        });
-        return false;
-    });
-    $("#runrej").submit(function() {
-        $.get('admin_run_rejudge.php?runid='+$("#runid").val()+"&rand="+Math.random(),function(data) {
-            alert(data);
-        });
-        return false;
-    });
-    $("#cha_crej").submit(function() {
-        $.get('admin_deal_rejudge_challenge.php?type=all&cid='+$("#rcha_cid").val()+"&rand="+Math.random(),function(data) {
-            alert(data);
-        });
-        return false;
-    });
-
-
-    $("#spinfo").click(function() {
-        $(".syncbutton").attr("disabled", true).addClass("ui-state-disabled");
-        $("#syncwait").html('<img src="style/ajax-loader.gif" /> Loading...').show();
-        $.get('admin_sync_problem.php',function(data) {
-            $("#syncwait").html(data);
-            $(".syncbutton").attr("disabled", false).removeClass("ui-state-disabled");
-        });
-    });
-
-    $("#suinfo").click(function() {
-        $(".syncbutton").attr("disabled", true).addClass("ui-state-disabled");
-        $("#syncwait").html('<img src="style/ajax-loader.gif" /> Loading...').show();
-        $.get('admin_sync_user.php',function(data) {
-            $("#syncwait").html(data);
-            $(".syncbutton").attr("disabled", false).removeClass("ui-state-disabled");
+        $.get('ajax/admin_deal_testall.php?cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
+            data=eval('('+data+')');
+            alert(data.msg);
         });
     });
 
@@ -270,41 +227,68 @@ $(document).ready(function() {
         }
     });
 
-    var replayoptions = { 
-        beforeSubmit:  showRequest,  // pre-submit callback 
-        success:       showResponse  // post-submit callback
-    }; 
 
-    function showRequest(data){
-        $("#dealreplay").show();
-        $("#replaysubmit").attr("disabled", true).addClass("ui-state-disabled");
-        return true;
-    }
+    $("#nload").submit(function() {
+        newsload($("#nnid").val());
+        return false;
+    });
+    $("#ndetail").bind("preprocess",function() {
+        CKEDITOR.instances.tncontent.updateElement();
+    });
+    $("#ndetail").bind("correct",function() {
+        $("input:submit,button:submit,.btn",this).removeAttr("disabled").removeClass("disabled");
+        resetndetail();
+    });
 
-    function showResponse(data){
-        $("#dealreplay").html(data);
-        $("#replaysubmit").attr("disabled", false).removeClass("ui-state-disabled");
-    }
-
-    function deal(id,oj,$target) {
-        $.get("api/get_pinfo_admin.php?vid="+id+"&vname="+oj+"&randomid="+Math.random(),function(data) {
-            if ($.trim(data)=="Error!") {
-                //$target.prev().val(id);
-                if (id==$target.prev().val()) {
-                    $target.val("");
-                    $target.next().next().html("Error!");
-                }
-            }
-            else {
-                var p=eval('('+data+')');
-                //$target.prev().val(id);
-                if (id==$target.prev().val()) {
-                    $target.val(p.pid);
-                    $target.next().next().html("<a href='problem_show.php?pid="+p.pid+"' target='_blank'>"+p.title+"</a>");
-                }
-            }
+    $("#crej").submit(function() {
+        $.get('ajax/admin_deal_rejudge.php?type=1&cid='+$("#rejcid").val()+'&pid='+$("#rejpid").val()+"&rac="+$("input[name='rejac']:checked").val()+"&rand="+Math.random(),function(data) {
+            data=eval('('+data+')');
+            alert(data.msg);
         });
-    }
+        return false;
+    });
+    $("#cprej").submit(function() {
+        $.get('ajax/admin_deal_rejudge.php?type=2&cid='+$("#rcid").val()+'&pid='+$("#rpid").val()+"&rac="+$("input[name='rac']:checked").val()+"&rand="+Math.random(),function(data) {
+            data=eval('('+data+')');
+            alert(data.msg);
+        });
+        return false;
+    });
+    $("#runrej").submit(function() {
+        $.get('ajax/admin_deal_rejudge_run.php?runid='+$("#runid").val()+"&rand="+Math.random(),function(data) {
+            data=eval('('+data+')');
+            alert(data.msg);
+        });
+        return false;
+    });
+    $("#cha_crej").submit(function() {
+        $.get('ajax/admin_deal_rejudge_challenge.php?type=all&cid='+$("#rcha_cid").val()+"&rand="+Math.random(),function(data) {
+            data=eval('('+data+')');
+            alert(data.msg);
+        });
+        return false;
+    });
+
+
+    $("#spinfo").click(function() {
+        $(".syncbutton").attr("disabled", true).addClass("disabled");
+        $("#syncwait").html('<img src="img/ajax-loader.gif" /> Loading...').show();
+        $.get('ajax/admin_sync_problem.php',function(data) {
+            data=eval('('+data+')');
+            $("#syncwait").html(data.msg);
+            $(".syncbutton").attr("disabled", false).removeClass("disabled");
+        });
+    });
+
+    $("#suinfo").click(function() {
+        $(".syncbutton").attr("disabled", true).addClass("disabled");
+        $("#syncwait").html('<img src="img/ajax-loader.gif" /> Loading...').show();
+        $.get('ajax/admin_sync_user.php',function(data) {
+            data=eval('('+data+')');
+            $("#syncwait").html(data.msg);
+            $(".syncbutton").attr("disabled", false).removeClass("disabled");
+        });
+    });
 
     $(".vpid").keyup(function() {
         var vid=$(this).val();
@@ -318,8 +302,6 @@ $(document).ready(function() {
         var $target=$(this).next().next();
         deal(vid,vname,$target);
     });
-
-    $("#replayform").ajaxForm(replayoptions);
 
     $("#replaycrawl").click(function() {
         $(this).attr("disabled", true).addClass("ui-state-disabled");
