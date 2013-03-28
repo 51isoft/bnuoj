@@ -47,9 +47,9 @@ $(document).ready(function() {
             }
         ],
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            if (striptags(aData[4])=="Passed") $(nRow).addClass('success');
-            else if (striptags(aData[4])=="Running"||striptags(aData[4])=="Challenging") $(nRow).addClass('error');
-            else $(nRow).addClass('info')
+            // if (striptags(aData[4])=="Passed") $(nRow).addClass('success');
+            // else if (striptags(aData[4])=="Running"||striptags(aData[4])=="Challenging") $(nRow).addClass('error');
+            // else $(nRow).addClass('info')
             $("td:eq(0)",nRow).html("<a href='contest_show.php?cid="+aData[0]+"'>"+aData[0]+"</a>");
             return nRow;
         }

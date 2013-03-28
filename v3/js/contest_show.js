@@ -205,10 +205,10 @@ var statusfunc=function(data,slabel) {
                 $("td:eq(7)",nRow).html("<a href='#' class='showsource' runid='"+aData[1]+"'>"+aData[7]+"</a>")
             }
             tres=striptags(aData[3]);
-            if (tres.substr(0,7)=="Compile") $(nRow).addClass('info');
-            else if (tres.substr(0,4)=="Judg"||tres=="Rejudging"||tres=="Waiting"||tres=="Testing") $(nRow).addClass('warning');
-            else if (tres!="Accepted"&&tres.substr(0,7)!="Pretest") $(nRow).addClass('error');
-            else $(nRow).addClass('success');
+            // if (tres.substr(0,7)=="Compile") $(nRow).addClass('info');
+            // else if (tres.substr(0,4)=="Judg"||tres=="Rejudging"||tres=="Waiting"||tres=="Testing") $(nRow).addClass('warning');
+            // else if (tres!="Accepted"&&tres.substr(0,7)!="Pretest") $(nRow).addClass('error');
+            // else $(nRow).addClass('success');
             if (tres=="Judge Error"||tres=="Judge Error (Vjudge Failed)") {
                 $("td:eq(3)",nRow).append(" <button class='btn btn-mini'><i class='icon-refresh'></i> Rejudge</button>")
                 $("td:eq(3) button",nRow).click(function(){
@@ -241,18 +241,18 @@ var statusfunc=function(data,slabel) {
                 $.get('ajax/get_source.php',{ cid: getURLPara("cid"), runid: trunid, randomid: Math.random() }, function(data) {
                     data=eval("("+data+")");
                     if (data.code==1) {
-                        $("#statusdialog #rcontrol").hide();
+                        $("#statusdialog #rcontrol,#statusdialog #copybtn").hide();
                         $("#statusdialog #dcontent").html(data.msg).addClass("alert alert-error");
                         return;
                     }
-                    $("#statusdialog #rcontrol").show();
+                    $("#statusdialog #rcontrol,#statusdialog #copybtn").show();
                     $("#statusdialog #rresult").html(data.result).removeClass().addClass(get_short(data.result));
                     $("#statusdialog #rmemory").html(data.memory_used);
                     $("#statusdialog #rtime").html(data.time_used);
                     $("#statusdialog #ruser").html("<a href='userinfo.php?pid="+data.username+"' target='_blank'>"+data.username+"</a>");
                     $("#statusdialog #rpid").html("<a href='contest_show.php?cid="+getURLPara('cid')+"#problem/"+data.pid+"'>"+data.pid+"</a>");
                     $("#statusdialog #rlang").html(data.language);
-                    $("#statusdialog #dcontent").html(data.source).removeClass().addClass('prettyprint linenums');
+                    $("#statusdialog #dcontent").html(data.source).removeClass().addClass('prettyprint');
                     if (data.isshared==1) {
                         $("#rshare .btn").removeClass("active").filter("#sharey").addClass("active");
                         $("#sharenote").show();
@@ -285,6 +285,13 @@ var statusfunc=function(data,slabel) {
                             } else alert(data.msg);
                         });
                     });
+                });
+                var clip = new ZeroClipboard($("#copybtn"), {
+                  moviePath: "img/ZeroClipboard.swf",
+                  activeClass: "active"
+                });
+                clip.on( 'complete', function ( client, args ) {
+                  alert("Copied text to clipboard.");
                 });
                 $("#statusdialog").modal("show");
                 return false;

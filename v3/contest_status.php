@@ -75,7 +75,7 @@ if (contest_get_val($cid,"hide_others")&&!$current_user->is_root()) {
 }
 ?>
           <div>
-            <table class="table table-hover basetable cf" id="statustable" width="100%">
+            <table class="table table-hover table-striped basetable cf" id="statustable" width="100%">
               <thead>
                 <tr>
                   <th width='9%'>Username</th>
@@ -108,6 +108,9 @@ if (contest_get_val($cid,"hide_others")&&!$current_user->is_root()) {
               Share Code? <div class="btn-group" id="rshare"><button id="sharey" type="button" class="btn btn-info">Yes</button><button id="sharen" type="button" class="btn btn-info">No</button></div> <br />
               <b id='sharenote'>This code is shared.</b>
             </div>
+            <button class="pull-right btn btn-mini btn-inverse" data-clipboard-target="dcontent" id="copybtn">Copy</button>
             <pre id="dcontent"></pre>
           </div>
         </div>
+
+<script src="js/ZeroClipboard.min.js"></script>

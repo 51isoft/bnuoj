@@ -35,7 +35,7 @@ $(document).ready(function() {
         "oSearch": {"sSearch": searchstr},
         "aoColumnDefs": [ 
             { "bSortable": false, "aTargets": [ 0, 10 ] },
-            { "bVisible": false , "aTargets": [ 0, 6, 7, 8, 9 ] },
+            { "bVisible": false , "aTargets": [ 6, 7, 8, 9 ] },
             {
                 "mRender": function ( data, type, full ) {
                     return "<a href='status.php?showpid="+full[1]+"&showres=Accepted'>"+full[4]+"</a>";
@@ -65,11 +65,19 @@ $(document).ready(function() {
                     return "<a href='problem_show.php?pid="+data+"'>"+data+"</a>";
                 },
                 "aTargets": [ 1 ]
+            },
+            {
+                "mRender": function ( data, type, full ) {
+                    if (data=="Yes") return "<span class='ac'>"+data+"</span>";
+                    if (data=="No") return "<span class='wa'>"+data+"</span>";
+                    return data;
+                },
+                "aTargets": [ 0 ]
             }
         ],
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-            if (aData[0]=="Yes") $(nRow).addClass('success');
-            else if (aData[0]=="No") $(nRow).addClass('error');
+            // if (aData[0]=="Yes") $(nRow).addClass('success');
+            // else if (aData[0]=="No") $(nRow).addClass('error');
             return nRow;
         },
         "fnDrawCallback": function(){

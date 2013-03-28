@@ -31,10 +31,10 @@ if ($current_user->is_valid()) {
             <table class="table table-striped table-hover cf basetable" id="problist" width="100%">
               <thead>
                 <tr>
-                  <th width="8%"> Flag </th>
-                  <th width="8%"> PID </th>
-                  <th width="33%"> Title </th>
-                  <th width="25%"> Source </th>
+                  <th width="3%"> Flag </th>
+                  <th width="7%"> PID </th>
+                  <th width="30%"> Title </th>
+                  <th width="28%"> Source </th>
                   <th width="8%"> AC </th>
                   <th width="8%"> All </th>
                   <th width="8%"> AC </th>

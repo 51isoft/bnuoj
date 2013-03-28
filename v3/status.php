@@ -46,7 +46,7 @@ else $start = "0";
             </form>
           </div>
           <div>
-            <table class="table table-hover basetable cf" id="statustable" width="100%">
+            <table class="table table-hover table-striped basetable cf" id="statustable" width="100%">
               <thead>
                 <tr>
                   <th width='9%'>Username</th>
@@ -79,6 +79,7 @@ else $start = "0";
               Share Code? <div class="btn-group" id="rshare"><button id="sharey" type="button" class="btn btn-info">Yes</button><button id="sharen" type="button" class="btn btn-info">No</button></div> <br />
               <b id='sharenote'>This code is shared.</b>
             </div>
+            <button class="pull-right btn btn-mini btn-inverse" data-clipboard-target="dcontent" id="copybtn">Copy</button>
             <pre id="dcontent"></pre>
           </div>
         </div>
@@ -89,6 +90,7 @@ var spstart=<?= $start ?>;
 var refrate=<?=$config["status"]["refresh_rate"]?>;
 var lim_times=<?=$config["status"]["max_refresh_times"]?>;
 </script>
+<script src="js/ZeroClipboard.min.js"></script>
 <script type="text/javascript" src="js/status.js?<?=filemtime("js/status.js") ?>"></script>
 <link href="css/prettify.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="js/prettify.js"></script>

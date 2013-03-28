@@ -3,8 +3,11 @@
 include_once(dirname(__FILE__)."/db_basic.php");
 include_once(dirname(__FILE__)."/cookie.php");
 
-//include_once(dirname(__FILE__).'/../latexrender/latex.php');
-function latex_content($a) { return $a; }
+if ($config["use_latex_render"]) include_once(dirname(__FILE__)."/latexrender/latex.php");
+
+if (!function_exists(latex_content)) {
+    function latex_content($a) { return $a; }
+}
 
 function pwd($a) {
     return sha1("fdsoijfdows".md5($a."8943udo1=_*()3e2"));

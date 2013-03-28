@@ -61,7 +61,7 @@ class Problem {
             $this->info["to_url"]="<a href='http://livearchive.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=".(intval($svid)-1999)."' target='_blank'>$vid</a>";
         }
         if ($vname=="UVA")  {
-            list($url)=$db->get_row("select url from vurl where voj='UVA' and vid='$vid'",ARRAY_A);
+            list($url)=$db->get_row("select url from vurl where voj='UVA' and vid='$vid'",ARRAY_N);
             $this->info["to_url"]="<a href='$url' target='_blank'>$vid</a>";
         }
         return $this->info["to_url"];
