@@ -51,7 +51,7 @@ include_once("functions/contests.php");
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h3>Arrange a virtual contest</h3>
         </div>
-        <form method="post" action="ajax/arrange_vcontest.php" class="ajform form-inline" id="arrangeform">
+        <form method="post" action="ajax/vcontest_arrange.php" class="ajform form-inline" id="arrangeform">
             <div class="modal-body">
                 <div class="well hide typenote">
                     In CF, Parameter A represents the points lost per minute. Parameter B represents the points lost for each incorrect submit.<br />
@@ -59,22 +59,22 @@ include_once("functions/contests.php");
                     In TC, parameters defined as below. A + B must equal to 1. Parameter C is usually the length of this contest in TopCoder. Parameter E is the percentage of penalty for each incorrect submit.<br />
                     <img src='img/tcpoint.png' />
                 </div>
-                <div>
+                <div class="row-fluid">
                     <div class="span6">
                         <table style="width:100%;">
-                            <tr><th colspan="2">Contest Information</th></tr>
+                            <tr><th>Contest Information</th></tr>
                             <tr><td><input type="text" name="title" class="input-block-level" placeholder="Contest Title *" /></td></tr>
-                            <tr><td>Type: <label class="radio"><input type="radio" name="ctype" value="0" checked="checked" /> ICPC format</label> &nbsp;&nbsp;&nbsp;&nbsp; <label class="radio"><input type="radio" name="ctype" value="1" /> CF format</label> </td></tr>
-                            <tr><td colspan="2"><textarea name="description" rows="8" class="input-block-level" placeholder="Contest Description"></textarea></td></tr>
+                            <tr><td>Type: <label class="radio inline"><input type="radio" name="ctype" value="0" checked="checked" /> ICPC format</label><label class="radio inline"><input type="radio" name="ctype" value="1" /> CF format</label> </td></tr>
+                            <tr><td><textarea name="description" rows="8" class="input-block-level" placeholder="Contest Description"></textarea></td></tr>
                             <tr><td><div class="input-append input-prepend date datepick"><span class="add-on">Start Time* : </span><input id="prependedInput" type="text" name="start_time" value='<?=date("Y-m-d")." 09:00:00"?>'/><span class="add-on"><i class="icon-th"></i></span></div></td></tr>
                             <tr><td>( At least after 10 minutes )</td></tr>
                             <tr><td><div class="input-append input-prepend date datepick"><span class="add-on">End Time* : </span><input id="prependedInput" type="text" name="end_time" value='<?=date("Y-m-d")." 14:00:00"?>'/><span class="add-on"><i class="icon-th"></i></span></div></td></tr>
                             <tr><td>( Length should be between 30 minutes and 15 days )</td></tr>
                             <tr><td><div class="input-append input-prepend date datepick"><span class="add-on">Lock Board Time: </span><input id="prependedInput" type="text" name="lock_board_time" value='<?=date("Y-m-d")." 14:00:00"?>'/><span class="add-on"><i class="icon-th"></i></span></div></td></tr>
                             <tr><td>( Set it later than end time if you don't want to lock board )</td></tr>
-                            <tr><td>Using Local Timezone?: <label class="radio"><input type="radio" name="localtime" value="1" /> Yes</label> &nbsp;&nbsp;&nbsp;&nbsp; <label class="radio"><input type="radio" name="localtime" value="0" checked="checked" /> No</label></td></tr>
-                            <tr><td><span id="localtz"></span><input name="localtz" type="hidden" id="tzinp" /></td></tr>
-                            <tr><td>Hide Others' Status: <label class="radio"><input type="radio" name="hide_others" value="1" /> Yes</label> &nbsp;&nbsp;&nbsp;&nbsp; <label class="radio"><input type="radio" name="hide_others" value="0" checked="checked" /> No</label></td></tr>
+                            <tr><td><label class="radio inline"><input type="radio" name="localtime" value="1" />Use local timezone</label><label class="radio inline"><input type="radio" name="localtime" value="0" checked="checked" /> Use server timezone</label></td></tr>
+                            <tr><td>Your timezone: <span id="localtz"></span><input name="localtz" type="hidden" id="tzinp" /></td></tr>
+                            <tr><td><label class="radio inline"><input type="radio" name="hide_others" value="1" /> Hide others' status</label><label class="radio inline"><input type="radio" name="hide_others" value="0" checked="checked" />  Show others' status</label></td></tr>
                             <tr><td><div class="input-prepend"><span class="add-on">Password: </span><input type="password" name="password" /></div></td></tr>
                             <tr><td>( Leave it blank if not needed )</td></tr>
                         </table>
@@ -109,9 +109,9 @@ for($i=0;$i<$nn;$i++){
                                         <br /><span></span>
                                     </div>
                                     <div class="selptype hide">
-                                        Type: <label class="radio"><input type="radio" class='ptype' name="ptype<?=$i?>" value="1" checked="checked" /> CF</label> &nbsp;&nbsp;
-                                        <label class="radio"><input type="radio" class='ptype' name="ptype<?=$i?>" value="2" /> TC</label> &nbsp;&nbsp;
-                                        <label class="radio"><input type="radio" class='ptype' name="ptype<?=$i?>" value="3" /> CF Dynamic</label> <br />
+                                        <label class="radio inline"><input type="radio" class='ptype' name="ptype<?=$i?>" value="1" checked="checked" /> CF</label>
+                                        <label class="radio inline"><input type="radio" class='ptype' name="ptype<?=$i?>" value="2" /> TC</label>
+                                        <label class="radio inline"><input type="radio" class='ptype' name="ptype<?=$i?>" value="3" /> CF Dynamic</label>
                                     </div>
                                     <div class='well selpara hide'>
                                         <div class='cf tc'><label class="input">Base Value (MP) : <input type="text" class="input-small" value='500' name="base<?=$i?>" /></label></div>
@@ -141,7 +141,7 @@ for($i=0;$i<$nn;$i++){
 <script type="text/javascript" src="js/jstz.min.js"></script>
 <script type="text/javascript">
 var timezone = jstz.determine_timezone();
-$("#localtz").html("( "+timezone.name()+" GMT"+timezone.offset()+" )");
+$("#localtz").html(timezone.name()+" GMT"+timezone.offset());
 $("#tzinp").val(timezone.name());
 var searchstr='<?=$_GET['search']?>';
 var conperpage=<?=$config["limits"]["contests_per_page"]?>;

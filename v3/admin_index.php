@@ -290,16 +290,16 @@ if ($current_user->is_root()) {
                 <br/>
             </div>
             <div id="replaytab" class="tab-pane">
-                <form method="get" action="#" class="ajform form-inline">
+                <form id="replaycrawl" method="get" action="ajax/admin_deal_crawl_replay.php" class="form-inline">
                   <h4>Auto Crawl</h4>
-                  OJ: <select id="vcojname" style="width:120px;padding:5px">
+                  OJ: <select name="oj" id="vcojname" class="input-medium">
                       <option value="HUSTV">HUST Vjudge</option>
                       <option value="ZJU">ZJU</option>
                       <option value="UESTC">UESTC</option>
                       <option value="UVA">UVA</option>
                   </select>
                   <div class="input-append">
-                    <input id="vcid" type="text" class="input-small" placeholder="Contest ID" />
+                    <input name="cid" id="vcid" type="text" class="input-small" placeholder="Contest ID" />
                     <button class="btn btn-primary">Crawl!</button>
                   </div>
                   <span id="msgbox" style="display:none"></span>
@@ -384,7 +384,7 @@ if ($current_user->is_root()) {
                     <div class="pull-right">
                       <button class="btn btn-primary" type="submit">Submit</button>
                     </div>
-                    <div id="msgbox" style="display:none"></div>
+                    <div id="msgbox" style="display:none;clear:both"></div>
                 </form>
             </div>
             <div id="newstab" class="tab-pane">

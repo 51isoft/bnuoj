@@ -1,4 +1,7 @@
 <?php
+include_once(dirname(__FILE__)."/problems.php");
+include_once(dirname(__FILE__)."/users.php");
+
 function replay_to_second($str) {
     $h=intval(strstr($str,':',true));
     $str=substr(strstr($str,':'),1);
@@ -26,6 +29,7 @@ function replay_add_contest() {
 }
 
 function insone($pid,$res,$dtime,$cid,$name) {
+    global $db;
     $sql="insert into replay_status (pid,result,time_submit,contest_belong,username) values 
         ('".$pid."','".$res."','".$dtime."','".$cid."','".$name."')";
     $db->query($sql);
@@ -759,7 +763,7 @@ function replay_deal_spoj($standtable) {
 }
 
 
-function movefile($filename) {
+function replay_move_uploaded_file($filename) {
     global $_FILES,$POST,$ret;
     if (sizeof($_FILES)!=0) {
         move_uploaded_file($_FILES["file"]["tmp_name"], "../uploadstand/" . $filename);
@@ -768,6 +772,143 @@ function movefile($filename) {
         file_put_contents("../uploadstand/" . $filename,file_get_contents($_POST["repurl"]));
     }
     $ret["msg"].="Stored in: " . "uploadstand/" . $filename."<br />";
+}
+
+
+
+
+function replay_crawl_zju($cid) {
+    $res=array();
+    $html=file_get_html("http://acm.zju.edu.cn/onlinejudge/showContestProblems.do?contestId=$cid");
+    if ($html->find("div.message")!=null) {
+        $res["code"]=1;
+        return $res;
+    }
+    $titles=$html->find("table.list td.problemTitle font");
+    for ($i=0;$i<sizeof($titles);$i++) {
+        $tname=problem_get_id_from_oj_and_title("ZJU",trim($titles[$i]->innertext));
+        if ($tname==null) {
+            $res["code"]=1;
+            return $res;
+        }
+        $res["vpid$i"]=$tname;
+    }
+    $html=file_get_html("http://acm.zju.edu.cn/onlinejudge/contestInfo.do?contestId=$cid");
+    $sttime=trim(strstr($html->find(".dateLink",0)->plaintext,"(",true));
+    $length=$html->find(".contestInfoTable tr", 3)->find("td",1)->plaintext;
+    $edtime=date("Y-m-d H:i:s",strtotime($sttime)+strtotime($length)-time());
+    $title=$html->find(".contestInfoTable tr", 1)->find("td",1)->plaintext;
+    $res["start_time"]=$sttime;
+    $res["end_time"]=$edtime;
+    $res["name"]=$title;
+    $res["description"]=$res["repurl"]="http://acm.zju.edu.cn/onlinejudge/showContestRankList.do?contestId=$cid";
+    $res["ctype"]="zjuhtml";
+    $res["code"]=0;
+    $res["isvirtual"]=0;
+    return $res;
+}
+
+function replay_hustv_convert($oj) {
+    if ($oj=="POJ") return "PKU";
+    if ($oj=="ZOJ") return "ZJU";
+    return $oj;
+}
+
+function replay_crawl_hustv($cid) {
+    $res=array();
+    $html=file_get_html("http://acm.hust.edu.cn:8080/judge/contest/view.action?cid=$cid");
+    if ($html->find("#viewContest")==null) {
+        $res["code"]=1;
+        return $res;
+    }
+    $titles=$html->find("#viewContest td.center a");
+    for ($i=0;$i<sizeof($titles);$i++) {
+        //echo $titles[$i]->plaintext;
+        $oj=strstr($titles[$i]->plaintext," ",true);
+        $oj=replay_hustv_convert($oj);
+        $id=trim(strstr($titles[$i]->plaintext," "));
+        $tname=problem_get_id_from_virtual($oj,$id);
+        if ($tname==null) {
+            $res["code"]=1;
+            return $res;
+        }
+        $res["vpid$i"]=$tname;
+    }
+    $sttime=date("Y-m-d H:i:s",$html->find("#overview tr",1)->find("td",1)->plaintext/1000);
+    $edtime=date("Y-m-d H:i:s",$html->find("#overview tr",2)->find("td",1)->plaintext/1000);
+    $title=trim($html->find("#contest_title",0)->plaintext);
+    $res["start_time"]=$sttime;
+    $res["end_time"]=$edtime;
+    $res["name"]=$title;
+    $res["description"]=$res["repurl"]="http://acm.hust.edu.cn:8080/judge/data/standing/$cid.json";
+    $res["ctype"]="hustvjson";
+    $res["code"]=0;
+    $res["isvirtual"]=1;
+    return $res;
+}
+
+function replay_crawl_uestc($cid) {
+    $res=array();
+    $html=file_get_html("http://acm.uestc.edu.cn/contest.php?cid=$cid");
+    if ($html->find("div#login_all")!=null) {
+        $res["code"]=1;
+        return $res;
+    }
+    $titles=$html->find("div.list ul");
+    for ($i=0;$i<sizeof($titles);$i++) {
+        $title=$titles[$i]->find("li a",1);
+//        echo $title;
+        if ($title==null) continue;
+        $tname=problem_get_id_from_oj_and_title("UESTC",trim($title->innertext));
+        if ($tname==null) {
+            $res["code"]=1;
+            return $res;
+        }
+        $res["vpid$i"]=$tname;
+    }
+    $sttime=trim($html->find("#big_title span.h4",0)->plaintext);
+    $edtime=trim($html->find("#big_title span.h4",1)->plaintext);
+    $title=trim($html->find("#big_title h2",0)->plaintext);
+    $res["start_time"]=$sttime;
+    $res["end_time"]=$edtime;
+    $res["name"]=$title;
+    $res["description"]=$res["repurl"]="http://acm.uestc.edu.cn/contest_ranklist.php?cid=$cid";
+    $res["ctype"]="uestc";
+    $res["code"]=0;
+    $res["isvirtual"]=0;
+    return $res;
+}
+
+function replay_crawl_uva($cid) {
+    $res=array();
+    $html=file_get_html("http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=13&page=show_contest&contest=$cid");
+    if ($html->find("h1")!=null) {
+        $res["code"]=1;
+        return $res;
+    }
+    $titles=$html->find("div.tabbertab table tr");
+    for ($i=1;$i<sizeof($titles);$i++) {
+        $title=$titles[$i]->find("td",1);
+//        echo $title;
+        if ($title==null) continue;
+        $tname=problem_get_id_from_oj_and_title("UVA",trim($title->innertext));
+        if ($tname==null) {
+            $res["code"]=1;
+            return $res;
+        }
+        $res["vpid".($i-1)]=$tname;
+    }
+    $sttime="";
+    $edtime="";
+    $title=trim($html->find("div.componentheading",0)->plaintext);
+    $res["start_time"]=$sttime;
+    $res["end_time"]=$edtime;
+    $res["name"]=$title;
+    $res["description"]=$res["repurl"]="http://uva.onlinejudge.org/index2.php?option=com_onlinejudge&Itemid=13&page=show_contest_standings&contest=$cid";
+    $res["ctype"]="uva";
+    $res["code"]=0;
+    $res["isvirtual"]=0;
+    return $res;
 }
 
 ?>

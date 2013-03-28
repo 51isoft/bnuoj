@@ -58,7 +58,7 @@ $(document).ready(function() {
     $("#contest").addClass("active");
 
     $("#arrangevirtual").click(function() {
-    	$("#arrangevdialog").modal("show");
+        $("#arrangevdialog").modal("show");
     });
 
     $("#arrangevdialog").bind("shown",function(){
@@ -66,7 +66,7 @@ $(document).ready(function() {
     });
 
     $(".datepick").datetimepicker({
-    	format: 'yyyy-mm-dd hh:ii:ss'
+        format: 'yyyy-mm-dd hh:ii:ss'
     });
 
     if ($.cookie(cookie_prefix+"username")!=null) $("#arrangevirtual").show();

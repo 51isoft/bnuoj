@@ -2,10 +2,10 @@
 include_once(dirname(__FILE__)."/../functions/users.php");
 include_once(dirname(__FILE__)."/../functions/problems.php");
 include_once(dirname(__FILE__)."/../functions/contests.php");
-
+$cid =convert_str($_POST['cid']);
 $ret=array();
 $ret["code"]=1;
-if ($current_user->is_valid()) {
+if (contest_exist($cid)&&contest_started($cid)==false&&($current_user->is_root()||$current_user->match(contest_get_val($cid,"owner")))) {
     $title = htmlspecialchars(convert_str($_POST['title']));
     $isprivate=0;
     $description =htmlspecialchars(convert_str($_POST['description']));
@@ -30,8 +30,9 @@ if ($current_user->is_valid()) {
     $pass=pwd(convert_str($_POST['password']));
     if ($_POST['password']!="") $isprivate=2;
     if ($ctype==0) $n = $config["limits"]["problems_on_contest_add"];
-    else $n=$paratypemax;
+    else $n = $config["limits"]["problems_on_contest_add_cf"];
     for($i=0;$i<$n;$i++){
+        $ccid[$i] = $cid;
         $pid[$i] = convert_str($_POST['pid'.$i]);
         $lable[$i] = convert_str($_POST['lable'.$i]);
         $ptype[$i] = convert_str($_POST['ptype'.$i]);
@@ -43,7 +44,6 @@ if ($current_user->is_valid()) {
         $parad[$i] = convert_str($_POST['parad'.$i]);
         $parae[$i] = convert_str($_POST['parae'.$i]);
     }
-
     
     $stt=strtotime($start_time);
     $edt=strtotime($end_time);
@@ -67,8 +67,16 @@ if ($current_user->is_valid()) {
     }
     else {
     
-        $sql_add_con = "insert into contest (title,description,isprivate,lock_board_time,start_time,end_time,hide_others,owner,isvirtual,type,password) values ('$title'" .
-                ",'$description','$isprivate','$lock_board_time','$start_time','$end_time','$hide_others','$nowuser',1,'$ctype','$pass')";
+        $sql_add_con = "update contest set
+            title='$title',
+            description='$description',
+            lock_board_time='$lock_board_time',
+            start_time='$start_time',
+            end_time='$end_time',
+            hide_others='$hide_others',
+            type='$ctype',
+            password='$pass'
+            where cid='$cid'";
         //$sql_add_con = change_in($sql_add_con);
         //echo "<br/>".$sql_add_con."<br/>";
         $pd=false;
@@ -99,17 +107,12 @@ if ($current_user->is_valid()) {
         }
         if ($pd) {
             $ret["msg"]="Invalid problem!";
-            echo json_encode($ret);
-            die();
+            die(json_encode($ret));
         }
-
-        $que_add_con = $db->query($sql_add_con);
-        $cid=$db->insert_id;
-        if (!$que_add_con) {
-            $ret["msg"]="Insert error!";
-            echo json_encode($ret);
-            die();
-        }
+        $db->query($sql_add_con);
+        $ssql="delete from contest_problem where cid='$cid'";
+        $db->query($ssql);
+//        echo $sql_add_con;die();
 
         for($i=0;$i<$n;$i++){
             if($pid[$i] == "") continue;
@@ -132,9 +135,8 @@ if ($current_user->is_valid()) {
     }
     
 }
-    
 else {
-    $ret["msg"]="Please login.";
+    $ret["msg"]="You cannot modify this contest.";
 }
 
 echo json_encode($ret);

@@ -174,6 +174,18 @@ function problem_get_id_from_virtual($vname,$vid) {
     return $row[0];
 }
 
+function problem_get_id_from_oj_and_title($vname,$title) {
+    global $db;
+    $pid=null;
+    $title2=strtr($title,array("'"=>"%","\""=>"%"));
+    $title=convert_str($title);
+    $row = $db->get_row("select pid from problem where vname='$vname' and title='$title'",ARRAY_N);
+    if ($row==null) {
+        $row = $db->get_row("select pid from problem where vname='$vname' and title like '$title2'",ARRAY_N);
+    }
+    return $row[0];
+}
+
 $problem_categories=null;
 function problem_search_category($row,$depth) {
     global $problem_categories,$db;

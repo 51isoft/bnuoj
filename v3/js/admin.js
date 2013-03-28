@@ -96,25 +96,6 @@ function newsload(nnid) {
     });
 }
 
-function deal(id,oj,$target) {
-    $.get("api/get_pinfo_admin.php?vid="+id+"&vname="+oj+"&randomid="+Math.random(),function(data) {
-        if ($.trim(data)=="Error!") {
-            //$target.prev().val(id);
-            if (id==$target.prev().val()) {
-                $target.val("");
-                $target.next().next().html("Error!");
-            }
-        }
-        else {
-            var p=eval('('+data+')');
-            //$target.prev().val(id);
-            if (id==$target.prev().val()) {
-                $target.val(p.pid);
-                $target.next().next().html("<a href='problem_show.php?pid="+p.pid+"' target='_blank'>"+p.title+"</a>");
-            }
-        }
-    });
-}
 
 $(document).ready(function() {
 
@@ -290,6 +271,26 @@ $(document).ready(function() {
         });
     });
 
+    function deal(id,oj,$target) {
+        $.get("ajax/admin_get_problem_basic.php?vid="+id+"&vname="+oj+"&randomid="+Math.random(),function(data) {
+            var p=eval('('+data+')');
+            if (p.code!=0) {
+                //$target.prev().val(id);
+                if (id==$target.prev().val()) {
+                    $target.val("");
+                    $target.next().next().html("Error!");
+                }
+            }
+            else {
+                var p=eval('('+data+')');
+                if (id==$target.prev().val()) {
+                    $target.val(p.pid);
+                    $target.next().next().html("<a href='problem_show.php?pid="+p.pid+"' target='_blank'>"+p.title+"</a>");
+                }
+            }
+        });
+    }
+
     $(".vpid").keyup(function() {
         var vid=$(this).val();
         var vname=$(this).prev().val();
@@ -303,54 +304,75 @@ $(document).ready(function() {
         deal(vid,vname,$target);
     });
 
-    $("#replaycrawl").click(function() {
-        $(this).attr("disabled", true).addClass("ui-state-disabled");
-        $.get("admin_deal_crawl_replay.php?oj="+$("#vcojname").val()+"&cid="+$("#vcid").val(),function(data) {
-            //alert(data);
-            data=eval('('+data+')');
-            if (data.result==0) $("#replayform").populate(data);
-            else alert("Error Occured!");
-            $("#replaycrawl").attr("disabled", false).removeClass("ui-state-disabled");
-            $(".vpid").keyup();
-        });
-        return false;
+
+    $("#replaycrawl").ajaxForm({
+      beforeSubmit: function (formData, tform, options) {
+        tform.trigger("preprocess");
+        $("input:submit,button:submit,.btn",tform).attr("disabled","disabled").addClass("disabled");
+        $("#msgbox",tform).removeClass().addClass('alert').html('<img style="height:20px" src="img/ajax-loader.gif" /> Validating....').fadeIn(500);
+        return true;
+      },
+      success: function(responseText, statusText, xhr, form) {
+        responseText=eval("("+responseText+")");
+        if (responseText.code=='0') {
+          $("#msgbox",form).fadeTo(100,0.1,function() {
+            $(this).html(responseText.msg).removeClass().addClass('alert alert-success').fadeTo(100,1,function(){
+                $("#replayform").populate(responseText);
+                $("input:submit,button:submit,.btn",form).removeAttr("disabled").removeClass("disabled");
+                $(".vpid").keyup();
+            });
+          });
+        }
+        else {
+          $("#msgbox",form).fadeTo(100,0.1,function() {
+            $(this).html(responseText.msg).removeClass().addClass('alert alert-error').fadeTo(300,1);
+          });
+          $("input:submit,button:submit,.btn",form).removeAttr("disabled").removeClass("disabled");
+        }
+      }
     });
+
+    $("#replayform").bind("correct",function() {
+        $("input:submit,button:submit,.btn",this).removeAttr("disabled").removeClass("disabled");
+        resetcdetail();
+    });
+
 
     $("#cclonecid").click(function() {
         var val=$("#clcid").val();
-        $(this).attr("disabled", true).addClass("ui-state-disabled");
-        $.get("api/get_cprob_admin.php?type=cid&value="+val,function(data) {
+        $(this).attr("disabled", true).addClass("disabled");
+        $.get("ajax/admin_get_contest_problems.php?type=cid&value="+val,function(data) {
             //alert(data);
             data=eval('('+data+')');
             if (data.result==0) $("#cdetail").populate(data,{resetForm:false});
             else alert("Error Occured!");
-            $("#cclonecid").attr("disabled", false).removeClass("ui-state-disabled");
+            $("#cclonecid").attr("disabled", false).removeClass("disabled");
         });
         return false;
     });
 
     $("#cclonesrc").click(function() {
         var val=$("#clsrc").val();
-        $(this).attr("disabled", true).addClass("ui-state-disabled");
-        $.get("api/get_cprob_admin.php?type=src&value="+val,function(data) {
+        $(this).attr("disabled", true).addClass("disabled");
+        $.get("ajax/admin_get_contest_problems.php?type=src&value="+val,function(data) {
             //alert(data);
             data=eval('('+data+')');
             if (data.result==0) $("#cdetail").populate(data,{resetForm:false});
             else alert("Error Occured!");
-            $("#cclonesrc").attr("disabled", false).removeClass("ui-state-disabled");
+            $("#cclonesrc").attr("disabled", false).removeClass("disabled");
         });
         return false;
     });
 
     $("#vclonecid").click(function() {
         var val=$("#vclcid").val();
-        $(this).attr("disabled", true).addClass("ui-state-disabled");
-        $.get("api/get_cprob_admin.php?out=v&type=cid&value="+val,function(data) {
+        $(this).attr("disabled", true).addClass("disabled");
+        $.get("ajax/admin_get_contest_problems.php?out=v&type=cid&value="+val,function(data) {
             //alert(data);
             data=eval('('+data+')');
             if (data.result==0) $("#replayform").populate(data,{resetForm:false});
             else alert("Error Occured!");
-            $("#vclonecid").attr("disabled", false).removeClass("ui-state-disabled");
+            $("#vclonecid").attr("disabled", false).removeClass("disabled");
             $(".vpid").keyup();
         });
         return false;
@@ -358,13 +380,13 @@ $(document).ready(function() {
 
     $("#vclonesrc").click(function() {
         var val=$("#vclsrc").val();
-        $(this).attr("disabled", true).addClass("ui-state-disabled");
-        $.get("api/get_cprob_admin.php?out=v&type=src&value="+val,function(data) {
+        $(this).attr("disabled", true).addClass("disabled");
+        $.get("ajax/admin_get_contest_problems.php?out=v&type=src&value="+val,function(data) {
             //alert(data);
             data=eval('('+data+')');
             if (data.result==0) $("#replayform").populate(data,{resetForm:false});
             else alert("Error Occured!");
-            $("#vclonesrc").attr("disabled", false).removeClass("ui-state-disabled");
+            $("#vclonesrc").attr("disabled", false).removeClass("disabled");
             $(".vpid").keyup();
         });
         return false;
