@@ -220,13 +220,6 @@ $(document).ready(function() {
                             } else alert(data.msg);
                         });
                     });
-                    var clip = new ZeroClipboard($("#copybtn"), {
-                      moviePath: "img/ZeroClipboard.swf",
-                      activeClass: "active"
-                    });
-                    clip.on( 'complete', function ( client, args ) {
-                      alert("Copied text to clipboard.");
-                    });
                 });
                 $("#statusdialog").modal("show");
                 return false;
@@ -240,6 +233,14 @@ $(document).ready(function() {
         },
         "iDisplayStart":spstart
     } );
+
+    var clip = new ZeroClipboard($("#copybtn"), {
+        moviePath: "img/ZeroClipboard.swf",
+        activeClass: "active"
+    });
+    clip.on( 'complete', function ( client, args ) {
+        alert("Copied text to clipboard.");
+    });
 
 
     $("#filterform").submit(function() {
