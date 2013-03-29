@@ -5,7 +5,7 @@ var ceclick=function() {
     var runid=$(this).attr("runid");
     $("#statusdialog #dtitle").text("Compile Info of Run "+runid);
     $("#statusdialog #dcontent").html('<img src="img/ajax-loader.gif" /> Loading...');
-    $("#statusdialog #rcontrol").hide();
+    $("#statusdialog #rcontrol,#statusdialog #copybtn").hide();
     $("#statusdialog").modal("show");
     $.get('ajax/get_ceinfo.php',{ runid: $(this).attr("runid") }, function(data) {
         data=eval("("+data+")");

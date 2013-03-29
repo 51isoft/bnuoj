@@ -91,7 +91,7 @@ var ceclick=function() {
     var runid=$(this).attr("runid");
     $("#statusdialog #dtitle").text("Compile Info of Run "+runid);
     $("#statusdialog #dcontent").html('<img src="img/ajax-loader.gif" /> Loading...');
-    $("#statusdialog #rcontrol").hide();
+    $("#statusdialog #rcontrol,#statusdialog #copybtn").hide();
     $("#statusdialog").modal("show");
     $.get('ajax/get_ceinfo.php',{ runid: $(this).attr("runid") }, function(data) {
         data=eval("("+data+")");
@@ -286,13 +286,7 @@ var statusfunc=function(data,slabel) {
                         });
                     });
                 });
-                var clip = new ZeroClipboard($("#copybtn"), {
-                  moviePath: "img/ZeroClipboard.swf",
-                  activeClass: "active"
-                });
-                clip.on( 'complete', function ( client, args ) {
-                  alert("Copied text to clipboard.");
-                });
+
                 $("#statusdialog").modal("show");
                 return false;
             });
@@ -307,6 +301,15 @@ var statusfunc=function(data,slabel) {
         },
         "iDisplayStart": 0
     } );
+
+    var clip = new ZeroClipboard($("#copybtn"), {
+        moviePath: "img/ZeroClipboard.swf",
+        activeClass: "active"
+    });
+    clip.on( 'complete', function ( client, args ) {
+        alert("Copied text to clipboard.");
+    });
+
     $("#filterform").submit(function() {
         $(".btn",this).attr("disabled","disabled").addClass("disabled");
         oTable.fnFilter($("#filterform [name='showname']").val(),0);
