@@ -75,10 +75,10 @@ var showpfunc=function(gcpid) {
 var defaultfunc=function(data){
     if (self.document.location.hash!="") self.document.location.hash="#info";
     $("#contest_content").html(data);
-    $("td:first","#cplist tr").each(function(){
-        if ($.trim($(this).text())=="Yes") $(this).parent().addClass('success');
-        else if ($.trim($(this).text())=="No") $(this).parent().addClass('error');
-    });
+ //   $("td:first","#cplist tr").each(function(){
+ //       if ($.trim($(this).text())=="Yes") $(this).parent().addClass('success');
+ //       else if ($.trim($(this).text())=="No") $(this).parent().addClass('error');
+ //   });
     document.title=$("#contest_content .pagetitle").text();
     $("#contest_nav li").removeAttr("disabled").removeClass("disabled");
 };

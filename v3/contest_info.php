@@ -77,7 +77,7 @@ if (contest_exist($cid)&&(contest_get_val($cid,"isprivate")==0||
         foreach ((array)contest_get_problem_summaries($cid) as $row) {
 ?>
               <tr>
-                <td> <?=$current_user->aced_problem_in_contest($row["pid"],$cid)?"Yes":($current_user->tried_problem_in_contest($row["pid"],$cid)?"No":"")?> </td>
+                <td> <?=$current_user->aced_problem_in_contest($row["pid"],$cid)?"<span class='ac'>Yes</a>":($current_user->tried_problem_in_contest($row["pid"],$cid)?"<span class='wa'>No</a>":"")?> </td>
                 <td><a href='#problem/<?=$row["lable"]?>'><?=$row["lable"]?></a></td>
                 <td><a href='#problem/<?=$row["lable"]?>'><?=$row["title"]?></a></td>
                 <td> <?=$row["ac_run"]?>/<?=$row["submit_run"]?> </td>
