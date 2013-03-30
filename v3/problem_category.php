@@ -12,7 +12,7 @@ include_once("functions/problems.php");
 <?php
 $res=problem_get_category();
 for ($i=0;$i<sizeof($res);$i++) {
-  echo "<li><input class='ccheck' type='checkbox' value='".$res[$i]['id']."' name='check".$res[$i]['id']."' /> ".$res[$i]['name'];
+  echo "<li><label class='checkbox inline'><input class='ccheck' type='checkbox' value='".$res[$i]['id']."' name='check".$res[$i]['id']."' /> ".$res[$i]['name']."</label>";
   if ($res[$i]["depth"]<$res[$i+1]["depth"]) echo " <button class='btn btn-mini cexpand'><i class='icon-plus'></i></button><button class='btn btn-mini chide hide'><i class='icon-minus'></i></button></li><ul class='hide'>\n";
   else echo "</li>\n";
   if ($res[$i]["depth"]>$res[$i+1]["depth"]) echo str_repeat("</ul>\n",$res[$i]["depth"]-$res[$i+1]["depth"]);
@@ -20,7 +20,8 @@ for ($i=0;$i<sizeof($res);$i++) {
 
 ?>
 </ul>
-            Logical Operation: <input name="logic" value="or" type="radio" checked="checked"> OR &nbsp;&nbsp;&nbsp;&nbsp; <input name="logic" value="and" type="radio"> AND <br /> ( <b>Note:</b> If a node is checked, all its children will be ignored. )
+            <label class="radio inline"><input name="logic" value="or" type="radio" checked="checked"> OR</label> <label class="radio inline"><input name="logic" value="and" type="radio"> AND</label>
+            <p> ( <b>Note:</b> If a node is checked, all its children will be ignored. )</p>
             </div>
             <button class="btn btn-primary" type="submit">Submit</button>
           </form>
@@ -32,8 +33,8 @@ for ($i=0;$i<sizeof($res);$i++) {
 <script type="text/javascript">
 $(".ccheck").change(function() {
     if ($(this).prop('checked')===true) {
-        $(".ccheck",$(this).parent().next("ul")).prop('checked', true);
-        $val=$(this).parent();
+        $(".ccheck",$(this).parent().parent().next("ul")).prop('checked', true);
+        $val=$(this).parent().parent();
         $uc=$("input:not(:checked)",$val.next());
         while ($val.length && $uc.length==0) {
             $(".ccheck:first",$val).prop('checked', true);
@@ -42,8 +43,8 @@ $(".ccheck").change(function() {
         }
     }
     else {
-        $(".ccheck",$(this).parent().next("ul")).prop('checked', false);
-        $val=$(this).parent();
+        $(".ccheck",$(this).parent().parent().next("ul")).prop('checked', false);
+        $val=$(this).parent().parent();
         while ($val.length) {
             $(".ccheck:first",$val).prop('checked', false);
             $val=$val.parent().prev();
