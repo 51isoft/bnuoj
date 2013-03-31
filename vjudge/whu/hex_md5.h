@@ -163,5 +163,8 @@ string rstr2hex(string c) {
 }
 
 string hex_md5(string a) {
+    memset(mya,0,sizeof(mya));
+    memset(myres,0,sizeof(myres));
+    mylen=0;
     return rstr2hex(rstr_md5(a));
 }

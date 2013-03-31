@@ -29,7 +29,7 @@ string getLastLineFromFile(char *filename) {
 }
 
 string getSeed() {
-    system("rm whu.cookie");
+    //system("rm whu.cookie");
     FILE * fp=fopen(tfilename,"w+");
     curl = curl_easy_init();
     if(curl) {
@@ -40,8 +40,10 @@ string getSeed() {
         curl_easy_setopt(curl, CURLOPT_URL, "http://acm.whu.edu.cn/land/");
         res = curl_easy_perform(curl);
         curl_easy_cleanup(curl);
-        curl = curl_easy_init();
+        fclose(fp);
 
+        fp=fopen(tfilename,"w");
+        curl = curl_easy_init();
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
@@ -55,12 +57,21 @@ string getSeed() {
     return getLastLineFromFile(tfilename);
 }
 
+bool logout() {
+    curl = curl_easy_init();
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+    curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "whu.cookie");
+    curl_easy_setopt(curl, CURLOPT_URL, "http://acm.whu.edu.cn/land/user/logout");
+    curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+}
+
 bool login() {
     string seed=getSeed();
     string passenc=password;
-    cout<<"======== "<<passenc <<" ========"<<endl;
     passenc=hex_md5(passenc)+seed;
     passenc=hex_md5(passenc);
+    //cout<<endl<<"======= "<<seed<<" ======== "<<password <<" ========" << passenc << " ==========" <<endl;
     FILE * fp=fopen(tfilename,"w+");
     curl = curl_easy_init();
     if(curl) {
@@ -71,7 +82,7 @@ bool login() {
         curl_easy_setopt(curl, CURLOPT_REFERER, "http://acm.whu.edu.cn/land/");
         curl_easy_setopt(curl, CURLOPT_URL, "http://acm.whu.edu.cn/land/user/do_login");
 // origURL=http%3A%2F%2Facm.whu.edu.cn%2Fland%2Fproblem%2Flist%3Fvolume%3D1&passEnc=ad54e84949a86f00ac84ef9a5d9c8f20&seed=CKKCKR&username=bnuvjudge&password=
-        string post=(string)"origURL=http%3A%2F%2Facm.whu.edu.cn%2Fland%2F&password=&passEnc="+passenc+"&username="+username+"&seed="+seed+"&remember=1";
+        string post=(string)"origURL=%2Fland&password=&passEnc="+passenc+"&username="+username+"&seed="+seed+"&remember=1";
         //cout<<post;
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
         res = curl_easy_perform(curl);
@@ -304,6 +315,7 @@ void judge(string pid,string lang,string runid,string src) {
         toBottFile(runid,"0","0","Judge Error","");
         return;
     };
+//    logout();
     toBottFile(runid,tu,mu,result,ce_info);
 }
 
