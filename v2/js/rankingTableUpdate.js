@@ -113,7 +113,6 @@
 			options.duration = [overThree, 0, overThree, 0, overThree];
 		}
 
-
 		//set any unset parameters to the default values..
 		return $.extend(true, {}, defaultOptions, options);
 	}
@@ -127,7 +126,7 @@
 	//  options - a JS object which defines how the animation should operate.
 	$.fn.rankingTableUpdate = function(newTable, options){
 
-//        var starttime=new Date().getTime();
+       var starttime=new Date().getTime();
 
 		//make sure we have jQuery wrapped versions of both tables..
 		var jOrigTable = this, jNewTable = $(newTable);
@@ -144,8 +143,8 @@
 			jOrigTableParent.append(newTable);
 		}
 		
-//        var elatime=new Date().getTime()-starttime;
-//        console.log('Append: '+elatime);
+       var elatime=new Date().getTime()-starttime;
+       console.log('Append: '+elatime);
 
 
 		//fills in any blank options will default values so as to simplify this function's code..
@@ -178,8 +177,8 @@
 			}
 		});
 
-//        elatime=new Date().getTime()-starttime;
-//        console.log('Measure: '+elatime);
+       elatime=new Date().getTime()-starttime;
+       console.log('Measure: '+elatime);
 
 		//associate the value of the id column for the table with the row in which is appears..
 		var origTableIdsToRows = {}, newTableIdsToRows = {};
@@ -191,8 +190,8 @@
 		});
 
 
-//        elatime=new Date().getTime()-starttime;
-//        console.log('Associate: '+elatime);
+       elatime=new Date().getTime()-starttime;
+       console.log('Associate: '+elatime);
 
 	
 		//break the id's in five sets - up, down, fresh, drop, stayPut
@@ -221,8 +220,8 @@
 
 
 
-//        elatime=new Date().getTime()-starttime;
-//        console.log('Calculate: '+elatime);
+       elatime=new Date().getTime()-starttime;
+       console.log('Calculate: '+elatime);
 
 
 
@@ -234,8 +233,8 @@
 	
 
 
-//        elatime=new Date().getTime()-starttime;
-//        console.log('New: '+elatime);
+       elatime=new Date().getTime()-starttime;
+       console.log('New: '+elatime);
 
 
 
@@ -250,13 +249,13 @@
 				//run the onComplete callback function..
 				options.onComplete();
 			}, 10); 
-			return;
+			return this;
 		}
 		
 
 
-//        elatime=new Date().getTime()-starttime;
-//        console.log('Put: '+elatime);
+       elatime=new Date().getTime()-starttime;
+       console.log('Put: '+elatime);
 
 
 
@@ -276,7 +275,6 @@
 			$("<div />", {
 				css: {
 					height: origHeight,
-					//overflow: "hidden",
 					position: "relative",
 					left: minLeftValue
 				}
@@ -285,16 +283,16 @@
 
 		//wrap table cell contents with a div..
 		$(origTBody.rows).each(function(row, tr){
+			// if (stayPut[row]) console.log(row);
+			if (stayPut[row]) return;
 			$.each(tr.cells, function(column, td){
 				var wrapper = $('<div/>', {
-					'class' : 'moveable'
-//					css: {
-//						position: "relative",
-//                        height: "38px",
-//                        "line-height": "38px",
-//                        "overflow":"hidden"
-//						padding: removeAndReturnPadding(td)
-//					}
+					'class' : 'moveable',
+					css: {
+						position: "relative",
+                        "overflow":"hidden",
+						padding: removeAndReturnPadding(td)
+					}
 				});
 				wrapper.data("row", row);
 				wrapper.data("column", column);
@@ -304,8 +302,8 @@
 
 
 
-//        elatime=new Date().getTime()-starttime;
-//        console.log('Wrapping: '+elatime);
+       elatime=new Date().getTime()-starttime;
+       console.log('Wrapping: '+elatime);
 
 
 
@@ -317,8 +315,6 @@
 			//put something in first cell to ensure height is ok.
 			emptyRow.append($('<td/>', {
 				css: {
-                    height: "38px",
-                    "line-height": "38px",
                     "overflow":"hidden",
 					color: colourBehindTable,
 					backgroundColor: colourBehindTable
@@ -342,8 +338,8 @@
 		}
 
 
-//        elatime=new Date().getTime()-starttime;
-//        console.log('Attach: '+elatime);
+       elatime=new Date().getTime()-starttime;
+       console.log('Attach: '+elatime);
 
 
 		//Now do the same for the fresh rows, for these we'll:
@@ -359,13 +355,11 @@
 				var wrapper = $('<div />', {
 					'class' : 'moveable',
 					css: {
-//						position: "relative",
-//                        height:"38px",
-//                        "line-height": "38px",
-//                        "overflow":"hidden",
-//						padding: removeAndReturnPadding(td),
-						backgroundColor: options.animationSettings.fresh.backgroundColor
-//						left: options.animationSettings.fresh.left
+						position: "relative",
+                        "overflow":"hidden",
+						padding: removeAndReturnPadding(td),
+						backgroundColor: options.animationSettings.fresh.backgroundColor,
+						left: options.animationSettings.fresh.left
 					}
 				});
 				//need to make the row unique so that it doesn't clash..
@@ -376,8 +370,8 @@
 		});
 
 
-//        elatime=new Date().getTime()-starttime;
-//        console.log('Wrap Fresh: '+elatime);
+       elatime=new Date().getTime()-starttime;
+       console.log('Wrap Fresh: '+elatime);
 
 
 		//Set up a simple animator chain as the AnimatorChain in animator.js seems to be buggy..
@@ -440,8 +434,8 @@
 
 
 
-//        elatime=new Date().getTime()-starttime;
-//        console.log('Begin Setup: '+elatime);
+       elatime=new Date().getTime()-starttime;
+       console.log('Begin Setup: '+elatime);
 
 
 		jOrigTable.find('div.moveable').each(function(i, wrapper){
@@ -553,8 +547,8 @@
 
 
 
-//        elatime=new Date().getTime()-starttime;
-//        console.log('Setup Animate: '+elatime);
+        elatime=new Date().getTime()-starttime;
+        console.log('Setup Animate: '+elatime);
 
 
 		//trigger the animation..
