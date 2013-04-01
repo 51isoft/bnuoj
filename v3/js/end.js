@@ -29,6 +29,10 @@ $(document).ready(function() {
         $("#logoutbar").show();
     }
 
+    /*** top height ***/
+    $("marquee").css("margin-top",$(".navbar-fixed-top").height()-72);
+    $("#marqueepos").css("height",$("marquee").height()+$(".navbar-fixed-top").height()-70);
+
     /*** dialogs ***/
 
 

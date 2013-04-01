@@ -108,6 +108,8 @@ if ($current_user->is_root()) {
         </div>
       </div>
     </div>
+    <marquee direction="left" behavior="alternate" scrollamount="2" style="position:absolute;width:100%;"><?=get_substitle()?></marquee>
+    <div id="marqueepos"></div>
 <script>
 //var currenttime = '<?=date("l, F j, Y H:i:s",time())?>';
 var currenttime = '<?=time()?>';
