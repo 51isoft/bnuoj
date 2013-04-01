@@ -283,6 +283,8 @@
 
 		//wrap table cell contents with a div..
 		$(origTBody.rows).each(function(row, tr){
+			// if (stayPut[row]) console.log(row);
+			if (stayPut[row]) return;
 			$.each(tr.cells, function(column, td){
 				var wrapper = $('<div/>', {
 					'class' : 'moveable',
