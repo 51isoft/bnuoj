@@ -12,7 +12,7 @@ function replay_to_second($str) {
 }
 
 function replay_add_contest() {
-    global $pnum,$_POST,$mcid,$db;
+    global $pnum,$_POST,$mcid,$db,$config;
     $sql="insert into contest (title,description,start_time,end_time,type,isvirtual) values ('".$_POST['name']."','".$_POST['description']."','".$_POST['start_time']."','".$_POST['end_time']."','99','".$_POST['isvirtual']."')";
     $db->query($sql);
     for ($i=0;$i<$pnum;$i++) {

@@ -114,7 +114,7 @@ if (!$show_problem->is_valid()||($show_problem->get_val("hide")==1&&!$current_us
   if ($show_problem->get_val("description")!="") {
 ?>
             <div class="content-wrapper well">
-<?= latex_content($show_problem->get_val("description"))."\n" ?>
+<?= latex_content(preg_replace('/<style[\s\S]*\/style>/', "", $show_problem->get_val("description")))."\n" ?>
                 <div style="clear:both"></div>
             </div>
 <?php

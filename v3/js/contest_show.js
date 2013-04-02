@@ -1,5 +1,5 @@
 var reftable;
-var cookiename=cookie_prefix+'cstandset_'+$.cookie('username')+'_'+getURLPara('cid');
+var cookiename=cookie_prefix+'cstandset_'+$.cookie(cookie_prefix+'username')+'_'+getURLPara('cid');
 
 function displaycountdown(){
     //cnt+=stp;

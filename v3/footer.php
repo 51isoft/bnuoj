@@ -23,6 +23,7 @@
               <option value="darkening">Darkening</option>
               <option value="original">Original</option>
               <option value="metro">Metro</option>
+              <option value="geo">Geo</option>
             </select>
           </label>
           <label class="checkbox"> <input type="checkbox" id="selwidth" <?= $_COOKIE[$config["cookie_prefix"]."fluid_width"]==true?"checked":"" ?> />Fluid Width?</label>
