@@ -202,11 +202,11 @@ $.extend( $.fn.dataTableExt.oPagination, {
 
 			$(nPaging).addClass('pagination').append(
 				'<div class="input-prepend input-append">' +
-				  '<button class="btn first disabled">&laquo; '+oLang.sFirst+'</button>' +
-				  '<button class="btn prev disabled">&larr; '+oLang.sPrevious+'</button>' +
+				  '<button class="btn first disabled">&laquo;<span class="hidden-phone"> '+oLang.sFirst+'</span></button>' +
+				  '<button class="btn prev disabled">&larr;<span class="hidden-phone"> '+oLang.sPrevious+'</span></button>' +
 				  '<input type="text" class="input-mini" id="appendedPrependedInput" style="text-align:center"><span class="add-on" id="totalp" val="0"> of 0</span>' +
-				  '<button class="btn next disabled">'+oLang.sNext+' &rarr; </button>' +
-				  '<button class="btn last disabled">'+oLang.sLast+' &raquo; </button>' +
+				  '<button class="btn next disabled"><span class="hidden-phone">'+oLang.sNext+' </span>&rarr; </button>' +
+				  '<button class="btn last disabled"><span class="hidden-phone">'+oLang.sLast+' </span>&raquo; </button>' +
 				'</div>'
 			);
 			var els = $('button', nPaging);

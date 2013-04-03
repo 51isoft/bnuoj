@@ -141,9 +141,9 @@ body {
     #flip-scroll thead { display: block; float: left; }
     #flip-scroll tbody { display: block; width: auto; position: relative; overflow-x: auto; white-space: nowrap; }
     #flip-scroll thead tr { display: block; }
-    #flip-scroll th { display: block; text-align: right; width: 100%; }
+    #flip-scroll th { display: block; text-align: right; width: 85% !important; }
     #flip-scroll tbody tr { display: inline-block; vertical-align: top; }
-    #flip-scroll td { display: block; min-height: 1.25em; text-align: left; }
+    #flip-scroll td { display: block; min-height: 1.4em; text-align: left; }
    
    
     /* sort out borders */
