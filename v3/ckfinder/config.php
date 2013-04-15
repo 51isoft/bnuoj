@@ -61,7 +61,7 @@ Examples:
 ATTENTION: The trailing slash is required.
 */
 include_once(dirname(__FILE__)."/../config.php");
-$baseUrl = $config["base_path"];
+$baseUrl = $config["base_path"]."/";
 
 /*
 $baseDir : the path to the local directory (in the server) which points to the

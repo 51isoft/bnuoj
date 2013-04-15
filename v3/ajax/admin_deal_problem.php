@@ -24,12 +24,11 @@ if ($current_user->is_root()) {
     $ignore_noc = convert_str($_POST['p_ignore_noc']);
     if($pid == ""){
         $sql_add_pro = "insert into problem (title,description,input,output,sample_in,sample_out,hint,source,hide,memory_limit,time_limit,special_judge_status,case_time_limit,basic_solver_value,number_of_testcase,vname,vid,ignore_noc,author) values ('$title','$description','$input','$output','$sample_in','$sample_out','$hint','$source','$hide','$memory_limit','$time_limit','$special_judge_status','$case_time_limit','$basic_solver_value','$noc', 'BNU', '$pid', '$ignore_noc','$author')";
-        $db->query($sql_add_pro);
     }
     else{
         $sql_add_pro = "update problem set title='$title',description='$description',input='$input',output='$output',sample_in='$sample_in',sample_out='$sample_out',hint='$hint',source='$source',hide='$hide',memory_limit='$memory_limit',time_limit='$time_limit',special_judge_status='$special_judge_status',case_time_limit='$case_time_limit',basic_solver_value='$basic_solver_value',number_of_testcase='$noc',ignore_noc='$ignore_noc',author='$author' where pid='$pid'";
     }
-    $db->query();
+    $db->query($sql_add_pro);
     $ret["code"]=0;
     if ($pid=='') {
         $currpid=$db->insert_id;

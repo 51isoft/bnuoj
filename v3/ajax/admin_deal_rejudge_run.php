@@ -32,6 +32,8 @@ list($vname)=$db->get_row("select vname from problem where pid='$pid'",ARRAY_N);
 
 $sql_r = "update status set result='Rejudging' where runid='$runid' ";
 $db->query($sql_r);
+$host=$config["contact"]["server"];
+$port=$config["contact"]["port"];
 $fp = fsockopen($host,$port,$errno, $errstr);
 if (!$fp) {
     $ret["msg"]="Message sent.";

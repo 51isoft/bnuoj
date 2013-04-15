@@ -50,7 +50,7 @@ if (!$show_problem->is_valid()||($show_problem->get_val("hide")==1&&!$current_us
   }
   if ($show_problem->get_val("hide")) {
 ?>
-              <b>This problem is hidden.</b>
+              <br /><b>This problem is hidden.</b>
 <?php
   }
 ?>

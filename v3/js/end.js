@@ -85,8 +85,10 @@ $(document).ready(function() {
 
     /**** basic configurations for ajax forms ***/
     $("form.ajform").ajaxForm({
-      beforeSubmit: function (formData, tform, options) {
+      beforeSerialize: function(tform, options) {
         tform.trigger("preprocess");
+      },
+      beforeSubmit: function (formData, tform, options) {
         $("input:submit,button:submit,.btn",tform).attr("disabled","disabled").addClass("disabled");
         $("#msgbox",tform).removeClass().addClass('alert').html('<img style="height:20px" src="img/ajax-loader.gif" /> Validating....').fadeIn(500);
         return true;
