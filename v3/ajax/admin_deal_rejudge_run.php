@@ -34,20 +34,26 @@ $sql_r = "update status set result='Rejudging' where runid='$runid' ";
 $db->query($sql_r);
 $host=$config["contact"]["server"];
 $port=$config["contact"]["port"];
-$fp = fsockopen($host,$port,$errno, $errstr);
+$fp = @fsockopen($host,$port,$errno, $errstr);
 if (!$fp) {
-    $ret["msg"]="Message sent.";
-    $ret["code"]=0;
+    $ret["msg"] = "Socket open error!";
+    echo json_encode($ret);
+    die();
 }
 else {
     if (!$ispretest) $msg=$config["contact"]["error_rejudge"]."\n".$runid."\n".$vname;
     else $msg=$config["contact"]["pretest"]."\n".$runid."\n".$vname;
-    if (fwrite($fp,$msg)===FALSE) {
-        $ret["msg"]="Message sent.";
-        $ret["code"]=0;
+    if (@fwrite($fp,$msg)===FALSE) {
+        $ret["msg"] = "Socket send error!";
+        echo json_encode($ret);
+        die();
     }
     fclose($fp);
 }
+
+
+$ret["msg"] = $runid." has been sent to Rejudge.";
+$ret["code"]=0;
 echo json_encode($ret);
 
 ?>

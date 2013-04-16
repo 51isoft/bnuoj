@@ -47,17 +47,22 @@ if ($current_user->is_root()) {
     $port=$config["contact"]["port"];
     $fp = fsockopen($host,$port,$errno, $errstr);
     if (!$fp) {
-        $ret["msg"]="Message sent.";
-        $ret["code"]=0;
+        $ret["msg"] = "Socket open error!";
+        echo json_encode($ret);
+        die();
     }
     else {
         $msg=$config["contact"]["rejudge"]."\n".$pid."\n".$cid."\n";
         if (fwrite($fp,$msg)===FALSE) {
-            $ret["msg"]="Message sent.";
-            $ret["code"]=0;
+            $ret["msg"] = "Socket send error!";
+            echo json_encode($ret);
+            die();
         }
         fclose($fp);
     }
+
+    $ret["msg"] = "PID: $pid of CID: $cid has been sent to rejudge.";
+    $ret["code"]=0;
 }
 else $ret["msg"]="Please login as root!";
 echo json_encode($ret);
