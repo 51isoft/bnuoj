@@ -115,7 +115,6 @@ else {
     }
     fclose($fp);
 }
-echo $cid;
 if ($cid=="0") $ret["msg"]="Transmitted.";
 else $ret["msg"]="Submitted.";
 $ret["code"]=0;

@@ -31,7 +31,7 @@ if ($current_user->is_root()&&contest_get_val($cid,"type")!=99) {
     $challenge_start_time=convert_str($_POST['challenge_start_time']);
     $challenge_end_time=convert_str($_POST['challenge_end_time']);
     $hide_others=convert_str($_POST['hide_others']);
-    $n = $$config["limits"]["problems_on_contest_add"];
+    $n = $config["limits"]["problems_on_contest_add"];
     for($i=0;$i<$n;$i++){
         $ccid[$i] = $cid;
         $pid[$i] = convert_str($_POST['pid'.$i]);
@@ -45,6 +45,7 @@ if ($current_user->is_root()&&contest_get_val($cid,"type")!=99) {
         $parad[$i] = convert_str($_POST['parad'.$i]);
         $parae[$i] = convert_str($_POST['parae'.$i]);
     }
+
     
     $stt=strtotime($start_time);
     $edt=strtotime($end_time);
