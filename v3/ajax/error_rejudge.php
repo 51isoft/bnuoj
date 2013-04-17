@@ -13,12 +13,6 @@ $ret["code"]=1;
 
 $sql="select pid,result,contest_belong,jnum from status where runid='$runid'";
 list($pid,$result,$cid,$jnum)=$db->get_row($sql,ARRAY_N);
-if ($EZSQL_ERROR) {
-    $ret["msg"] = "Unable to rejudge.";
-    echo json_encode($ret);
-    die();
-}
-
 
 if (!$current_user->is_root()&&$jnum+1>=$config["limits"]["max_error_rejudge_times"]) {
     $ret["msg"] = "Unable to rejudge. Already tried ".($jnum+1)." times.";
