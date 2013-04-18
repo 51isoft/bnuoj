@@ -19,7 +19,7 @@ function contest_get_virtual_running_list($start=0,$limit=10) {
 
 function contest_get_standard_scheduled_list($start=0,$limit=5) {
     global $db;
-    $sql="select cid,title,start_time,type from contest where start_time>now() and isvirtual=0 order by start_time limit $start,$limit";
+    $sql="select cid,title,start_time,type,end_time from contest where start_time>now() and isvirtual=0 order by start_time limit $start,$limit";
     $db->query($sql);
     foreach ((array) $db->get_results(null,ARRAY_A) as $row) {
         if ($row["type"]==1) $row["title"].=" [CF]";
