@@ -33,7 +33,6 @@ if ($current_user->is_root()&&contest_get_val($cid,"type")!=99) {
     $hide_others=convert_str($_POST['hide_others']);
     $n = $config["limits"]["problems_on_contest_add"];
     for($i=0;$i<$n;$i++){
-        $ccid[$i] = $cid;
         $pid[$i] = convert_str($_POST['pid'.$i]);
         $lable[$i] = convert_str($_POST['lable'.$i]);
         $ptype[$i] = convert_str($_POST['ptype'.$i]);
@@ -106,9 +105,9 @@ if ($current_user->is_root()&&contest_get_val($cid,"type")!=99) {
         }
         for($i=0;$i<$n;$i++){
             if($pid[$i] == "") continue;
-            if ($ctype==0) $sql= "insert into contest_problem (cid ,pid,lable) values ('".$ccid[$i]."','".$pid[$i]."','".$lable[$i]."')";
+            if ($ctype==0) $sql= "insert into contest_problem (cid ,pid,lable) values ('".$cid."','".$pid[$i]."','".$lable[$i]."')";
             else $sql = "insert into contest_problem (cid ,pid,lable,type,base,minp,para_a,para_b,para_c,para_d,para_e) values
-                ('".$ccid[$i]."','".$pid[$i]."','".$lable[$i]."','".$ptype[$i]."','".$base[$i]."','".$minp[$i]."','".$paraa[$i]."','".$parab[$i]."','".$parac[$i]."','".$parad[$i]."','".$parae[$i]."')";
+                ('".$cid."','".$pid[$i]."','".$lable[$i]."','".$ptype[$i]."','".$base[$i]."','".$minp[$i]."','".$paraa[$i]."','".$parab[$i]."','".$parac[$i]."','".$parad[$i]."','".$parae[$i]."')";
             $db->query($sql);
         }
         $cres=$db->query("select problem.title from contest_problem,problem where cid=".$cid." and contest_problem.pid=problem.pid");
