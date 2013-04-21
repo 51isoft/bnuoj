@@ -75,7 +75,7 @@ include_once("functions/users.php");
                   <li><a href="http://www.oiegg.com/forumdisplay.php?fid=407" target="_blank">BBS</a></li>
                   <li class="divider"></li>
                   <li><a href="recent_contest.php">Recent Contests</a></li>
-                  <li><a href="training_stat.php">Training Stats</a></li>
+                  <!--<li><a href="training_stat.php">Training Stats</a></li>-->
                   <li class="divider"></li>
                   <li class="disabled"><a>Coming Soon...</a></li>
                 </ul>
