@@ -32,7 +32,7 @@ if ($current_user->is_root()) {
         echo json_encode($ret);
         exit;
     }
-    else if($cid != ""){
+    if($cid != ""){
         if ($rac==0) $sql_r = "update status set result='Rejudging' where pid='$pid' and contest_belong='$cid' and result!='Accepted' ";
         else $sql_r = "update status set result='Rejudging' where pid='$pid' and contest_belong='$cid' ";
     }
