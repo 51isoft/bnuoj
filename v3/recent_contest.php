@@ -46,7 +46,7 @@ $(document).ready(function(){
     for (var i=0;i<data.length;i++) {
       $("#contestlist").dataTable().fnAddData( [
         data[i].oj,
-        "<a href='"+data[i].url+"' target='_blank'>"+data[i].name+"</a>",
+        "<a href='"+data[i].link+"' target='_blank'>"+data[i].name+"</a>",
         data[i].start_time,
         data[i].week,
         (data[i].access==""?"Public":data[i].access) ]
