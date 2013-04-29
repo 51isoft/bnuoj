@@ -1,8 +1,8 @@
 <?php
     include_once("config.php");
     include_once("cookie.php");
-    include_once('latexrender/latex.php');
-//    function latex_content($a) { return $a; }
+//    include_once('latexrender/latex.php');
+    function latex_content($a) { return $a; }
     function db_connect() {
             global $db_addr, $db_user, $db_pass, $db_table;
         $con = mysql_connect($db_addr,$db_user,$db_pass);

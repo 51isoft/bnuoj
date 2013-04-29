@@ -15,7 +15,7 @@
       if ($handle) {
           $i=0;
           while (($buffer = fgets($handle, 4096)) !== false) {
-              $buffer=trim(iconv("gbk","utf-8//translit",$buffer));
+//              $buffer=trim(iconv("gbk","utf-8//translit",$buffer));
               $i++;
               if ($i<10) $num="0".$i;
               else $num=$i;
