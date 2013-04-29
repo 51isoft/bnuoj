@@ -61,7 +61,7 @@
             </div>
             <div id="contesttab">
                 <form id='cload' method="get" action="#">
-                    Contest ID: <input type="text" id="ncid" /><br />
+                    Contest ID: <input type="text" id="ncid" />
                     <button type="submit"> Load </button>
                     <button type="button" onclick="resetcdetail()"> Reset </button>
                     <button type="button" id="clockp"> Lock Problem </button>
@@ -69,6 +69,8 @@
                     <button type="button" id="cshare"> Share Code </button>
                     <button type="button" id="cunshare"> Unshare Code </button>
                     <button type="button" id="ctestall"> Test All </button>
+                    <button type="button" id="clockb"> Lock Board </button>
+                    <button type="button" id="culockb"> Unlock Board </button>
                 </form>
                 <form method="post" action="" id="cdetail">
                     <table style="width:100%;">

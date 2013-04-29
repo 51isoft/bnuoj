@@ -33,18 +33,23 @@ $cidtype=array();
 if (db_contest_exist($cid))
 {
     $nowtime=time();
-    list($locktu,$sttimeu,$fitimeu,$cstarttimeu,$cendtimeu,$has_cha,$t,$allp) = @mysql_fetch_array(mysql_query("SELECT unix_timestamp(lock_board_time),unix_timestamp(start_time),unix_timestamp(end_time),unix_timestamp(challenge_start_time),unix_timestamp(challenge_end_time),has_cha,unix_timestamp(mboard_make),allp FROM contest WHERE cid = '$cid'"));
+    list($locktu,$sttimeu,$fitimeu,$cstarttimeu,$cendtimeu,$has_cha,$t,$allp,$flock) = @mysql_fetch_array(mysql_query("SELECT unix_timestamp(lock_board_time),unix_timestamp(start_time),unix_timestamp(end_time),unix_timestamp(challenge_start_time),unix_timestamp(challenge_end_time),has_cha,unix_timestamp(mboard_make),allp,force_lock FROM contest WHERE cid = '$cid'"));
     $targ = "standings/contest_standing_".$cid.".html";
     if (isset($_GET['passtime'])&&is_numeric($_GET['passtime'])&&db_contest_passed($cid)) {
         $tmptime=intval($_GET['passtime'])+$sttimeu;
         if ($tmptime<$nowtime) $nowtime=$tmptime;
     }
-    if ($has_cha==1&&$nowtime>$cendtimeu) $nowtime=$cendtimeu;
-    if ($has_cha==0&&$nowtime>$fitimeu) $nowtime=$fitimeu;
+    if ($has_cha==1&&$nowtime>$cendtimeu) {
+        if ($flock) $nowtime=$locktu;
+        else $nowtime=$cendtimeu;
+    }
+    if ($has_cha==0&&$nowtime>$fitimeu) {
+        if ($flock) $nowtime=$locktu;
+        else $nowtime=$fitimeu;
+    }
     if ($nowtime>$realnow) $nowtime=$realnow;
     $pastsec=$nowtime-$t;
     $needtime=$nowtime-$sttimeu;
-   // echo $nowtime." ".$sttime." ";
 
 //$srefresh=0;
 
@@ -62,12 +67,13 @@ if (db_contest_exist($cid))
 //        $sql_update = "update contest set mboard_make='$maketime' where cid = '$cid'";
 //        $que_update = mysql_query($sql_update);
 //$t=0;
+
         if ($locktu<$sttimeu||$nowtime>=$fitimeu) $locktu=$fitimeu;
         ob_start(); //打开缓冲区
 ?>
 
 <?php
-        if (db_contest_passed($cid)) {
+        if (db_contest_passed($cid)&&!$flock) {
 ?>
           <div class="slidediv" style="width:960px;margin:5px auto">
             <span class="passtime"><?php echo get_time($nowtime-$sttimeu,true); ?></span>
@@ -106,7 +112,7 @@ if (db_contest_exist($cid))
             echo "Contest Finished";
             $ccpassed=true;
         }
-        else if ($has_cha==0&&$realnow>$fitimeu) echo "Contest Finished";
+        else if ($has_cha==0&&($realnow>$fitimeu&&!$flock)) echo "Contest Finished";
         else if ($realnow>$locktu)  echo "Board Locked";
         else echo "Contest Running";
 ?>

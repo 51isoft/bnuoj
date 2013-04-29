@@ -154,6 +154,19 @@ $("#ctestall").click(function() {
     });
 });
 
+
+$("#clockb").click(function() {
+    $.get('admin_deal_lock_board.php?lock=1&cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
+        alert(data);
+    });
+});
+
+$("#culockb").click(function() {
+    $.get('admin_deal_lock_board.php?lock=0&cid='+$("#ncid").val()+"&rand="+Math.random(),function(data) {
+        alert(data);
+    });
+});
+
 $("#cdetail").submit(function() {
     $("button:submit",this).attr("disabled", true).addClass("ui-state-disabled");
     CKEDITOR.instances.treport.updateElement();
