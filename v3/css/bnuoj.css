@@ -75,6 +75,12 @@ body {
   }
 }
 
+@media only screen and (max-height: 500px) {
+  .modal-body{
+     max-height: 200px;
+  }
+}
+
 #statustable, #rank, #contestlist,#csettable, #maillist,#problist {
     table-layout: fixed;
 }

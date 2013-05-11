@@ -48,7 +48,7 @@ include_once('functions/problems.php');
 include_once('functions/users.php');
 include_once('functions/contests.php');
 $cid=convert_str($_GET['cid']);
-if (!contest_exist($cid)||($current_user->is_root()==false&&$current_user->match(contest_get_val($cid,"owner"))!=0)) {
+if (!contest_exist($cid)||($current_user->is_root()==false&&!$current_user->match(contest_get_val($cid,"owner")))) {
     echo "<h1>You are not allowed to view this page.</h1>";
     die();
 }
