@@ -25,14 +25,14 @@
 //            else $last=stripos($ori,"\"",$now);
 //            echo $ori[$last];
             $url=substr($ori,$now,$last-$now);
-            //echo $url;
+//            echo $url;
             //die();
 //            $url=substr($url,stripos($url,"data"));
 //            echo $url;
 //            die();
             file_put_contents("/var/www/contest/external/$cate/".$url, file_get_contents("http://livearchive.onlinejudge.org/external/$cate/".$url));
             $ori=substr($ori,0,$now)."external/$cate/".$url.substr($ori,$last);
-            //echo $ori;die();
+//            echo $ori;die();
             //$fp=fopen("/var/www/contest/".$url,"w+");
             //fclose($fp);
 
@@ -41,7 +41,7 @@
     }
     $from=$_GET['from'];
     $to=$_GET['to'];
-    if ($to-$from>10) {
+    if ($to-$from>100) {
         echo "Too many!\n".
         "</center>".
         "<br>";
@@ -113,115 +113,12 @@
             $mem_limit="131072";    
             $pos2=0;
             $content=file_get_contents("http://livearchive.onlinejudge.org/".$url);
-            $content=iconv("UTF-8","UTF-8//IGNORE",$content);
-//            echo $content;die();
-            if (stripos($content,"<h2>")===false) $mark=false;
-            else $mark=true;
-//            echo $mark;
-
-            $chr="<html>";
-            if ($mark) $pos1=0;
-            else $pos1=stripos($content,$chr,$pos2)+strlen($chr);
-            if ($mark) {
-                $pp=stripos($content,"Input<",$pos1);
-                $pos2=stripos($content,"<H2>",$pos1);
-                if ($pp<$pos2) $pos2=stripos($content,"<p><b><font",$pos1);
-            }
-            else $pos2=stripos($content,"<p><strong",$pos1);
-            $desc=substr($content,$pos1,$pos2-$pos1);
+            $desc=iconv("UTF-8","UTF-8//IGNORE",$content);
 //            echo "Desc: ".htmlspecialchars($desc)."<br>\n";die();
             $desc=pimage($desc,$cate);
 //            echo "Desc: ".htmlspecialchars($desc)."<br>\n";die();
             $desc="<p><a href='$pdflink' class='bottom_link'>[PDF Link]</a></p>".$desc;
 
-            if ($mark) $chr="Input<";
-            else $chr="<strong>Input</strong>";
-            if (stripos($content,$chr,$pos2)!==false) {
-                if ($mark) $chr="\n<p>";
-                else $chr="</strong></p>";
-                $pos1=stripos($content,$chr,$pos2);
-                if ($mark) {
-                    $pp=stripos($content,"Output<",$pos1);
-                    $pos2=stripos($content,"<H2>",$pos1);
-                    if ($pp<$pos2) $pos2=stripos($content,"<p><b><font",$pos1);
-                }
-                else $pos2=stripos($content,"<p><strong>",$pos1);
-                $inp=substr($content,$pos1,$pos2-$pos1);
-                //echo "Input: ".htmlspecialchars($inp)."<br>\n";
-                $inp=pimage($inp,$cate);
-            }
-            else $inp="";
-//            echo "Input: ".htmlspecialchars($inp)."<br>\n";die();
-
-            if ($mark) $chr="Output<";
-            else $chr="<strong>Output</strong>";
-            if (stripos($content,$chr,$pos2)!==false) {
-                if ($mark) $chr="</font>";
-                else $chr="</strong></p>";
-                $pos1=stripos($content,$chr,$pos2);
-                if ($mark) {
-                    $pp=stripos($content,"Input<",$pos1);
-                    $pos2=stripos($content,"<H2>",$pos1);
-                    if ($pp<$pos2) $pos2=stripos($content,"<p><b><font",$pos1);
-                }
-                else $pos2=stripos($content,"<p><strong>",$pos1);
-                $oup=substr($content,$pos1,$pos2-$pos1);
-                //echo "Output: ".htmlspecialchars($oup)."<br>\n";
-                $oup=pimage($oup,$cate);
-            }
-            else $oup="";
-//            echo "Output: ".htmlspecialchars($oup)."<br>\n";die();
-
-            if ($mark) $chr="Input<";
-            else $chr="<strong>Sample Input</strong>";
-            if (stripos($content,$chr,$pos2)!==false) {
-                $chr="<pre>";
-                $pos1=stripos($content,$chr,$pos2)+strlen($chr);
-                $pos2=stripos($content,"</pre>",$pos1);
-                $sin=substr($content,$pos1,$pos2-$pos1);
-                //echo "Output: ".htmlspecialchars($oup)."<br>\n";
-   //             echo "Sample In: <pre>".$sin."</pre><br>\n";die();
-            }
-            else $sin="";
-
-            if ($mark) $chr="Output<";
-            else $chr="<strong>Sample Output</strong>";
-
-            if (stripos($content,$chr,$pos2)!==false) {
-                $chr="<pre>";
-                $pos1=stripos($content,$chr,$pos2)+strlen($chr);
-                $pos2=stripos($content,"</pre>",$pos1);
-                if ($pos2===false) $pos2=strlen($content);
-                $sout=substr($content,$pos1,$pos2-$pos1);
-                //echo "Output: ".htmlspecialchars($oup)."<br>\n";
-//                echo "Sample Out: <pre>".$sout."</pre><br>\n";die();
-            }
-            else $sout="";
-/*
-            $chr="<i>Hint</i></div>";
-            if (strpos($content,$chr,$pos2)!==false) {
-                $pos1=strpos($content,$chr,$pos2)+strlen($chr);
-                $pos2=strpos($content,"</div><i style='font-size:1px'>",$pos1);
-                $hint=substr($content,$pos1,$pos2-$pos1);
-            }
-            else $hint="";
-            $hint=pimage($hint);
-//            echo "Hint: ".htmlspecialchars($hint)."<br>\n";die();
-
-            $chr="<div class=panel_title align=left>Source</div> ";
-            if (strpos($content,$chr,$pos2)!==false) {
-                $pos1=strpos($content,$chr,$pos2)+strlen($chr);
-                $pos2=strpos($content,"<div class=panel_bottom>&nbsp;</div>",$pos1);
-                //echo $pos1." ".$pos2;
-                $source=trim(strip_tags(substr($content,$pos1,$pos2-$pos1)));
-                //echo "Output: ".htmlspecialchars($oup)."<br>\n";
-                //echo "Source: <pre>".$source."</pre><br>\n";die();
-            }
-            else $source="";
-            
-            if (strpos($content,"<font color=red>Special Judge</font>",0)!==false) $spj=1;
-            else $spj=0;
-*/
             $hint="";
             $source="";
             $spj=0;

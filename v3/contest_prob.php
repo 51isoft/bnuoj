@@ -124,7 +124,7 @@ if (!contest_started($cid)||!(contest_get_val($cid,"isprivate")==0||
             <pre class="content-wrapper"><?=$sin?></pre>
 <?php
       }
-      else echo '<div class="content-wrapper well">'.$sin.'</div>';
+      else echo '<div class="content-wrapper well">'.$sin."</div>\n";
     }
     if ($show_problem->get_val("sample_out")!="") {
       $sout=$show_problem->get_val("sample_out");
@@ -136,7 +136,7 @@ if (!contest_started($cid)||!(contest_get_val($cid,"isprivate")==0||
             <pre class="content-wrapper"><?=$sout?></pre>
 <?php
       }
-      else echo '<div class="content-wrapper well">'.$sout.'</div>';
+      else echo '<div class="content-wrapper well">'.$sout."</div>\n";
     }
     if (trim(strip_tags($show_problem->get_val("hint")))!=""||strlen($show_problem->get_val("hint"))>50) {
 ?>

@@ -82,7 +82,7 @@ function mkdirs($path, $mode = 0755) //creates directory tree recursively
 
     $from=$_GET['from'];
     $to=$_GET['to'];
-    if ($to-$from>10) {
+    if ($to-$from>100) {
         echo "Too many!\n".
         "</center>".
         "<br>";

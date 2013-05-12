@@ -4,7 +4,7 @@ include("simple_html_dom.php");
 ?>
 <center>
 <?php
-for ($i=1;$i<36;$i++) {
+for ($i=1;$i<37;$i++) {
     $html=file_get_html("http://acm.hdu.edu.cn/listproblem.php?vol=$i");
     $table=$html->find("table",4);
     $txt=explode(";",$table->find("script",0)->innertext);

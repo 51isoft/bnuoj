@@ -58,6 +58,7 @@ $config["status"]["max_refresh_times"]          =   5;
 $config["OJcode"]                               =   "BNU";
 $config["base_url"]                             =   "http://localhost/bnuoj/v3/";
 $config["base_path"]                            =   "/bnuoj/v3";
+$config["base_local_path"]                      =   "/Library/WebServer/Documents/bnuoj/v3/";
 $config["local_timezone"]                       =   "Asia/Shanghai";
 $config["salt_problem_in_contest"]              =   "[-,-]";
 $config["database_debug"]                       =   false;

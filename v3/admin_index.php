@@ -14,9 +14,6 @@ CKFinder::SetupCKEditor( $ckeditor,'ckfinder/' ) ;
 if ($current_user->is_root()) {
 ?>
           <h1>Admin Page</h1>
-          <p>
-            Current Server Time: <span id="servertime"><?=date("Y-m-d H:i:s") ?></span>
-          </p>
           <ul class="nav nav-tabs" id="admintab">
             <li class="active"><a href="#notificationtab" data-toggle="tab">Notification</a></li>
             <li><a href="#problemtab" data-toggle="tab">Problem</a></li>
@@ -24,6 +21,7 @@ if ($current_user->is_root()) {
             <li><a href="#rejudgetab" data-toggle="tab">Rejudge</a></li>
             <li><a href="#replaytab" data-toggle="tab">Replay</a></li>
             <li><a href="#newstab" data-toggle="tab">News</a></li>
+            <li><a href="#pcrawlertab" data-toggle="tab">Problem Crawler</a></li>
             <li><a href="#othertab" data-toggle="tab">Others</a></li>
           </ul>
           <div class="tab-content">
@@ -190,7 +188,7 @@ if ($current_user->is_root()) {
   }
 ?>
                     </table>
-                    <h4>Add User For Contest (Seperate them by '|')</h4>
+                    <h4>Add User For Contest (Seperate them by characters other than [A-Z0-9a-z_-] )</h4>
                     <textarea name="names" class="input-block-level" rows="8"></textarea>
                     <div class="pull-right" style="margin-top:10px">
                       <button class="btn btn-primary" type="submit">Submit</button>
@@ -366,7 +364,7 @@ if ($current_user->is_root()) {
                       <p><b>Fill in order. Leave Problem ID blank if not exists.</b></p>
                       <table style="width:100%" class="table table-bordered table-condensed">
 <?php
-      for($i=0;$i<$nn;$i++){
+  for($i=0;$i<$nn;$i++){
 ?>
                         <tr>
                             <td>Problem <?=chr($i+65) ?><input type="hidden" name="lable<?=$i?>" value="<?=chr($i+65) ?>" /></td>
@@ -378,7 +376,7 @@ if ($current_user->is_root()) {
                             </td>
                         </tr>
 <?php
-      }
+  }
 ?>
                     </table>
                     <div class="pull-right">
@@ -407,24 +405,80 @@ if ($current_user->is_root()) {
                 <br />
             </div>
             <div id="othertab" class="tab-pane">
-                <button style="button" id="spinfo" class="btn btn-danger syncbutton">Sync Problem Info</button>
-                <button style="button" id="suinfo" class="btn btn-danger syncbutton">Sync User Info</button>
+                <button id="spinfo" class="btn btn-danger syncbutton">Sync Problem Info</button>
+                <button id="suinfo" class="btn btn-danger syncbutton">Sync User Info</button>
                 <div class="alert alert-block" id="syncwait" style="display:none"></div>
+            </div>
+            <div id="pcrawlertab" class="tab-pane">
+              <h4>Crawl a single problem/contest</h4>
+              <form id='pcbasic' method="get" action="ajax/admin_deal_crawl_problem.php?type=0" class="ajform form-inline">
+                <label>
+                  OJ: 
+                  <select class="input-medium" name="pcoj">
+<?php
+  foreach (get_all_vnames() as $value) {
+?>
+                    <option value="<?=$value?>"><?=$value?></option>
+<?php
+  }
+?>
+                  </select>
+                </label>
+                <input type="text" name="pcid" placeholder="Problem/Contest    ID/Code" />
+                <button type="submit" id="spinfo" class="btn btn-primary">Crawl!</button>
+                <div id="msgbox" style="display:none;clear:both"></div>
+              </form>
+              <h4>Crawl problems/contests in range</h4>
+              <form id='pcrange' method="get" action="ajax/admin_deal_crawl_problem.php?type=1" class="ajform form-inline">
+                <label>
+                  OJ: 
+                  <select class="input-medium" name="pcoj">
+<?php
+  foreach (get_all_vnames() as $value) {
+?>
+                    <option value="<?=$value?>"><?=$value?></option>
+<?php
+  }
+?>
+                  </select>
+                </label>
+                <label>From: <input type="text" name="pcidfrom" placeholder="Problem/Contest    ID/Code" /></label>
+                <label>To: <input type="text" name="pcidto" placeholder="Problem/Contest    ID/Code" /></label>
+                <button type="submit" id="spinfo" class="btn btn-primary">Crawl!</button>
+                <div id="msgbox" style="display:none;clear:both"></div>
+              </form>
+              <h4>Crawl problem stats</h4>
+              <form id='pcnum' method="get" action="ajax/admin_deal_crawl_problem.php?type=2" class="ajform form-inline">
+                <label>
+                  OJ: 
+                  <select class="input-medium" name="pcoj">
+<?php
+  foreach (get_all_vnames() as $value) {
+?>
+                    <option value="<?=$value?>"><?=$value?></option>
+<?php
+  }
+?>
+                  </select>
+                </label>
+                <button type="submit" id="spinfo" class="btn btn-primary">Crawl!</button>
+                <div id="msgbox" style="display:none;clear:both"></div>
+              </form>
             </div>
           </div>
 <?php
-    $ckeditor->replace('tdescription');
-    $ckeditor->replace('tinput');
-    $ckeditor->replace('toutput');
-    $ckeditor->replace('thint');
-    $ckeditor->replace('treport');
-    $ckeditor->replace('tncontent');
-  }
-  else {
+  $ckeditor->replace('tdescription');
+  $ckeditor->replace('tinput');
+  $ckeditor->replace('toutput');
+  $ckeditor->replace('thint');
+  $ckeditor->replace('treport');
+  $ckeditor->replace('tncontent');
+}
+else {
 ?>
           <div class='error'>Invalid Request!</div>
 <?php
-  }
+}
 ?>
         </div>
 <script type="text/javascript" src="js/admin.js?<?=filemtime("js/admin.js")?>" ></script>

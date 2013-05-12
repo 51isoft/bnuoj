@@ -86,7 +86,7 @@ function mkdirs($path, $mode = 0755) //creates directory tree recursively
 
     $from=$_GET['from'];
     $to=$_GET['to'];
-    if ($to-$from>10) {
+    if ($to-$from>100) {
         echo "Too many!\n".
         "</center>".
         "<br>";
@@ -108,7 +108,7 @@ function mkdirs($path, $mode = 0755) //creates directory tree recursively
             echo "NBUT $pid Already Exist, pid:$num.<br>\n";
             //continue;
         }
-        $url="http://cdn.ac.nbutoj.com/Problem/view.xhtml?id=$pid";
+        $url="http://ac.nbutoj.com/Problem/view.xhtml?id=$pid";
         $content=file_get_contents($url);
         //echo htmlspecialchars($content);die();
         if (strpos($content,"<h3>[] </h3>")===false) {

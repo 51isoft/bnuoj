@@ -52,7 +52,7 @@ if (contest_exist($cid)&&(contest_get_val($cid,"isprivate")==0||
 <?php
         }
     }else {
-        if (!contest_started($cid)&&($current_user->is_root()||$current_user->match(contest_get_val($cid,"owner")))) {
+        if (!contest_passed($cid)&&($current_user->is_root()||$current_user->match(contest_get_val($cid,"owner")))) {
 ?>
             <a href="contest_edit.php?cid=<?=$cid ?>" class="btn btn-info">Edit</a>
 <?php

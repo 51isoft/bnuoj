@@ -7,7 +7,7 @@ $cid=convert_str($_GET['cid']);
 ?>
         <div class="span12">
 <?php
-if (contest_exist($cid)&&contest_started($cid)==false&&($current_user->is_root()||$current_user->match(contest_get_val($cid,"owner")))) {
+if (contest_exist($cid)&&!contest_passed($cid)&&($current_user->is_root()||$current_user->match(contest_get_val($cid,"owner")))) {
 ?>
           <div class='well' style="color:blue;display:none;">
             In CF, Parameter A represents the points lost per minute. Parameter B represents the points lost for each incorrect submit.<br />
@@ -23,8 +23,17 @@ if (contest_exist($cid)&&contest_started($cid)==false&&($current_user->is_root()
                         <tr><th>Contest Information</th></tr>
 
                         <tr><td><input type="text" name="title" value="<?=contest_get_val($cid,"title") ?>" class="input-block-level" placeholder="Contest Title *" /></td></tr>
+<?php
+if (!contest_started($cid)) {
+?>
                         <tr><td>Type: <label class="radio inline"><input type="radio" name="ctype" value="0" <?=contest_get_val($cid,"type")==0?'checked="checked"':'' ?> /> ICPC format</label><label class="radio inline"><input type="radio" name="ctype" value="1" <?=contest_get_val($cid,"type")==1?'checked="checked"':'' ?> /> CF format</label> </td></tr>
+<?php
+}
+?>
                         <tr><td><textarea name="description" rows="8" class="input-block-level" placeholder="Contest Description"><?=htmlspecialchars(contest_get_val($cid,"description")) ?></textarea></td></tr>
+<?php
+if (!contest_started($cid)) {
+?>
                         <tr><td><div class="input-append input-prepend date datepick"><span class="add-on">Start Time* : </span><input id="prependedInput" type="text" name="start_time" value='<?=contest_get_val($cid,"start_time") ?>'/><span class="add-on"><i class="icon-th"></i></span></div></td></tr>
                         <tr><td>( At least after 10 minutes )</td></tr>
                         <tr><td><div class="input-append input-prepend date datepick"><span class="add-on">End Time* : </span><input id="prependedInput" type="text" name="end_time" value='<?=contest_get_val($cid,"end_time") ?>'/><span class="add-on"><i class="icon-th"></i></span></div></td></tr>
@@ -34,14 +43,18 @@ if (contest_exist($cid)&&contest_started($cid)==false&&($current_user->is_root()
                         <tr><td><label class="radio inline"><input type="radio" name="localtime" value="1" />Use local timezone</label><label class="radio inline"><input type="radio" name="localtime" value="0" checked="checked" /> Use server timezone</label></td></tr>
                         <tr><td>Your timezone: <span id="localtz"></span><input name="localtz" type="hidden" id="tzinp" /></td></tr>
                         <tr><td><label class="radio inline"><input type="radio" name="hide_others" value="1" <?=contest_get_val($cid,"hide_others")==1?'checked="checked"':'' ?> /> Hide others' status</label><label class="radio inline"><input type="radio" name="hide_others" value="0" <?=contest_get_val($cid,"hide_others")==0?'checked="checked"':'' ?> />  Show others' status</label></td></tr>
+<?php
+}
+?>
                         <tr><td><div class="input-prepend"><span class="add-on">Password: </span><input type="password" name="password" /></div></td></tr>
                         <tr><td>( Leave it blank if not needed )</td></tr>
                     </table>
                 </div>
 
 <?php
-$ccrow=(array)contest_get_problem_basic($cid);
-$nn = $config["limits"]["problems_on_contest_add"];
+if (!contest_started($cid)) {
+    $ccrow=(array)contest_get_problem_basic($cid);
+    $nn = $config["limits"]["problems_on_contest_add"];
 ?>
                 <div class='span6'>
                     <table style="width:100%">
@@ -85,6 +98,9 @@ $nn = $config["limits"]["problems_on_contest_add"];
                     </table>
                 </div>
             </div>
+<?php
+}
+?>
             <div style='clear:both;'>
                 <input class="btn btn-primary" type="submit" name="Submit" value="Submit" />
                 <span id="msgbox"></span>

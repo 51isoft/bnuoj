@@ -40,7 +40,7 @@
     }
     $from=$_GET['from'];
     $to=$_GET['to'];
-    if ($to-$from>10) {
+    if ($to-$from>50) {
         echo "Too many!\n".
         "</center>".
         "<br>";
@@ -73,7 +73,7 @@
             $title=substr($content,$pos1,$pos2-$pos1);
 //            echo "Title: ".$title."<br>\n";die();
 
-            $chr="000/";
+            $chr="00/";
             $pos1=strpos($content,$chr,$pos2)+strlen($chr);
             $pos2=strpos($content," MS ",$pos1);
             $time_limit=substr($content,$pos1,$pos2-$pos1);

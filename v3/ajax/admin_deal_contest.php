@@ -117,26 +117,17 @@ if ($current_user->is_root()&&contest_get_val($cid,"type")!=99) {
         }
         sort($str);
         $db->query("update contest set allp='".md5(implode($str,$config["salt_problem_in_contest"]))."' where cid=".$cid);
-        $names = convert_str($_POST['names']);
-        $len=strlen($names);
-        $st=$fi=0;
-        if ($len>0) {
-            while ($fi<=$len) {
-                if ($names[$fi]=='|'||$fi==$len) {
-                    $tmp=substr($names,$st,$fi-$st);
-                    if (!user_exist($tmp)) {
-                        $ret["msg"].="No such user $tmp.<br />";
-                    }
-                    else if (contest_has_user($cid,$tmp)) {
-                        $ret["msg"].="User $tmp already in contest $cid.<br />";
-                    }
-                    else {
-                        $que="insert into contest_user set cid=$cid, username='$tmp'";
-                        $db->query($que);
-                    }
-                    $st=$fi+1;
-                }
-                $fi++;
+        $names = preg_split("/[^A-Z0-9a-z_-]+/",$_POST["names"]);
+        foreach ($names as $tmp) {
+            if (!user_exist($tmp)) {
+                $ret["msg"].="No such user $tmp.<br />";
+            }
+            else if (contest_has_user($cid,$tmp)) {
+                $ret["msg"].="User $tmp already in contest $cid.<br />";
+            }
+            else {
+                $que="insert into contest_user set cid=$cid, username='$tmp'";
+                $db->query($que);
             }
         }
     }

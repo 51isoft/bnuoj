@@ -119,6 +119,14 @@ function get_ip() {
     return $ip;
 }
 
+function get_all_vnames() {
+    global $db;
+    $sql="select name from ojinfo where name not like 'BNU'";
+    $result=array();
+    foreach ((array)$db->get_results($sql,ARRAY_N) as $value) $result[]=$value[0];
+    return $result;
+}
+
 function get_substitle() {
     global $db;
     $substitle=$db->get_row("select substitle from config",ARRAY_N);
@@ -157,5 +165,18 @@ function set_cookies($username,$password,$time=0) {
     setcookie($config["cookie_prefix"]."username",$username,$time,$config["base_path"]);
     setcookie($config["cookie_prefix"]."password",$password,$time,$config["base_path"]);
 }
+
+function mkdirs($path, $mode = 0755) { //creates directory tree recursively 
+    $dirs = explode('/',$path);
+    $pos = strrpos($path, ".");
+    if ($pos === false) $subamount=0;
+    else $subamount=1;
+    for ($c=0;$c < count($dirs) - $subamount; $c++) {
+        $thispath="";
+        for ($cc=0; $cc <= $c; $cc++) $thispath.=$dirs[$cc].'/';
+        if (!file_exists($thispath)) mkdir($thispath,$mode);
+    }
+}
+
 
 ?>

@@ -20,15 +20,7 @@ function gettime() {
 }
 
 $(document).ready(function() {
-    if ($.cookie(cookie_prefix+"username")==null||$.cookie(cookie_prefix+"password")==null||$.cookie(cookie_prefix+"username")==""||$.cookie(cookie_prefix+"password")==""||$.cookie(cookie_prefix+"username")=="deleted"||$.cookie(cookie_prefix+"password")=="deleted") {
-        $("#logoutbar").hide();
-        $("#loginbar").show();
-    }
-    else {
-        $("#loginbar").hide();
-        $("#logoutbar").show();
-    }
-
+     
     /*** top height ***/
     $("marquee").css("margin-top",$(".navbar-fixed-top").height()-72);
     $("#marqueepos").css("height",$("marquee").height()+$(".navbar-fixed-top").height()-70);
@@ -101,6 +93,7 @@ $(document).ready(function() {
                 form.trigger("correct");
             });
           });
+          $("input:submit,button:submit,.btn",form).removeAttr("disabled").removeClass("disabled");
         }
         else {
           $("#msgbox",form).fadeTo(100,0.1,function() {

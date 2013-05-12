@@ -88,7 +88,7 @@ if (!$show_problem->is_valid()||($show_problem->get_val("hide")==1&&!$current_us
 ?>
             <div class="functions tcenter">
               <form method="post" id="tagform" class="form-inline">
-                <input type="hidden" name="tagpid" value="<?php echo $pid; ?>" />
+                <input type="hidden" name="tagpid" value="<?= $pid ?>" />
                 Type: <select class="input-xxlarge" name='utags' id="utags">
 <option value="0">None</option>
 <?php
@@ -147,7 +147,7 @@ if (!$show_problem->is_valid()||($show_problem->get_val("hide")==1&&!$current_us
             <pre class="content-wrapper"><?=$sin?></pre>
 <?php
     }
-    else echo '<div class="content-wrapper well">'.$sin.'</div>';
+    else echo '<div class="content-wrapper well">'.$sin."</div>\n";
   }
   if ($show_problem->get_val("sample_out")!="") {
     $sout=$show_problem->get_val("sample_out");
@@ -159,7 +159,7 @@ if (!$show_problem->is_valid()||($show_problem->get_val("hide")==1&&!$current_us
             <pre class="content-wrapper"><?=$sout?></pre>
 <?php
     }
-    else echo '<div class="content-wrapper well">'.$sout.'</div>';
+    else echo '<div class="content-wrapper well">'.$sout."</div>\n";
   }
   if (trim(strip_tags($show_problem->get_val("hint")))!=""||strlen($show_problem->get_val("hint"))>50) {
 ?>

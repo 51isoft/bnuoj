@@ -49,8 +49,10 @@ function mkdirs($path, $mode = 0755) //creates directory tree recursively
 //            }
 //            else $last=stripos($ori,"\"",$now);
 //            echo $ori[$last];
+
+
             $url=substr($ori,$now,$last-$now);
-            if (strpos($url,"http://")===false) $url="http://www.spoj.pl/".$url;
+            if (stripos($url,"http://")===false&&stripos($url,"https://")===false) $url="http://www.spoj.com/".$url;
             $name=basename($url);
             $name='images/spoj/'.strtr($name,":","_");
             //echo $name;
@@ -88,13 +90,14 @@ function mkdirs($path, $mode = 0755) //creates directory tree recursively
             echo "SPOJ $pid Already Exist, pid:$num.<br>\n";
             //continue;
         }
-        $url="http://www.spoj.pl/problems/$pid/";
+        $url="http://www.spoj.com/problems/$pid/";
         $content=file_get_contents($url);
         $content=iconv("iso-8859-2","UTF-8//IGNORE",$content);
         if (stripos($content,"was not found on this server.")===false) {
             $chr="<p align=\"justify\">";
             $pos1=stripos($content,$chr)+strlen($chr);
             $pos2=stripos($content,"<script type=\"text/javascript\"><!--",$pos1);
+            if ($pos2===false) $pos2=stripos($content,"<hr>",$pos1);
             $desc=substr($content,$pos1,$pos2-$pos1);
             //echo "Description: <br>".nl2br(htmlspecialchars($desc))."\n";die();
 

@@ -81,10 +81,16 @@ include_once("functions/users.php");
                 </ul>
               </li>
             </ul>
+<?php
+if (!$current_user->is_valid()) {
+?>
             <ul id="loginbar" class="nav pull-right">
               <li id="loginbutton"><a href="#" id="login">Login</a></li>
               <li id="register"><a href="#" class="toregister">Register</a></li>
             </ul>
+<?php
+} else {
+?>
             <ul id="logoutbar" class="nav pull-right">
               <li class="dropdown" id="userspace">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="userinfo.php?name=<?=$nowuser?>" id="displayname"><?=$nowuser.($current_user->get_unread_mail_count()>0?"<b style='color:#F00'>(".$current_user->get_unread_mail_count().")</b>":"")?> <b class="caret"></b></a>
@@ -93,16 +99,19 @@ include_once("functions/users.php");
                   <li><a href="#" id="modify">Modify My Information</a></li>
                   <li><a href="mail.php" id="mail">Mail<?=($current_user->get_unread_mail_count()>0?"<b style='color:#F00'>(".$current_user->get_unread_mail_count().")</b>":"")?></a></li>
 <?php
-if ($current_user->is_root()) {
+  if ($current_user->is_root()) {
 ?>
                   <li><a href="admin_index.php" id="admin">Administration</a></li>
 <?php
-}
+  }
 ?>
                   <li id="logoutbutton"><a href="#" id="logout">Logout</a></li>
                 </ul>
               </li>
             </ul>
+<?php
+}
+?>
             <p class="pull-right navbar-text"><span id="servertime"><?=date("Y-m-d H:i:s")?></span>&nbsp;</p>
           </div><!--/.nav-collapse -->
         </div>
