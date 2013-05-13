@@ -10,6 +10,7 @@ if (!$current_user->is_root()) {
 
 if ($_GET["pcoj"]=="CodeForces") $func="pcrawler_cf";
 else if ($_GET["pcoj"]=="FZU") $func="pcrawler_fzu";
+else if ($_GET["pcoj"]=="HDU") $func="pcrawler_hdu";
 else {
     $ret["msg"]="Invalid OJ!";
     die(json_encode($ret));

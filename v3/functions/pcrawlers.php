@@ -193,4 +193,56 @@ function pcrawler_fzu_num() {
     return "Done";
 }
 
+function pcrawler_hdu($pid) {
+    $url="http://acm.hdu.edu.cn/showproblem.php?pid=$pid";
+    $content=file_get_contents($url);
+    $content=iconv("gbk","UTF-8//IGNORE",$content);
+    $ret=array();
+
+    if (stripos($content,"No such problem - <strong>Problem")===false) {
+        if (preg_match("/<h1 style='color:#1A5CC8'>(.*)<\\/h1>/sU", $content,$matches)) $ret["title"]=trim($matches[1]);
+        if (preg_match("/Time Limit:.*\\/(.*) MS/sU", $content,$matches)) $ret["time_limit"]=intval(trim($matches[1]));
+        $ret["case_time_limit"]=$ret["time_limit"];
+        if (preg_match("/Memory Limit:.*\\/(.*) K/sU", $content,$matches)) $ret["memory_limit"]=intval(trim($matches[1]));
+        if (preg_match("/Problem Description.*<div class=panel_content>(.*)<\\/div><div class=panel_bottom>/sU", $content,$matches)) $ret["description"]=trim($matches[1]);
+        if (preg_match("/<div class=panel_title align=left>Input.*<div class=panel_content>(.*)<\\/div><div class=panel_bottom>/sU", $content,$matches)) $ret["input"]=trim($matches[1]);
+        if (preg_match("/<div class=panel_title align=left>Output.*<div class=panel_content>(.*)<\\/div><div class=panel_bottom>/sU", $content,$matches)) $ret["output"]=trim($matches[1]);
+        if (preg_match("/<pre><div.*>(.*)<\\/div><\\/pre>/sU", $content,$matches)) $ret["sample_in"]=trim($matches[1]);
+        if ($ret["sample_in"]=="") {
+            if (preg_match("/<pre><div.*>(.*)<div|<pre><div.*>(.*)<\\/div><\\/pre>/sU", $content,$matches)) $ret["sample_out"]=trim($matches[1]);
+        }
+        else if (preg_match("/<\\/pre>.*<pre><div.*>(.*)<div|<\\/pre>.*<pre><div.*>(.*)<\\/div><\\/pre>/sU", $content,$matches)) $ret["sample_out"]=trim($matches[1]);
+        if (preg_match("/<i>Hint<\\/i><\\/div>(.*)<\\/div><i style='font-size:1px'>/sU", $content,$matches)) $ret["hint"]=trim($matches[1]);
+        if (preg_match("/<div class=panel_title align=left>Source<\\/div> (.*)<div class=panel_bottom>/sU", $content,$matches)) $ret["source"]=trim(strip_tags($matches[1]));
+        if (strpos($content,"<font color=red>Special Judge</font>")!==false) $ret["special_judge_status"]=1;
+        else $ret["special_judge_status"]=0;
+
+        $ret=pcrawler_process_info($ret,"hdu","http://acm.hdu.edu.cn/");
+        $id=pcrawler_insert_problem($ret,"HDU",$pid);
+        return "HDU $pid has been crawled as $id.<br>";
+    }
+    else return "No problem called HDU $pid.<br>";
+}
+
+function pcrawler_hdu_num() {
+    global $db;
+    $i=1;
+    while (true) {
+        $html=file_get_html("http://acm.hdu.edu.cn/listproblem.php?vol=$i");
+        $table=$html->find("table",4);
+        $txt=explode(";",$table->find("script",0)->innertext);
+        if (sizeof($txt)<2) break;
+        foreach ($txt as $one) {
+            $det=explode(",",$one);
+            $pid=$det[1];
+            $acnum=$det[sizeof($det)-2];
+            $totnum=substr($det[sizeof($det)-1],0,-1);
+            $db->query("update problem set vacnum='$acnum', vtotalnum='$totnum' where vname='HDU' and vid='$pid'");
+        }
+        $i++;
+    }
+
+    return "Done";
+}
+
 ?>

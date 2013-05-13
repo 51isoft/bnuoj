@@ -1,6 +1,13 @@
 var refr;
 var rtimes=0;
 
+var showname=getURLPara('showname');
+var showpid=getURLPara('showpid');
+var showres=getURLPara('showres');
+var showlang=getURLPara('showlang');
+var showpage=getURLPara('showpage');
+if (showpage==null) showpage=1;
+
 var ceclick=function() {
     var runid=$(this).attr("runid");
     $("#statusdialog #dtitle").text("Compile Info of Run "+runid);
@@ -85,6 +92,8 @@ $(document).ready(function() {
     var oTable = $('#statustable').dataTable( {
         "bProcessing": true,
         "bServerSide": true,
+        "bStateSave": true,
+        "sCookiePrefix": cookie_prefix,
         "sDom": '<"row-fluid"p>rt<"row-fluid"i>',
         "sAjaxSource": "ajax/status_data.php",
         "sPaginationType": "full_numbers" ,
@@ -252,11 +261,6 @@ $(document).ready(function() {
         return false;
     });
 
-
-    var showname=getURLPara('showname');
-    var showpid=getURLPara('showpid');
-    var showres=getURLPara('showres');
-    var showlang=getURLPara('showlang');
 
     if ( showname!=null ) {
         oTable.fnFilter(showname,0);

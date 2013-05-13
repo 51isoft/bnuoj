@@ -1,7 +1,7 @@
 <?php
 $pagetitle="Problem List";
 include_once("header.php");
-if ($_GET["page"]!="") $stp=$problemperpage*(intval(convert_str($_GET["page"]))-1);
+if ($_GET["page"]!="") $stp=$config["limits"]["problems_per_page"]*(intval(convert_str($_GET["page"]))-1);
 else $stp="0";
 ?>
         <div class="span12">

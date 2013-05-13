@@ -91,6 +91,7 @@ var refrate=<?=$config["status"]["refresh_rate"]?>;
 var lim_times=<?=$config["status"]["max_refresh_times"]?>;
 </script>
 <script src="js/ZeroClipboard.min.js"></script>
+<script src="js/jquery.history.js"></script>
 <script type="text/javascript" src="js/status.js?<?=filemtime("js/status.js") ?>"></script>
 <link href="css/prettify.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="js/prettify.js"></script>
