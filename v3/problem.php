@@ -1,7 +1,7 @@
 <?php
 $pagetitle="Problem List";
 include_once("header.php");
-if ($_GET["page"]!="") $stp=$config["limits"]["problems_per_page"]*(intval(convert_str($_GET["page"]))-1);
+if ($_GET["page"]!="") $stp=intval(convert_str($_GET["page"]))-1;
 else $stp="0";
 ?>
         <div class="span12">
@@ -57,6 +57,7 @@ var pstart=<?= $stp ?>;
 var searchstr="<?= $_GET['search'] ?>";
 var ojoptions='<?= $ojoptions ?>';
 </script>
+<script src="js/jquery.history.js"></script>
 <script type="text/javascript" src="js/problem.js?<?=filemtime("js/problem.js") ?>"></script>
 <?php
 include("footer.php");

@@ -43,7 +43,7 @@ function striptags(a) {
 }
 
 function getURLPara(a) {
-    return decodeURIComponent((RegExp("[?|&]" + a + "=" + "(.+?)(&|#|;|$)").exec(location.search) || [, ""])[1].replace(/\+/g, "%20")) || null
+    return decodeURIComponent((RegExp("[?|&]" + a + "=" + "(.*?)(&|#|;|$)").exec(location.href) || [, ""])[1].replace(/\+/g, "%20")) || null
 }
 
 /******** jquery form plugin *********/

@@ -31,7 +31,7 @@ $(document).ready(function() {
         "sPaginationType": "input" ,
         "aLengthMenu": [[25, 50, 100, 150, 200], [25, 50, 100, 150, 200]] ,
         "iDisplayLength": probperpage,
-        "iDisplayStart": pstart,
+        "iDisplayStart": pstart*probperpage,
         "oSearch": {"sSearch": searchstr},
         "aoColumnDefs": [ 
             { "bSortable": false, "aTargets": [ 0, 10 ] },

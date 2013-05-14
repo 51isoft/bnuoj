@@ -91,6 +91,7 @@ $.extend( $.fn.dataTableExt.oPagination, {
 						.bind('click', function (e) {
 							e.preventDefault();
 							oSettings._iDisplayStart = (parseInt($('a', this).text(),10)-1) * oPaging.iLength;
+							$(oSettings.oInstance).trigger('page', oSettings);
 							fnDraw( oSettings );
 						} );
 				}
@@ -237,11 +238,13 @@ $.extend( $.fn.dataTableExt.oPagination, {
 	                /* Display overrun */
 	                oSettings._iDisplayStart = (Math.ceil((oSettings.fnRecordsDisplay()-1) /
 	                    oSettings._iDisplayLength)-1) * oSettings._iDisplayLength;
+	                $(oSettings.oInstance).trigger('page', oSettings);
 	                fnCallbackDraw( oSettings );
 	                return;
 	            }
 	              
 	            oSettings._iDisplayStart = iNewStart;
+	            $(oSettings.oInstance).trigger('page', oSettings);
 	            fnDraw( oSettings );
 	        } );
 

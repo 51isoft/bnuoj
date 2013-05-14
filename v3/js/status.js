@@ -6,7 +6,8 @@ var showpid=getURLPara('showpid');
 var showres=getURLPara('showres');
 var showlang=getURLPara('showlang');
 var showpage=getURLPara('showpage');
-if (showpage==null) showpage=1;
+if (showpage==null||parseInt(showpage)==NaN) showpage=1;
+else showpage=parseInt(showpage);
 
 var ceclick=function() {
     var runid=$(this).attr("runid");
@@ -70,6 +71,7 @@ function updateResult() {
     });
     refr=setTimeout("updateResult()",refrate);
 }
+var oTable;
 
 $(document).ready(function() {
     $("#status").addClass("active");
@@ -89,11 +91,11 @@ $(document).ready(function() {
         return ((x < y) ?  1 : ((x > y) ? -1 : 0));
     };
 
-    var oTable = $('#statustable').dataTable( {
+    var need_page=true;
+
+    oTable = $('#statustable').dataTable( {
         "bProcessing": true,
         "bServerSide": true,
-        "bStateSave": true,
-        "sCookiePrefix": cookie_prefix,
         "sDom": '<"row-fluid"p>rt<"row-fluid"i>',
         "sAjaxSource": "ajax/status_data.php",
         "sPaginationType": "full_numbers" ,
@@ -239,9 +241,29 @@ $(document).ready(function() {
 
             rtimes=0;
             refr=setTimeout("updateResult()",refrate);
-        },
-        "iDisplayStart":spstart
-    } );
+            if (need_page) {
+                var oPaging = oTable.fnPagingInfo();
+                if (oPaging.iPage!=showpage-1) setTimeout("oTable.fnPageChange(showpage-1)",10);
+            }
+        }
+    } ).bind("page",function(o,e) {
+        var oPaging = e.oInstance.fnPagingInfo();
+        showpage=oPaging.iPage+1;
+        need_page=false;
+        var turl=(showname==""||showname==null?"":"&showname="+showname)
+                  +(showres==""||showres==null?"":"&showres="+showres)
+                  +(showpid==""||showpid==null?"":"&showpid="+showpid)
+                  +(showlang==""||showlang==null?"":"&showlang="+showlang)
+                  +(showpage==1||showpage==null?"":"&showpage="+showpage);
+        if (turl=="") turl="status.php"; 
+        else turl="?"+turl.substr(1);
+        if (!need_page) History.pushState(
+                          null,
+                          "Online Status",
+                          turl
+                          );
+        
+    });
 
     var clip = new ZeroClipboard($("#copybtn"), {
         moviePath: "img/ZeroClipboard.swf",
@@ -254,10 +276,19 @@ $(document).ready(function() {
 
     $("#filterform").submit(function() {
         $(".btn",this).attr("disabled","disabled");
-        oTable.fnFilter($("#filterform [name='showname']").val(),0);
-        oTable.fnFilter($("#filterform [name='showpid']").val(),2);
-        oTable.fnFilter($("#filterform [name='showres']").val(),3);
-        oTable.fnFilter($("#filterform [name='showlang']").val(),4);
+        need_page=true;
+
+        showpage=1;
+        showname=$("#filterform [name='showname']").val();
+        showpid=$("#filterform [name='showpid']").val();
+        showres=$("#filterform [name='showres']").val();
+        showlang=$("#filterform [name='showlang']").val();
+
+        oTable.fnFilter(showname,0);
+        oTable.fnFilter(showpid,2);
+        oTable.fnFilter(showres,3);
+        oTable.fnFilter(showlang,4);
+        oTable.trigger('page',oTable.fnSettings());
         return false;
     });
 
@@ -279,4 +310,53 @@ $(document).ready(function() {
         $("#showlang").val(showlang);
     }
 
+    History.Adapter.bind(window,'statechange',function(){
+
+        cshowname=getURLPara('showname');
+        cshowpid=getURLPara('showpid');
+        cshowres=getURLPara('showres');
+        cshowlang=getURLPara('showlang');
+        cshowpage=getURLPara('showpage');
+
+        if (cshowpage==null) cshowpage=1;
+        if (cshowname==null) cshowname="";
+        if (cshowpid==null) cshowpid="";
+        if (cshowres==null) cshowres="";
+        if (cshowlang==null) cshowlang="";
+
+        if (showpage==null) showpage=1;
+        if (showname==null) showname="";
+        if (showpid==null) showpid="";
+        if (showres==null) showres="";
+        if (showlang==null) showlang="";
+
+        if ( showname!=cshowname ) {
+            showname=cshowname;
+            oTable.fnFilter(showname,0);
+            $("#showname").val(showname);
+        }
+        if ( showpid!=cshowpid ) {
+            showpid=cshowpid;
+            oTable.fnFilter(showpid,2);
+            $("#showpid").val(showpid);
+        }
+        if ( showres!=cshowres ) {
+            showres=cshowres;
+            oTable.fnFilter(showres,3);
+            $("#showres").val(showres);
+        }
+        if ( showlang!=cshowlang ) {
+            showlang=cshowlang;
+            oTable.fnFilter(showlang,4);
+            $("#showlang").val(showlang);
+        }
+        if ( showpage!=cshowpage ) {
+            need_page=true;
+            showpage=cshowpage;
+        }
+        if (showpage==null||parseInt(showpage)==NaN) showpage=1;
+        else showpage=parseInt(showpage);
+
+        if (need_page) oTable.fnPageChange(showpage-1);
+    });
 });
