@@ -18,10 +18,6 @@ if ($current_user->is_valid()) {
 }
 ?>
             <div class="btn-group">
-              <button class="btn btn-info" id="showallp">All</button>
-              <button class="btn btn-info active" id="showlocalp">Local</button>
-            </div>
-            <div class="btn-group">
               <button class="btn btn-info active" id="showlocal">Local Stat</button>
               <button class="btn btn-info" id="showremote">Remote Stat</button>
               <button class="btn btn-info" id="showremu">Remote User Stat</button>
@@ -57,7 +53,6 @@ var pstart=<?= $stp ?>;
 var searchstr="<?= $_GET['search'] ?>";
 var ojoptions='<?= $ojoptions ?>';
 </script>
-<script src="js/jquery.history.js"></script>
 <script type="text/javascript" src="js/problem.js?<?=filemtime("js/problem.js") ?>"></script>
 <?php
 include("footer.php");
