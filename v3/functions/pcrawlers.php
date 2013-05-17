@@ -245,4 +245,56 @@ function pcrawler_hdu_num() {
     return "Done";
 }
 
+
+function pcrawler_openjudge($pid) {
+    $url="http://poj.openjudge.cn/practice/$pid";
+    $content=file_get_contents($url);
+    $ret=array();
+
+    if (stripos($content,"<div id=\"pageTitle\"><h2>")!==false) {
+        if (preg_match('/<div id="pageTitle"><h2>.*:(.*)<\/h2>/sU', $content,$matches)) $ret["title"]=trim($matches[1]);
+        if (preg_match('/<dt>总时间限制: <\/dt>.*<dd>(.*)ms/sU', $content,$matches)) $ret["time_limit"]=intval(trim($matches[1]));
+        $ret["case_time_limit"]=$ret["time_limit"];
+        if (preg_match('/<dt>内存限制: <\/dt>.*<dd>(.*)kB/sU', $content,$matches)) $ret["memory_limit"]=intval(trim($matches[1]));
+        if (preg_match('/<dt>描述<\/dt>.*<dd>(.*)<\/dd>/sU', $content,$matches)) $ret["description"]=trim($matches[1]);
+        if (preg_match('/<dt>输入<\/dt>.*<dd>(.*)<\/dd>/sU', $content,$matches)) $ret["input"]=trim($matches[1]);
+        if (preg_match('/<dt>输出<\/dt>.*<dd>(.*)<\/dd>/sU', $content,$matches)) $ret["output"]=trim($matches[1]);
+        if (preg_match('/<dt>样例输入<\/dt>.*<pre>(.*)<\/pre>/sU', $content,$matches)) $ret["sample_in"]=trim($matches[1]);
+        if (preg_match('/<dt>样例输出<\/dt>.*<pre>(.*)<\/pre>/sU', $content,$matches)) $ret["sample_out"]=trim($matches[1]);
+        $ret["hint"]="";
+        $ret["source"]="";
+        $ret["special_judge_status"]=0;
+
+        $ret=pcrawler_process_info($ret,"openjudge","http://poj.openjudge.cn/practice/$pid/");
+        $id=pcrawler_insert_problem($ret,"OpenJudge",$pid);
+        return "OpenJudge $pid has been crawled as $id.<br>";
+    }
+    else return "No problem called OpenJudge $pid.<br>";
+}
+
+function pcrawler_openjudge_num() {
+    global $db;
+    $got=array();
+    $i=1;
+    while (true) {
+        $html=file_get_html("http://poj.openjudge.cn/practice/?page=$i");
+        $table=$html->find("table",0);
+        $rows=$table->find("tr");
+        if ($got[$rows[1]->find("td",0)->plaintext]==true) break;
+        for ($j=1;$j<sizeof($rows);$j++) {
+            $row=$rows[$j];
+            //echo htmlspecialchars($row);
+            $pid=$row->find("td",0)->plaintext;
+            $got[$pid]=true;
+            $acnum=$row->find("td",3)->plaintext;
+            $totnum=$row->find("td",4)->plaintext;
+            //echo "$pid $acnum $totnum<br>";die();
+            $db->query("update problem set vacnum='$acnum', vtotalnum='$totnum' where vname='OpenJudge' and vid='$pid'");
+        }
+        $i++;
+    }
+
+    return "Done";
+}
+
 ?>

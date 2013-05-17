@@ -61,6 +61,7 @@
 ?>
               This problem will be judged on <?php echo $vname; ?>. Original ID: <?php
       if ($vname=="PKU")  echo "<a href='http://acm.pku.edu.cn/JudgeOnline/problem?id=$vid' target='_blank'>$vid</a>";
+      if ($vname=="OpenJudge")  echo "<a href='http://poj.openjudge.cn/practice/$vid' target='_blank'>$vid</a>";
       if ($vname=="CodeForces")  {
           $ov=$vid;
           $v1=$vid[strlen($vid)-1];

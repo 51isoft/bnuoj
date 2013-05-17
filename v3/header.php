@@ -51,8 +51,8 @@ include_once("functions/users.php");
             <ul class="nav" id="nav">
               <li class="dropdown" id="problem"><a class="dropdown-toggle" data-toggle="dropdown" href="problem.php">Problem <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li id="localp"><a href="problem.php">Local Problems</a></li>
-                  <li id="allp"><a href="problem.php?page=1">All Problems</a></li>
+                  <li id="localp"><a href="problem.php#oj=BNU">Local Problems</a></li>
+                  <li id="allp"><a href="problem.php">All Problems</a></li>
                   <li id="categoryp"><a href="problem_category.php">Problem Category</a></li>
                 </ul>
               </li>

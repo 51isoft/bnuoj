@@ -415,13 +415,7 @@ if ($current_user->is_root()) {
                 <label>
                   OJ: 
                   <select class="input-medium" name="pcoj">
-<?php
-  foreach (get_all_vnames() as $value) {
-?>
-                    <option value="<?=$value?>"><?=$value?></option>
-<?php
-  }
-?>
+<?=$ojoptions?>
                   </select>
                 </label>
                 <input type="text" name="pcid" placeholder="Problem/Contest    ID/Code" />
@@ -433,13 +427,7 @@ if ($current_user->is_root()) {
                 <label>
                   OJ: 
                   <select class="input-medium" name="pcoj">
-<?php
-  foreach (get_all_vnames() as $value) {
-?>
-                    <option value="<?=$value?>"><?=$value?></option>
-<?php
-  }
-?>
+<?=$ojoptions?>
                   </select>
                 </label>
                 <label>From: <input type="text" name="pcidfrom" placeholder="Problem/Contest    ID/Code" /></label>
@@ -452,13 +440,7 @@ if ($current_user->is_root()) {
                 <label>
                   OJ: 
                   <select class="input-medium" name="pcoj">
-<?php
-  foreach (get_all_vnames() as $value) {
-?>
-                    <option value="<?=$value?>"><?=$value?></option>
-<?php
-  }
-?>
+<?=$ojoptions?>
                   </select>
                 </label>
                 <button type="submit" id="spinfo" class="btn btn-primary">Crawl!</button>

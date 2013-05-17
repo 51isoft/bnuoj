@@ -55,7 +55,7 @@ function adjustlist(flag,name) {
         sel.remove(4);
         return;
     }
-    if (name=="UVALive"||name=="UVA") {
+    if (name=="UVALive"||name=="UVA"||name=="OpenJudge") {
         for(var i=14;i>=4;i--) sel.remove(i);
         return;
     }
@@ -78,7 +78,7 @@ function adjustlist(flag,name) {
         return;
     }
     if (name=="UESTC") {
-        for(var i=14;i>=3;i--) sel.remove(i);
+        for(var i=14;i>=4;i--) sel.remove(i);
         return;
     }
     if (name=="FZU") {

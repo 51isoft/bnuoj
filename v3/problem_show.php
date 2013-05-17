@@ -174,7 +174,7 @@ if (!$show_problem->is_valid()||($show_problem->get_val("hide")==1&&!$current_us
 ?>
             <h3> Source </h3>
             <div class="content-wrapper well">
-<?="<a href='problem.php?search=".urlencode($show_problem->get_val("source"))."'>".$show_problem->get_val("source")."</a>\n"?>
+<?="<a href='problem.php#searchstr=".urlencode($show_problem->get_val("source"))."'>".$show_problem->get_val("source")."</a>\n"?>
             </div>
 <?php
   }

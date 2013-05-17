@@ -279,6 +279,23 @@ function check_sysu() {
     }
 }
 
+function check_openjudge() {
+    global $maxwaitnum;
+    $html=file_get_html("http://poj.openjudge.cn/practice/status");
+    if ($html==null||$html->find("table",0)==null) return "Down: cannot connect.";
+    else {
+        $num=0;
+        $res=$html->find("table",0)->find("tr");
+        foreach ($res as $row) {
+            $result=$row->find("td",2)->plaintext;
+            // echo $result;
+            if ($result=="Waiting") $num++;
+        }
+        if ($num>$maxwaitnum) return "Possibly down: more than $maxwaitnum waitings.";
+        return "Normal";
+    }
+}
+
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_pku())."' where name='PKU'";
 mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_hdu())."' where name='HDU'";
@@ -291,7 +308,7 @@ $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_sgu())."' w
 mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_lightoj())."' where name='LightOJ'";
 mysql_query($sql);
-$sql="update ojinfo set lastcheck=now(), status='".convert_str(check_ural())."' where name='Ural'"; 
+$sql="update ojinfo set lastcheck=now(), status='".convert_str(check_ural())."' where name='Ural'";
 mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_zju())."' where name='ZJU'";
 mysql_query($sql);
@@ -309,6 +326,8 @@ $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_whu())."' w
 mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_sysu())."' where name='SYSU'";
 mysql_query($sql);
+$sql="update ojinfo set lastcheck=now(), status='".convert_str(check_openjudge())."' where name='OpenJudge'";
+mysql_query($sql);
 
 // echo check_pku();
 // echo check_hdu();
@@ -325,4 +344,5 @@ mysql_query($sql);
 // echo check_nbut();
 // echo check_whu();
 // echo check_sysu();
+// echo check_openjudge();
 ?>

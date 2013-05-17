@@ -10,10 +10,10 @@ function escapeHtml(unsafe) {
 //$(document).ready(function() {
 function fnCreateSelect( )
 {
-    return '<select class="span12"><option value="All">All</option>'+ojoptions+'</select>';
+    return '<select class="span12"><option value="">All</option>'+ojoptions+'</select>';
 }
 
-var oj="BNU",coj="BNU";
+var oj="",coj="";
 var unsolved="0",cunsolved="0";
 var stat="0",cstat="0";
 var showpage="1",cpage="1";
@@ -21,18 +21,17 @@ var searchstr="",csearchstr="";
 var need_page=true;
 
 function getUrlHash() {
-    var turl=(oj=="BNU"?"":"&oj="+(oj==""?"All":oj))
+    var turl=(oj==""?"":"&oj="+oj)
         +(unsolved=="0"?"":"&unsolved="+unsolved)
         +(stat=="0"?"":"&stat="+stat)
         +(showpage==1?"":"&page="+showpage)
-        +(searchstr==""?"":"&search="+encodeURI(searchstr));
+        +(searchstr==""?"":"&searchstr="+encodeURI(searchstr));
     if (turl!="") return "#"+turl.substr(1);
     return "";
 }
 
 function processPara() {
-    oj=(getURLPara("oj")==null?"BNU":getURLPara("oj"));
-    if (oj=="All") oj="";
+    oj=(getURLPara("oj")==null?"":getURLPara("oj"));
     unsolved=(getURLPara("unsolved")==null?"0":getURLPara("unsolved"));
     stat=(getURLPara("stat")==null?"0":getURLPara("stat"));
     showpage=(getURLPara("page")==null?"1":getURLPara("page"));
@@ -40,9 +39,10 @@ function processPara() {
     if (showpage==NaN) showpage=1;
     searchstr=(getURLPara("searchstr")==null?"":getURLPara("searchstr"));
 }
+var oTable;
 
 $(document).ready(function() {
-    var oTable = $('#problist').dataTable( {
+    oTable = $('#problist').dataTable( {
         "bProcessing": true,
         "bServerSide": true,
         "sDom": '<"row-fluid"pf>rt<"row-fluid"<"span8"i><"span4"l>>',
@@ -111,7 +111,9 @@ $(document).ready(function() {
         "fnDrawCallback": function(){
             $(".source_search").each(function(i) {
                 $(this).click( function() {
-                    oTable.fnFilter( $(this).text() );
+                    searchstr=$(this).text();
+                    self.document.location.hash=getUrlHash();
+                    //oTable.fnFilter( $(this).text() );
                     return false;
                 });
             });
@@ -124,6 +126,9 @@ $(document).ready(function() {
         var oPaging = e.oInstance.fnPagingInfo();
         showpage=oPaging.iPage+1;
         need_page=false;
+        self.document.location.hash=getUrlHash();
+    }).bind("filter",function(o,e) {
+        searchstr = $("#problist_filter .search-query").val();
         self.document.location.hash=getUrlHash();
     });
 
@@ -229,9 +234,14 @@ $(document).ready(function() {
             }
         }
         cunsolved=unsolved;
+        if (csearchstr!=searchstr) {
+            showpage=1;
+            $("#problist_filter .search-query").val(searchstr);
+            oTable.fnFilter(searchstr);
+        }
         csearchstr=searchstr;
         if (cpage!=showpage) {
-            oTable.fnPageChange(showpage-1);
+            if (!need_page) oTable.fnPageChange(showpage-1);
         }
         cpage=showpage;
     });

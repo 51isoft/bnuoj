@@ -37,6 +37,7 @@ class Problem {
         $vid=$db->escape($this->info["vid"]);
 
         if ($vname=="PKU")  $this->info["to_url"]="<a href='http://acm.pku.edu.cn/JudgeOnline/problem?id=$vid' target='_blank'>$vid</a>";
+        if ($vname=="OpenJudge")  $this->info["to_url"]="<a href='http://poj.openjudge.cn/practice/$vid' target='_blank'>$vid</a>";
         if ($vname=="CodeForces")  {
             $ov=$vid;
             $v1=$vid[strlen($vid)-1];

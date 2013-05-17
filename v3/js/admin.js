@@ -99,6 +99,8 @@ function newsload(nnid) {
 
 $(document).ready(function() {
 
+    $("option[value=BNU]","select[name=pcoj]").remove();
+
     $("#notiform").bind("correct",function() {
         $("input:submit,button:submit,.btn",this).removeAttr("disabled").removeClass("disabled");
     });
