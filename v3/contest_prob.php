@@ -8,7 +8,7 @@ $cid = convert_str($_GET['cid']);
 $prob_info=contest_get_problem_from_mixed($cid,$cpid);
 $lastlang=$_COOKIE[$config["cookie_prefix"]."lastlang"];
 if ($lastlang==null) $lastlang=1;
-if (!contest_started($cid)||!(contest_get_val($cid,"isprivate")==0||
+if (!contest_started($cid)||!($current_user->is_root()||contest_get_val($cid,"isprivate")==0||
                           (contest_get_val($cid,"isprivate")==1&&$current_user->is_in_contest($cid))||
                           (contest_get_val($cid,"isprivate")==2&&contest_get_val($cid,"password")==$_COOKIE[$config["cookie_prefix"]."contest_pass_$cid"]))) {
 ?>
@@ -91,7 +91,7 @@ if (!contest_started($cid)||!(contest_get_val($cid,"isprivate")==0||
     if ($show_problem->get_val("description")!="") {
 ?>
             <div class="content-wrapper well">
-<?= latex_content($show_problem->get_val("description"))."\n" ?>
+<?= latex_content(preg_replace('/<style[\s\S]*\/style>/', "", $show_problem->get_val("description")))."\n" ?>
                 <div style="clear:both"></div>
             </div>
 <?php

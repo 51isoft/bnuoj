@@ -52,6 +52,18 @@ function insac($tnum,$sttime,$act,$pid,$name,$mcid,$pert=10) {
     insone($pid,'Accepted',date("Y-m-d H:i:s",$sttime+$act),$mcid,$name);
 }
 
+
+function replay_move_uploaded_file($filename) {
+    global $_FILES,$POST,$ret;
+    if (sizeof($_FILES)!=0) {
+        move_uploaded_file($_FILES["file"]["tmp_name"], "../uploadstand/" . $filename);
+    }
+    else {
+        file_put_contents("../uploadstand/" . $filename,file_get_contents($_POST["repurl"]));
+    }
+    $ret["msg"].="Stored in: " . "uploadstand/" . $filename."<br />";
+}
+
 function replay_deal_hdu($data) {
     global $_POST,$sttime,$edtime,$mcid,$pnum,$sfreq;
     $unum=$data->rowcount()-2;
@@ -762,18 +774,37 @@ function replay_deal_spoj($standtable) {
     }
 }
 
-
-function replay_move_uploaded_file($filename) {
-    global $_FILES,$POST,$ret;
-    if (sizeof($_FILES)!=0) {
-        move_uploaded_file($_FILES["file"]["tmp_name"], "../uploadstand/" . $filename);
+function replay_deal_openjudge($standtable) {
+    global $_POST,$sttime,$edtime,$mcid,$pnum,$sfreq;
+    $rows=$standtable->find("tr");
+    $unum=sizeof($rows);
+    for ($i=1;$i<$unum;$i++) {
+        $crow=$rows[$i]->children();
+        $uname=strip_tags($crow[1]->innertext);
+        for ($j=0;$j<$pnum;$j++) {
+            $value=trim(strip_tags($crow[$j+4]->innertext));
+            if ($value=="") continue;
+            if (strstr($value,":")==null) {
+                $tnum=strstr(substr(strstr($value,'('),1),')',true);
+                $tnum=-intval($tnum);
+                //echo $uname." ".$_POST['pid'.$j]." ".$tnum." * ".date("Y-m-d H:i:s",$edtime-10)."<br />\n";
+                inswa($tnum,$sttime,$edtime,$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+            }
+            else {
+                $tnum=0;
+                if (strstr($value,"(")==null) $act=$value;
+                else {
+                    $act=strstr($value,'(',true);
+                    $tnum=strstr(substr(strstr($value,'('),1),')',true);
+                }
+                if ($tnum=="") $tnum=0;
+                else $tnum=-intval($tnum);
+                //echo $uname." ".$_POST['pid'.$j]." ".date("Y-m-d H:i:s",$sttime+replay_to_second($act)-10)." * $tnum + ".date("Y-m-d H:i:s",$sttime+replay_to_second($act))."<br />\n";
+                insac($tnum,$sttime,replay_to_second($act),$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+            }
+        }
     }
-    else {
-        file_put_contents("../uploadstand/" . $filename,file_get_contents($_POST["repurl"]));
-    }
-    $ret["msg"].="Stored in: " . "uploadstand/" . $filename."<br />";
 }
-
 
 
 
@@ -906,6 +937,39 @@ function replay_crawl_uva($cid) {
     $res["name"]=$title;
     $res["description"]=$res["repurl"]="http://uva.onlinejudge.org/index2.php?option=com_onlinejudge&Itemid=13&page=show_contest_standings&contest=$cid";
     $res["ctype"]="uva";
+    $res["code"]=0;
+    $res["isvirtual"]=0;
+    return $res;
+}
+
+function replay_crawl_openjudge($cid) {
+    global $config;
+    $res=array();
+    $html=file_get_html("http://poj.openjudge.cn/$cid/");
+    if ($html->find("div#error")!=null) {
+        $res["code"]=1;
+        return $res;
+    }
+    $titles=$html->find("table td.title a");
+    for ($i=0;$i<sizeof($titles);$i++) {
+        $title=trim($titles[$i]->innertext);
+        if ($title==null) continue;
+        $tname=problem_get_id_from_oj_and_title("OpenJudge",$title);
+        if ($tname==null) {
+            $res["code"]=1;
+            return $res;
+        }
+        $res["vpid".$i]=$tname;
+    }
+    $sttime=trim($html->find("dd.start-time-dd",0)->plaintext);
+    $edtime=trim($html->find("dd.end-time-dd",0)->plaintext);
+    $title=trim($html->find("h2",1)->plaintext);
+    $res["start_time"]=$sttime;
+    $res["end_time"]=$edtime;
+    $res["name"]=$title;
+    $res["description"]="http://poj.openjudge.cn/$cid/ranking";
+    $res["repurl"]=$config["base_url"]."ajax/openjudge_standing_merge.php?contest=".$cid;
+    $res["ctype"]="openjudge";
     $res["code"]=0;
     $res["isvirtual"]=0;
     return $res;

@@ -295,6 +295,7 @@ if ($current_user->is_root()) {
                       <option value="ZJU">ZJU</option>
                       <option value="UESTC">UESTC</option>
                       <option value="UVA">UVA</option>
+                      <option value="OpenJudge">OpenJudge</option>
                   </select>
                   <div class="input-append">
                     <input name="cid" id="vcid" type="text" class="input-small" placeholder="Contest ID" />
@@ -341,6 +342,7 @@ if ($current_user->is_root()) {
                                 <label class="radio inline"><input type="radio" name="ctype" value="spacific" /> South Pacific</label>
                                 <label class="radio inline"><input type="radio" name="ctype" value="icpcinfostatus" /> ACMICPC info Status</label>
                                 <label class="radio inline"><input type="radio" name="ctype" value="spoj" /> SPOJ</label>
+                                <label class="radio inline"><input type="radio" name="ctype" value="openjudge" /> OpenJudge</label>
                             </td>
                         </tr>
                         <tr><td>Extra Information: </td><td><input type="text" name="extrainfo" class="input-xlarge" /></td></tr>

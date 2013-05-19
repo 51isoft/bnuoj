@@ -2,7 +2,7 @@
 include_once(dirname(__FILE__)."/../functions/users.php");
 include_once(dirname(__FILE__)."/../functions/contests.php");
 $cid=convert_str($_GET["cid"]);
-if (!contest_exist($cid)||!(contest_get_val($cid,"isprivate")==0||
+if (!contest_exist($cid)||!($current_user->is_root()||contest_get_val($cid,"isprivate")==0||
                           (contest_get_val($cid,"isprivate")==1&&$current_user->is_in_contest($cid))||
                           (contest_get_val($cid,"isprivate")==2&&contest_get_val($cid,"password")==$_COOKIE[$config["cookie_prefix"]."contest_pass_$cid"]))) die();
 

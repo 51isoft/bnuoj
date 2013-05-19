@@ -4,7 +4,7 @@ $cid = convert_str($_GET['cid']);
 if (contest_exist($cid)) $pagetitle=strip_tags(contest_get_val($cid,"title"));
 else $pagetitle="No Such Contest.";
 include_once("header.php");
-if (contest_exist($cid)&&(contest_get_val($cid,"isprivate")==0||
+if (contest_exist($cid)&&($current_user->is_root()||contest_get_val($cid,"isprivate")==0||
                           (contest_get_val($cid,"isprivate")==1&&$current_user->is_in_contest($cid))||
                           (contest_get_val($cid,"isprivate")==2&&contest_get_val($cid,"password")==$_COOKIE[$config["cookie_prefix"]."contest_pass_$cid"]))) {
 ?>
@@ -112,7 +112,7 @@ if (contest_exist($cid)&&(contest_get_val($cid,"isprivate")==0||
       </div>
 
 <?php
-} else if (contest_exist($cid)&&contest_get_val($cid,"password")!=""&&contest_get_val($cid,"password")!=pwd("")) {
+} else if (contest_exist($cid)&&contest_get_val($cid,"password")!="") {
 ?>
         <div class="span12">
           <form id="cpasssub">

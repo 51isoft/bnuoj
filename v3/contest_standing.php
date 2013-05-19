@@ -4,7 +4,7 @@ include_once("functions/contests.php");
 $cid=convert_str($_GET["cid"]);
 $admin=convert_str($_GET["admin"]);
 if (($admin==1&&!$current_user->is_root())||
-    !contest_exist($cid)||!(contest_get_val($cid,"isprivate")==0||
+    !contest_exist($cid)||!($current_user->is_root()||contest_get_val($cid,"isprivate")==0||
                           (contest_get_val($cid,"isprivate")==1&&$current_user->is_in_contest($cid))||
                           (contest_get_val($cid,"isprivate")==2&&contest_get_val($cid,"password")==$_COOKIE[$config["cookie_prefix"]."contest_pass_$cid"]))) {
 ?>
