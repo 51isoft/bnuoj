@@ -5,8 +5,8 @@ include_once(dirname(__FILE__)."/simple_html_dom.php");
 $crawled=array();
 function process_and_get_image($ori,$path,$baseurl,$space_deli) {
     $para["path"]=$path;$para["base"]=$baseurl;$para["trans"]=!$space_deli;
-    if ($space_deli) $reg="/< *img[^>]*src *= *[\"\\']?([^\"\\' >]*)[^>]*>/si";
-    else $reg="/< *img[^>]*src *= *[\"\\']?([^\"\\'>]*)[^>]*>/si";
+    if ($space_deli) $reg="/< *im[a]?g[^>]*src *= *[\"\\']?([^\"\\' >]*)[^>]*>/si";
+    else $reg="/< *im[a]?g[^>]*src *= *[\"\\']?([^\"\\'>]*)[^>]*>/si";
     return preg_replace_callback($reg,
                                 function($matches) use ($para) {
                                     global $config,$crawled;
