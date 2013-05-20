@@ -296,6 +296,23 @@ function check_openjudge() {
     }
 }
 
+function check_scu() {
+    global $maxwaitnum;
+    $html=file_get_html("http://cstest.scu.edu.cn/soj/solutions.action");
+    if ($html==null||$html->find("table",1)==null) return "Down: cannot connect.";
+    else {
+        $num=0;
+        $res=$html->find("table",1)->find("tr");
+        foreach ($res as $row) {
+            $result=$row->find("td",5)->plaintext;
+            // echo $result;
+            if (stristr($result,"queu")||stristr($result,"waiting")||stristr($result,"being")) $num++;
+        }
+        if ($num>$maxwaitnum) return "Possibly down: more than $maxwaitnum queuings.";
+        return "Normal";
+    }
+}
+
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_pku())."' where name='PKU'";
 mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_hdu())."' where name='HDU'";
@@ -328,6 +345,8 @@ $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_sysu())."' 
 mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_openjudge())."' where name='OpenJudge'";
 mysql_query($sql);
+$sql="update ojinfo set lastcheck=now(), status='".convert_str(check_scu())."' where name='SCU'";
+mysql_query($sql);
 
 // echo check_pku();
 // echo check_hdu();
@@ -345,4 +364,5 @@ mysql_query($sql);
 // echo check_whu();
 // echo check_sysu();
 // echo check_openjudge();
+// echo check_scu();
 ?>

@@ -806,7 +806,33 @@ function replay_deal_openjudge($standtable) {
     }
 }
 
-
+function replay_deal_scu($standtable) {
+    global $_POST,$sttime,$edtime,$mcid,$pnum,$sfreq;
+    $rows=$standtable->find("tr");
+    $unum=sizeof($rows);
+    for ($i=1;$i<$unum-1;$i++) {
+        $crow=$rows[$i]->children();
+        $uname=iconv("GBK","UTF-8//IGNORE",strip_tags($crow[2]->innertext));
+        for ($j=0;$j<$pnum;$j++) {
+            $value=trim($crow[$j+5]->innertext);
+            if ($value=="") continue;
+            if (strstr($value,":")==null) {
+                $tnum=$value;
+                $tnum=-intval($tnum);
+                //echo $uname." ".$_POST['pid'.$j]." ".$tnum." * ".date("Y-m-d H:i:s",$edtime-10)."<br />\n";
+                inswa($tnum,$sttime,$edtime,$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+            }
+            else {
+                $tnum=0;
+                $act=strstr($value,'<',true).":00";
+                $tnum=substr(strstr($value,'>'),1);
+                $tnum=intval($tnum);
+                //echo $uname." ".$_POST['pid'.$j]." ".date("Y-m-d H:i:s",$sttime+replay_to_second($act)-10)." * $tnum + ".date("Y-m-d H:i:s",$sttime+replay_to_second($act))."<br />\n";
+                insac($tnum,$sttime,replay_to_second($act),$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+            }
+        }
+    }
+}
 
 function replay_crawl_zju($cid) {
     $res=array();
@@ -970,6 +996,39 @@ function replay_crawl_openjudge($cid) {
     $res["description"]="http://poj.openjudge.cn/$cid/ranking";
     $res["repurl"]=$config["base_url"]."ajax/openjudge_standing_merge.php?contest=".$cid;
     $res["ctype"]="openjudge";
+    $res["code"]=0;
+    $res["isvirtual"]=0;
+    return $res;
+}
+
+function replay_crawl_scu($cid) {
+    $res=array();
+    $html=file_get_html("http://cstest.scu.edu.cn/soj/contest/contest.action?cid=$cid");
+    if ($html->find("table",0)==null) {
+        $res["code"]=1;
+        return $res;
+    }
+    $titles=$html->find("table",1)->find("tr");
+    for ($i=1;$i<sizeof($titles)-1;$i++) {
+        $title=$titles[$i]->find("td a",0);
+        //echo $title;
+        if ($title==null) continue;
+        $tname=problem_get_id_from_oj_and_title("SCU",trim(iconv("GBK","UTF-8//IGNORE",$title->innertext)));
+        if ($tname==null) {
+            $res["code"]=1;
+            return $res;
+        }
+        $res["vpid".($i-1)]=$tname;
+    }
+    $sttime="";
+    $edtime=trim($html->find("table",0)->find("td",2)->plaintext);
+    $edtime=strstr(substr($edtime,strpos($edtime,"at ")+3),".",true).":00";
+    $title=trim($html->find("h1",0)->plaintext);
+    $res["start_time"]=$sttime;
+    $res["end_time"]=$edtime;
+    $res["name"]=$title;
+    $res["description"]=$res["repurl"]="http://cstest.scu.edu.cn/soj/contest/rank.action?cid=$cid";
+    $res["ctype"]="scu";
     $res["code"]=0;
     $res["isvirtual"]=0;
     return $res;

@@ -14,6 +14,7 @@ if ($current_user->is_root()) {
     else if ($oj=="UESTC") $ret=replay_crawl_uestc($cid);
     else if ($oj=="UVA") $ret=replay_crawl_uva($cid);
     else if ($oj=="OpenJudge") $ret=replay_crawl_openjudge($cid);
+    else if ($oj=="SCU") $ret=replay_crawl_scu($cid);
     
     if ($ret["code"]==1) $ret["msg"]="Error occured!";
     else $ret["msg"]="Success!";

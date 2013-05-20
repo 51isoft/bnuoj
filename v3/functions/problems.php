@@ -56,6 +56,7 @@ class Problem {
         if ($vname=="NBUT")  $this->info["to_url"]="<a href='http://cdn.ac.nbutoj.com/Problem/view.xhtml?id=$vid' target='_blank'>$vid</a>";
         if ($vname=="WHU")  $this->info["to_url"]="<a href='http://acm.whu.edu.cn/land/problem/detail?problem_id=$vid' target='_blank'>$vid</a>";
         if ($vname=="SYSU")  $this->info["to_url"]="<a href='http://soj.me/$vid' target='_blank'>$vid</a>";
+        if ($vname=="SCU")  $this->info["to_url"]="<a href='http://cstest.scu.edu.cn/soj/problem.action?id=$vid' target='_blank'>$vid</a>";
         if ($vname=="UVALive")  {
             if (intval($vid)>5722) $svid=intval($vid)+10;
             else $svid=$vid;
@@ -128,7 +129,27 @@ class Problem {
             $this->info["stat"]["num_ac"];
         return $this->info["stat"];
     }
-
+    function get_time_limit() {
+        if (!$this->valid) return null;
+        if (isset($this->info["time_limit"])) return $this->info[$str];
+        $this->get_col("time_limit");
+        if ($this->info["time_limit"]=="0") $this->info["time_limit"]="Unknown ";
+        return $this->info["time_limit"];
+    }
+    function get_case_time_limit() {
+        if (!$this->valid) return null;
+        if (isset($this->info["case_time_limit"])) return $this->info[$str];
+        $this->get_col("case_time_limit");
+        if ($this->info["case_time_limit"]=="0") $this->info["case_time_limit"]="Unknown ";
+        return $this->info["case_time_limit"];
+    }
+    function get_memory_limit() {
+        if (!$this->valid) return null;
+        if (isset($this->info["memory_limit"])) return $this->info[$str];
+        $this->get_col("memory_limit");
+        if ($this->info["memory_limit"]=="0") $this->info["memory_limit"]="Unknown ";
+        return $this->info["memory_limit"];
+    }
     function get_col($str) {
         global $db;
         if (!$this->valid) return null;

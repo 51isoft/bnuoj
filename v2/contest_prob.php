@@ -38,6 +38,10 @@
     $result = mysql_query($query);
     list($ptitle,$desc,$inp,$oup,$sin,$sout,$hint,$source,$tl,$ctl,$ml,$spj,$hide,$vname,$vid,$ignoc)=@mysql_fetch_row($result);
 
+    if ($ml=="0") $ml="Unknown ";
+    if ($tl=="0") $tl="Unknown ";
+    if ($ctl=="0") $ctl="Unknown ";
+
 ?>
       <div id="content_container">
         <div id="content_top"></div>

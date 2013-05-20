@@ -121,7 +121,7 @@ string getCEinfo(string runid) {
 }
 
 string getUsedTime(string s) {
-    int pos=s.find("MS</td>");
+    int pos=s.find("ms</dd>");
     int st=pos;
     while (s[pos]!='>') pos--;
     pos++;
@@ -129,7 +129,7 @@ string getUsedTime(string s) {
 }
 
 string getUsedMem(string s) {
-    int pos=s.find("K</td>");
+    int pos=s.find("kB</dd>");
     int st=pos;
     while (s[pos]!='>') pos--;
     pos++;
@@ -179,12 +179,12 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
             &&result.find("Compiling")==string::npos
             &&result!=""&&result[0]!='\n'&&result[0]!='\t'&&result[0]!='\r'&&result[0]!=' ')) return false;
     if (result=="Compile Error") ce_info=getCEinfo(runid);
-    else ce_info="";
-    if (result=="Accepted") {
+    else {
         tu=getUsedTime(ts);
         mu=getUsedMem(ts);
+        ce_info="";
     }
-    else if (result[result.length()-1]=='d') {
+    if (result!="Accepted"&&result[result.length()-1]=='d') {
         result.erase(result.end()-2,result.end());
     }
     return true;

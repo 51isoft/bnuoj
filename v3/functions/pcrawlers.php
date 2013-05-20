@@ -3,13 +3,18 @@ include_once(dirname(__FILE__)."/global.php");
 include_once(dirname(__FILE__)."/simple_html_dom.php");
 
 $crawled=array();
-function process_and_get_image($ori,$path,$baseurl) {
-    $para["path"]=$path;$para["base"]=$baseurl;
-    return preg_replace_callback("/< *img[^>]*src *= *[\"\\']?([^\"\\' >]*)[^>]*>/si",
+function process_and_get_image($ori,$path,$baseurl,$space_deli) {
+    $para["path"]=$path;$para["base"]=$baseurl;$para["trans"]=!$space_deli;
+    if ($space_deli) $reg="/< *img[^>]*src *= *[\"\\']?([^\"\\' >]*)[^>]*>/si";
+    else $reg="/< *img[^>]*src *= *[\"\\']?([^\"\\'>]*)[^>]*>/si";
+    return preg_replace_callback($reg,
                                 function($matches) use ($para) {
                                     global $config,$crawled;
                                     $url=trim($matches[1]);
-                                    if (stripos($url,"http://")===false&&stripos($url,"https://")===false) $url=$baseurl.$url;
+                                    if (stripos($url,"http://")===false&&stripos($url,"https://")===false) {
+                                        if ($para["trans"]) $url=str_replace(" ","%20",$url);
+                                        $url=$para["base"].$url;
+                                    }
                                     if ($crawled[$url]) return $result;
                                     $crawled[$url]=true;
                                     $name=basename($url);
@@ -20,6 +25,7 @@ function process_and_get_image($ori,$path,$baseurl) {
                                     if (file_exists($config["base_local_path"].$name)) return $result;
                                     mkdirs($config["base_local_path"].$name);
 
+                                    //echo $url;
                                     $ch = curl_init();
                                     curl_setopt($ch, CURLOPT_URL, $url);
                                     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -27,6 +33,7 @@ function process_and_get_image($ori,$path,$baseurl) {
                                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                                     $content = curl_exec($ch); 
                                     curl_close($ch);
+                                    //echo $content;
 
                                     $fp = fopen($config["base_local_path"].$name, "wb");
                                     fwrite($fp, $content);
@@ -36,11 +43,11 @@ function process_and_get_image($ori,$path,$baseurl) {
                                 $ori);
 }
 
-function pcrawler_process_info($ret,$path,$baseurl) {
-    $ret["description"]=process_and_get_image($ret["description"],$path,$baseurl);
-    $ret["input"]=process_and_get_image($ret["input"],$path,$baseurl);
-    $ret["output"]=process_and_get_image($ret["output"],$path,$baseurl);
-    $ret["hint"]=process_and_get_image($ret["hint"],$path,$baseurl);
+function pcrawler_process_info($ret,$path,$baseurl,$space_deli=true) {
+    $ret["description"]=process_and_get_image($ret["description"],$path,$baseurl,$space_deli);
+    $ret["input"]=process_and_get_image($ret["input"],$path,$baseurl,$space_deli);
+    $ret["output"]=process_and_get_image($ret["output"],$path,$baseurl,$space_deli);
+    $ret["hint"]=process_and_get_image($ret["hint"],$path,$baseurl,$space_deli);
     return $ret;
 }
 
@@ -290,6 +297,98 @@ function pcrawler_openjudge_num() {
             $totnum=$row->find("td",4)->plaintext;
             //echo "$pid $acnum $totnum<br>";die();
             $db->query("update problem set vacnum='$acnum', vtotalnum='$totnum' where vname='OpenJudge' and vid='$pid'");
+        }
+        $i++;
+    }
+
+    return "Done";
+}
+
+function pcrawler_sysu($pid) {
+    $url="http://soj.me/$pid";
+    $content=file_get_contents($url);
+    $ret=array();
+
+    if (stripos($content,"<div id=\"error_msg\">")===false) {
+        if (preg_match('/<center><h1>.* (.*)<\/h1>/sU', $content,$matches)) $ret["title"]=trim($matches[1]);
+        if (preg_match('/<p>Time Limit: (.*) secs/sU', $content,$matches)) $ret["time_limit"]=intval(trim($matches[1]))*1000;
+        $ret["case_time_limit"]=$ret["time_limit"];
+        if (preg_match('/, Memory Limit: (.*) MB/sU', $content,$matches)) $ret["memory_limit"]=intval(trim($matches[1]))*1024;
+        if (preg_match('/<h1>Description<\/h1>(.*)<h1>/sU', $content,$matches)) $ret["description"]=trim($matches[1]);
+        if (preg_match('/<h1>Input<\/h1>(.*)<h1>Input/sU', $content,$matches)) $ret["input"]=trim($matches[1]);
+        if (preg_match('/<h1>Output<\/h1>(.*)<h1>Sample/sU', $content,$matches)) $ret["output"]=trim($matches[1]);
+        if (preg_match('/<pre>(.*)<\/pre>/sU', $content,$matches)) $ret["sample_in"]=trim($matches[1]);
+        if (preg_match('/<pre>(.*)<\/pre>/sU', $content,$matches)) $ret["sample_out"]=trim($matches[1]);
+        $ret["hint"]="";
+        if (preg_match('/<h1>Problem Source<\/h1>.*<p>(.*)<\/p>/sU', $content,$matches)) $ret["source"]=trim($matches[1]);
+        if (strpos($content,"<font color=\"blue\">Special Judge</font>")!==false) $ret["special_judge_status"]=1;
+        else $ret["special_judge_status"]=0;
+
+        $ret=pcrawler_process_info($ret,"sysu","http://soj.me/");
+        $id=pcrawler_insert_problem($ret,"SYSU",$pid);
+        return "SYSU $pid has been crawled as $id.<br>";
+    }
+    else return "No problem called SYSU $pid.<br>";
+}
+
+function pcrawler_sysu_num() {
+    global $db;
+
+    $html=file_get_html("http://soj.me/problem_tab.php?start=1000&end=999999");
+    $table=$html->find("table",0);
+    $rows=$table->find("tr");
+    for ($j=1;$j<sizeof($rows);$j++) {
+        $row=$rows[$j];
+        //echo htmlspecialchars($row);
+        $pid=$row->find("td",1)->plaintext;
+        $acnum=$row->find("td",3)->plaintext;
+        $totnum=$row->find("td",4)->plaintext;
+        //echo "$pid $acnum $totnum<br>";die();
+        $db->query("update problem set vacnum='$acnum', vtotalnum='$totnum' where vname='SYSU' and vid='$pid'");
+    }
+
+    return "Done";
+}
+
+function pcrawler_scu($pid) {
+    $url="http://cstest.scu.edu.cn/soj/problem.action?id=$pid";
+    $content=file_get_contents($url);
+    $ret=array();
+    $content=iconv("gbk","UTF-8//IGNORE",$content);
+    //$content=mb_convert_encoding($content,"UTF-8","GBK, GB2312, windows-1252");
+    if (stripos($content,"<title>ERROR</title>")===false) {
+        if (preg_match('/<h1 align="center">.*: (.*)<\/h1>/sU', $content,$matches)) $ret["title"]=trim($matches[1]);
+        $ret["case_time_limit"]=$ret["time_limit"]=$ret["memory_limit"]="0";
+
+        $ret["description"]=file_get_contents("http://cstest.scu.edu.cn/soj/problem/$pid");
+        $ret["description"]=mb_convert_encoding($ret["description"],"UTF-8","GBK, GB2312, windows-1252");
+
+        $ret["input"]=$ret["output"]=$ret["sample_in"]=$ret["sample_out"]=$ret["hint"]=$ret["source"]="";
+        $ret["special_judge_status"]=0;
+
+        $ret=pcrawler_process_info($ret,"scu/$pid","http://cstest.scu.edu.cn/soj/problem/$pid/",false);
+        $id=pcrawler_insert_problem($ret,"SCU",$pid);
+        return "SCU $pid has been crawled as $id.<br>";
+    }
+    else return "No problem called SCU $pid.<br>";
+}
+
+function pcrawler_scu_num() {
+    global $db;
+    $i=0;
+    while (true) {
+        $html=file_get_html("http://cstest.scu.edu.cn/soj/problems.action?volume=$i");
+        $table=$html->find("table",0);
+        $rows=$table->find("tr");
+        if (sizeof($rows)<4) break;
+        for ($j=3;$j<sizeof($rows);$j++) {
+            $row=$rows[$j];
+            //echo htmlspecialchars($row);
+            $pid=$row->find("td",1)->plaintext;
+            $acnum=strip_tags($row->find("td",4)->innertext);
+            $totnum=$row->find("td",3)->plaintext;
+            //echo "$pid $acnum $totnum<br>";
+            $db->query("update problem set vacnum='$acnum', vtotalnum='$totnum' where vname='SCU' and vid='$pid'");
         }
         $i++;
     }

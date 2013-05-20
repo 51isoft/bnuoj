@@ -12,6 +12,8 @@ if ($_GET["pcoj"]=="CodeForces") $func="pcrawler_cf";
 else if ($_GET["pcoj"]=="FZU") $func="pcrawler_fzu";
 else if ($_GET["pcoj"]=="HDU") $func="pcrawler_hdu";
 else if ($_GET["pcoj"]=="OpenJudge") $func="pcrawler_openjudge";
+else if ($_GET["pcoj"]=="SYSU") $func="pcrawler_sysu";
+else if ($_GET["pcoj"]=="SCU") $func="pcrawler_scu";
 else {
     $ret["msg"]="Invalid OJ!";
     die(json_encode($ret));

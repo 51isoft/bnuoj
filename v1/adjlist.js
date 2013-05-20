@@ -55,7 +55,7 @@ function adjustlist(flag,name) {
         sel.remove(4);
         return;
     }
-    if (name=="UVALive"||name=="UVA"||name=="OpenJudge") {
+    if (name=="UVALive"||name=="UVA"||name=="OpenJudge"||name=="SCU") {
         for(var i=14;i>=4;i--) sel.remove(i);
         return;
     }

@@ -5,7 +5,7 @@ include("simple_html_dom.php");
 <center>
 <?php
 //for ($i=1;$i<12;$i++) {
-    $html=file_get_html("http://soj.me/problem_tab.php?start=1000&end=9999");
+    $html=file_get_html("http://soj.me/problem_tab.php?start=1000&end=99999");
     $table=$html->find("table",0);
     $rows=$table->find("tr");
     for ($j=1;$j<sizeof($rows);$j++) {

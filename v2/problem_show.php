@@ -8,6 +8,9 @@
   $query="select title,description,input,output,sample_in,sample_out,hint,source,time_limit,case_time_limit,memory_limit,total_submit,total_ac,special_judge_status,hide,vid,vname,ignore_noc,author from problem where pid='$pid'";
   $result = mysql_query($query);
   list($ptitle,$desc,$inp,$oup,$sin,$sout,$hint,$source,$tl,$ctl,$ml,$ts,$tac,$spj,$hide,$vid,$vname,$ignoc,$author)=@mysql_fetch_row($result);
+  if ($ml=="0") $ml="Unknown ";
+  if ($tl=="0") $tl="Unknown ";
+  if ($ctl=="0") $ctl="Unknown ";
   if (mysql_num_rows($result)>0 && !$hide) $pagetitle="BNUOJ ".$pid." - ".$ptitle;
   else $pagetitle="Problem Unavailable";
   $lastlang=$_COOKIE["lastlang"];
@@ -80,6 +83,7 @@
       if ($vname=="NBUT")  echo "<a href='http://cdn.ac.nbutoj.com/Problem/view.xhtml?id=$vid' target='_blank'>$vid</a>";
       if ($vname=="WHU")  echo "<a href='http://acm.whu.edu.cn/land/problem/detail?problem_id=$vid' target='_blank'>$vid</a>";
       if ($vname=="SYSU")  echo "<a href='http://soj.me/$vid' target='_blank'>$vid</a>";
+      if ($vname=="SCU")  echo "<a href='http://cstest.scu.edu.cn/soj/problem.action?id=$vid' target='_blank'>$vid</a>";
       if ($vname=="UVALive")  {
           if (intval($vid)>5722) $svid=intval($vid)+10;
           else $svid=$vid;
