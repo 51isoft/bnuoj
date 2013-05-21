@@ -84,6 +84,7 @@
       if ($vname=="WHU")  echo "<a href='http://acm.whu.edu.cn/land/problem/detail?problem_id=$vid' target='_blank'>$vid</a>";
       if ($vname=="SYSU")  echo "<a href='http://soj.me/$vid' target='_blank'>$vid</a>";
       if ($vname=="SCU")  echo "<a href='http://cstest.scu.edu.cn/soj/problem.action?id=$vid' target='_blank'>$vid</a>";
+      if ($vname=="HUST")  echo "<a href='http://acm.hust.edu.cn/problem.php?id=$vid' target='_blank'>$vid</a>";
       if ($vname=="UVALive")  {
           if (intval($vid)>5722) $svid=intval($vid)+10;
           else $svid=$vid;

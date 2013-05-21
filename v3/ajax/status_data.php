@@ -48,8 +48,8 @@ else $sWhere.= " AND ".$condition ;
 ";
 $rResultFilterTotal = mysql_query( $sQuery ) or die(mysql_error());
 $aResultFilterTotal = mysql_fetch_array($rResultFilterTotal);
-$iFilteredTotal = $aResultFilterTotal[0];*/
-$iFilteredTotal=$maxrunid;
+$iFilteredTotal = $aResultFilterTotal[0];
+$iFilteredTotal=$maxrunid;*/
 
 /* Total data set length */
 $sQuery = "

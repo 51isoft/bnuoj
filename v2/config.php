@@ -25,5 +25,24 @@
     $ojbase_url="http://localhost/v2/";
     $paratypemax=6;
     $mytimezone="Asia/Shanghai";
-    $ojoptions='<option value="BNU">BNU</option><option value="PKU">PKU</option><option value="CodeForces">CodeForces</option><option value="HDU">HDU</option><option value="UVALive">UVALive</option><option value="SGU">SGU</option><option value="LightOJ">LightOJ</option><option value="Ural">Ural</option><option value="ZJU">ZJU</option><option value="UVA">UVA</option><option value="SPOJ">SPOJ</option><option value="UESTC">UESTC</option><option value="FZU">FZU</option><option value="NBUT">NBUT</option><option value="WHU">WHU</option><option value="SYSU">SYSU</option>';
+    $ojoptions='<option value="BNU">BNU</option>'.
+'<option value="PKU">PKU</option>'.
+'<option value="CodeForces">CodeForces</option>'.
+'<option value="HDU">HDU</option>'.
+'<option value="UVALive">UVALive</option>'.
+'<option value="SGU">SGU</option>'.
+'<option value="LightOJ">LightOJ</option>'.
+'<option value="Ural">Ural</option>'.
+'<option value="ZJU">ZJU</option>'.
+'<option value="UVA">UVA</option>'.
+'<option value="SPOJ">SPOJ</option>'.
+'<option value="UESTC">UESTC</option>'.
+'<option value="FZU">FZU</option>'.
+'<option value="NBUT">NBUT</option>'.
+'<option value="WHU">WHU</option>'.
+'<option value="SYSU">SYSU</option>'.
+'<option value="OpenJudge">OpenJudge</option>'.
+'<option value="SCU">SCU</option>'.
+'<option value="HUST">HUST</option>';
+
 ?>

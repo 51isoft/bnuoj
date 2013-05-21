@@ -7,7 +7,7 @@ An Online Judge system for Beijing Normal University, featuring following awesom
 
 *  Basic online judge functions;
 
-*  Virtual judge functions, currently including 14 OJs and counting;
+*  Virtual judge functions, including loads of OJs;
 
 *  Replay contests and merge standings;
 

@@ -85,7 +85,8 @@ $ojoptions='<option value="BNU">BNU</option>'.
 '<option value="WHU">WHU</option>'.
 '<option value="SYSU">SYSU</option>'.
 '<option value="OpenJudge">OpenJudge</option>'.
-'<option value="SCU">SCU</option>';
+'<option value="SCU">SCU</option>'.
+'<option value="HUST">HUST</option>';
 
 
 ?>

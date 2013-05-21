@@ -55,8 +55,11 @@ class User {
         global $db;
         if (!$this->valid) return 0;
         if (isset($this->info["rank"])) return $this->info["rank"];
-        $sql="SELECT rownum FROM ( SELECT @rownum := @rownum +1 rownum, ranklist . * FROM (SELECT @rownum :=0) r, ranklist) AS t where username='".$db->escape($this->info['username'])."'";
-        list($this->info["rank"]) = $db->get_row($sql,ARRAY_N);
+        list($this->info["rank"]) = $db->get_row("select count(*)+1 from user where total_ac>".$this->get_val("total_ac")." or 
+            (total_ac=".$this->get_val("total_ac")." and total_submit<".$this->get_val("total_submit").") or 
+            (total_ac=".$this->get_val("total_ac")." and total_submit=".$this->get_val("total_submit")." and username<'".$db->escape($this->info['username'])."' )",ARRAY_N);
+        // $sql="SELECT rownum FROM ( SELECT @rownum := @rownum +1 rownum, ranklist . * FROM (SELECT @rownum :=0) r, ranklist) AS t where username='".$db->escape($this->info['username'])."'";
+        // list($this->info["rank"]) = $db->get_row($sql,ARRAY_N);
         return $this->info["rank"];
     }
     function get_accepted_pid() {

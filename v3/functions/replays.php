@@ -834,6 +834,38 @@ function replay_deal_scu($standtable) {
     }
 }
 
+function replay_deal_hust($standtable) {
+    global $_POST,$sttime,$edtime,$mcid,$pnum,$sfreq;
+    $rows=$standtable->find("tr");
+    $unum=sizeof($rows);
+    for ($i=1;$i<$unum;$i++) {
+        $crow=$rows[$i]->children();
+        $uname=strip_tags($crow[1]->innertext);
+        for ($j=0;$j<$pnum;$j++) {
+            $value=trim($crow[$j+4]->innertext);
+            if ($value=="") continue;
+            if (strstr($value,":")==null) {
+                $tnum=strstr(substr(strstr($value,'('),1),')',true);
+                $tnum=-intval($tnum);
+                //echo $uname." ".$_POST['pid'.$j]." ".$tnum." * ".date("Y-m-d H:i:s",$edtime-10)."<br />\n";
+                inswa($tnum,$sttime,$edtime,$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+            }
+            else {
+                $tnum=0;
+                if (strstr($value,"(")==null) $act=$value;
+                else {
+                    $act=strstr($value,'(',true);
+                    $tnum=strstr(substr(strstr($value,'('),1),')',true);
+                }
+                if ($tnum=="") $tnum=0;
+                else $tnum=-intval($tnum);
+                //echo $uname." ".$_POST['pid'.$j]." ".date("Y-m-d H:i:s",$sttime+replay_to_second($act)-10)." * $tnum + ".date("Y-m-d H:i:s",$sttime+replay_to_second($act))."<br />\n";
+                insac($tnum,$sttime,replay_to_second($act),$_POST['pid'.$j],convert_str($uname),$mcid,$sfreq);
+            }
+        }
+    }
+}
+
 function replay_crawl_zju($cid) {
     $res=array();
     $html=file_get_html("http://acm.zju.edu.cn/onlinejudge/showContestProblems.do?contestId=$cid");
@@ -1029,6 +1061,40 @@ function replay_crawl_scu($cid) {
     $res["name"]=$title;
     $res["description"]=$res["repurl"]="http://cstest.scu.edu.cn/soj/contest/rank.action?cid=$cid";
     $res["ctype"]="scu";
+    $res["code"]=0;
+    $res["isvirtual"]=0;
+    return $res;
+}
+
+function replay_crawl_hust($cid) {
+    $res=array();
+    $html=file_get_html("http://acm.hust.edu.cn/contest.php?cid=$cid");
+    if ($html->find("table",1)==null) {
+        $res["code"]=1;
+        return $res;
+    }
+    $titles=$html->find("table",1)->find("tr");
+    for ($i=1;$i<sizeof($titles);$i++) {
+        $title=$titles[$i]->find("td",1)->plaintext;
+        //echo $title;
+        if ($title==null) continue;
+        $tname=problem_get_id_from_virtual("HUST",trim(strstr($title," ",true)));
+        if ($tname==null) {
+            $res["code"]=1;
+            return $res;
+        }
+        $res["vpid".($i-1)]=$tname;
+    }
+    preg_match('/Start Time: <.*>(.*)</sU',$html,$matches);
+    $sttime=$matches[1];
+    preg_match('/End Time: <.*>(.*)</sU',$html,$matches);
+    $edtime=$matches[1];
+    $title=trim($html->find("h3",0)->plaintext);
+    $res["start_time"]=$sttime;
+    $res["end_time"]=$edtime;
+    $res["name"]=$title;
+    $res["description"]=$res["repurl"]="http://acm.hust.edu.cn/contestrank.php?cid=$cid";
+    $res["ctype"]="hust";
     $res["code"]=0;
     $res["isvirtual"]=0;
     return $res;

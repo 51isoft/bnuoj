@@ -401,6 +401,19 @@ if ($current_user->is_root()) {
         replay_add_contest();
         replay_deal_scu($standtable);
     }
+    else if ($_POST["ctype"]=="hust") {
+        $filename="replay_cid_".$mcid.".html";
+        replay_move_uploaded_file($filename);
+        $html=file_get_html("../uploadstand/" . $filename);
+        $standtable=$html->find("table",1);
+        $nprob=sizeof($standtable->find("tr",0)->children())-4;
+        if ($nprob!=$pnum) {
+            $ret["msg"]="Expected ".$nprob." problems, got $pnum . Add failed.";
+            die(json_encode($ret));   
+        }
+        replay_add_contest();
+        replay_deal_hust($standtable);
+    }
     $ret["code"]=0;
     $ret["msg"]="Successfully Added.";
 }

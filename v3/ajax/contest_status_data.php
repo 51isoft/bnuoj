@@ -75,13 +75,13 @@ if ($EZSQL_ERROR) die("SQL Error!");
  * Get data to display
  */
 $sQuery = "
-    SELECT ".str_replace(" , ", " ", implode(", ", $aColumns))."
+    SELECT COUNT(".$sIndexColumn.")
     FROM   $sTable
     $sWhere
     $sOrder
 ";
 $db->query($sQuery);
-$iFilteredTotal=$db->num_rows;
+list($iFilteredTotal)=$db->get_row($sQuery,ARRAY_N);
 
 /*
  * Output

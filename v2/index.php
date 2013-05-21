@@ -137,7 +137,8 @@
             <a href="http://acm.whu.edu.cn/land" target="_blank">WHU</a>&nbsp;
             <a href="http://soj.me" target="_blank">SYSU</a>&nbsp;
             <a href="http://poj.openjudge.cn" target="_blank">OpenJudge</a>&nbsp;
-            <a href="http://cstest.scu.edu.cn/soj/" target="_blank">SCU</a>
+            <a href="http://cstest.scu.edu.cn/soj/" target="_blank">SCU</a>&nbsp;
+            <a href="http://acm.hust.edu.cn/" target="_blank">HUST</a>
           </div>
           <h2 style="margin-top:20px">Todo List</h2>
           <div class="content-wrapper ui-corner-all">

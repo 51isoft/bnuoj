@@ -2,14 +2,15 @@
 
 include_once(dirname(__FILE__)."/../functions/global.php");
 
-$aColumns = array( 'rownum', 'username', 'nickname', 'total_ac', 'total_submit' );
+$aColumns = array( 'uid', 'username', 'nickname', 'total_ac', 'total_submit' );
 $sIndexColumn = "uid";
-$sTable = "(
-    SELECT @rownum := @rownum +1 rownum, ranklist . * 
-    FROM (
-        SELECT @rownum :=0
-    )r, ranklist
-) AS t";
+$sTable = "ranklist";
+// $sTable = "(
+//     SELECT @rownum := @rownum +1 rownum, ranklist . * 
+//     FROM (
+//         SELECT @rownum :=0
+//     )r, ranklist
+// ) AS t";
 
 //paging
 $sLimit = "";
@@ -27,7 +28,11 @@ if ( isset( $_GET['iSortCol_0'] ) )
     {
         if ( $_GET[ 'bSortable_'.intval($_GET['iSortCol_'.$i]) ] == "true" )
         {
-            $sOrder .= $aColumns[ intval( $_GET['iSortCol_'.$i] ) ]."
+            if ($i==0) {
+                if (convert_str( $_GET['sSortDir_'.$i] )=="asc") $sOrder .= "total_ac desc, total_submit, username, ";
+                else $sOrder .= "total_ac, total_submit desc, username desc, ";
+            }
+            else $sOrder .= $aColumns[ intval( $_GET['iSortCol_'.$i] ) ]."
                 ".convert_str( $_GET['sSortDir_'.$i] ) .", ";
         }
     }
@@ -83,13 +88,13 @@ if ($EZSQL_ERROR) die("SQL Error!");
  * Get data to display
  */
 $sQuery = "
-    SELECT ".str_replace(" , ", " ", implode(", ", $aColumns))."
+    SELECT COUNT(".$sIndexColumn.")
     FROM   $sTable
     $sWhere
     $sOrder
 ";
 $db->query($sQuery);
-$iFilteredTotal=$db->num_rows;
+list($iFilteredTotal)=$db->get_row($sQuery,ARRAY_N);
 
 /*
  * Output
@@ -113,7 +118,11 @@ $sQuery = "
 foreach ( (array)$db->get_results( $sQuery,ARRAY_A ) as $aRow )
 {
     $row = array();
-    for ( $i=0 ; $i<count($aColumns) ; $i++ )
+    list($rank)=$db->get_row("select count(*)+1 from user where total_ac>".$aRow["total_ac"]." or 
+        (total_ac=".$aRow["total_ac"]." and total_submit<".$aRow["total_submit"].") or 
+        (total_ac=".$aRow["total_ac"]." and total_submit=".$aRow["total_submit"]." and username<'".$aRow["username"]."' )",ARRAY_N);
+    $row[]=$rank;
+    for ( $i=1 ; $i<count($aColumns) ; $i++ )
     {
         if ($aColumns[$i] == "nickname" ) {
             $row[] = change_out_nick($aRow[ $aColumns[$i] ]);

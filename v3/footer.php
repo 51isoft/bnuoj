@@ -3,7 +3,7 @@
       <hr>
       <footer id="footer">
         <p>
-          Distributed under GPLv3. | <a href='http://code.google.com/p/bnuoj' target="_blank">Project Homepage</a> | Developer: <a href="mailto:yichaonet#gmail.com">51isoft</a> | Current Style: <b id="stylename"></b>.
+          Distributed under GPLv3. | <a href='https://github.com/51isoft/bnuoj' target="_blank">Project Homepage</a> | Developer: <a href="mailto:yichaonet#gmail.com">51isoft</a> | Current Style: <b id="stylename"></b>.
         </p>
         <form class="form-inline">
           <label class="select">

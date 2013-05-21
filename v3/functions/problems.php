@@ -57,6 +57,7 @@ class Problem {
         if ($vname=="WHU")  $this->info["to_url"]="<a href='http://acm.whu.edu.cn/land/problem/detail?problem_id=$vid' target='_blank'>$vid</a>";
         if ($vname=="SYSU")  $this->info["to_url"]="<a href='http://soj.me/$vid' target='_blank'>$vid</a>";
         if ($vname=="SCU")  $this->info["to_url"]="<a href='http://cstest.scu.edu.cn/soj/problem.action?id=$vid' target='_blank'>$vid</a>";
+        if ($vname=="HUST")  $this->info["to_url"]="<a href='http://acm.hust.edu.cn/problem.php?id=$vid' target='_blank'>$vid</a>";
         if ($vname=="UVALive")  {
             if (intval($vid)>5722) $svid=intval($vid)+10;
             else $svid=$vid;

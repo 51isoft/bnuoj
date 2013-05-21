@@ -317,8 +317,8 @@ function pcrawler_sysu($pid) {
         if (preg_match('/<h1>Description<\/h1>(.*)<h1>/sU', $content,$matches)) $ret["description"]=trim($matches[1]);
         if (preg_match('/<h1>Input<\/h1>(.*)<h1>Input/sU', $content,$matches)) $ret["input"]=trim($matches[1]);
         if (preg_match('/<h1>Output<\/h1>(.*)<h1>Sample/sU', $content,$matches)) $ret["output"]=trim($matches[1]);
-        if (preg_match('/<pre>(.*)<\/pre>/sU', $content,$matches)) $ret["sample_in"]=trim($matches[1]);
-        if (preg_match('/<pre>(.*)<\/pre>/sU', $content,$matches)) $ret["sample_out"]=trim($matches[1]);
+        if (preg_match('/<h1>Sample.*<pre>(.*)<\/pre>/sU', $content,$matches)) $ret["sample_in"]=trim($matches[1]);
+        if (preg_match('/<h1>Sample.*<pre>.*<pre>(.*)<\/pre>/sU', $content,$matches)) $ret["sample_out"]=trim($matches[1]);
         $ret["hint"]="";
         if (preg_match('/<h1>Problem Source<\/h1>.*<p>(.*)<\/p>/sU', $content,$matches)) $ret["source"]=trim($matches[1]);
         if (strpos($content,"<font color=\"blue\">Special Judge</font>")!==false) $ret["special_judge_status"]=1;
@@ -389,6 +389,57 @@ function pcrawler_scu_num() {
             $totnum=$row->find("td",3)->plaintext;
             //echo "$pid $acnum $totnum<br>";
             $db->query("update problem set vacnum='$acnum', vtotalnum='$totnum' where vname='SCU' and vid='$pid'");
+        }
+        $i++;
+    }
+
+    return "Done";
+}
+
+function pcrawler_hust($pid) {
+    $url="http://acm.hust.edu.cn/problem.php?id=$pid";
+    $content=file_get_contents($url);
+    $ret=array();
+
+    if (stripos($content,"<h2>No Such Problem!</h2>")===false) {
+        if (preg_match('/<h2>(.*)<\/h2></sU', $content,$matches)) $ret["title"]=trim($matches[1]);
+        if (preg_match('/Time Limit: <\/b>(.*) Sec/sU', $content,$matches)) $ret["time_limit"]=intval(trim($matches[1]))*1000;
+        $ret["case_time_limit"]=$ret["time_limit"];
+        if (preg_match('/Memory Limit: <\/b>(.*) MB/sU', $content,$matches)) $ret["memory_limit"]=intval(trim($matches[1]))*1024;
+        if (preg_match('/Description<\/h2>(.*)<h2>Input/sU', $content,$matches)) $ret["description"]=trim($matches[1]);
+        if (preg_match('/Input<\/h2>(.*)<h2>Output/sU', $content,$matches)) $ret["input"]=trim($matches[1]);
+        if (preg_match('/Output<\/h2>(.*)<h2>Sample/sU', $content,$matches)) $ret["output"]=trim($matches[1]);
+        if (preg_match('/<h2>Sample.*<pre>(.*)<\/pre>/sU', $content,$matches)) $ret["sample_in"]=trim($matches[1]);
+        if (preg_match('/<h2>Sample.*<pre>.*<pre>(.*)<\/pre>/sU', $content,$matches)) $ret["sample_out"]=trim($matches[1]);
+        if (preg_match('/HINT<\/h2>(.*)<h2>Source/sU', $content,$matches)) $ret["hint"]=trim($matches[1]);
+        if (preg_match('/Source<\/h2>.*<p>(.*)<\/p>/sU', $content,$matches)) $ret["source"]=trim($matches[1]);
+        if (strpos($content,"<b style=\"color:red\">Special Judge</b>")!==false) $ret["special_judge_status"]=1;
+        else $ret["special_judge_status"]=0;
+
+        $ret=pcrawler_process_info($ret,"hust","http://acm.hust.edu.cn/");
+        $id=pcrawler_insert_problem($ret,"HUST",$pid);
+        return "HUST $pid has been crawled as $id.<br>";
+    }
+    else return "No problem called HUST $pid.<br>";
+}
+
+function pcrawler_hust_num() {
+    global $db;
+
+    $i=1;
+    while (true) {
+        $html=file_get_html("http://acm.hust.edu.cn/problemset.php?page=$i");
+        $table=$html->find("table",1);
+        $rows=$table->find("tr");
+        if (sizeof($rows)<3) break;
+        for ($j=2;$j<sizeof($rows);$j++) {
+            $row=$rows[$j];
+            //echo htmlspecialchars($row);
+            $pid=$row->find("td",1)->plaintext;
+            $acnum=$row->find("td a",1)->plaintext;
+            $totnum=$row->find("td a",2)->plaintext;
+            //echo "$pid $acnum $totnum<br>";die();
+            $db->query("update problem set vacnum='$acnum', vtotalnum='$totnum' where vname='HUST' and vid='$pid'");
         }
         $i++;
     }

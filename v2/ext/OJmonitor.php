@@ -313,6 +313,24 @@ function check_scu() {
     }
 }
 
+function check_hust() {
+    global $maxwaitnum;
+    $html=file_get_html("http://acm.hust.edu.cn/status.php");
+    if ($html==null||$html->find("table",1)==null) return "Down: cannot connect.";
+    else {
+        $num=0;
+        $res=$html->find("table",1)->find("tr");
+        foreach ($res as $row) {
+            $result=$row->find("td font",0)->plaintext;
+            // echo $result;
+            if (stristr($result,"pending")||stristr($result,"waiting")) $num++;
+        }
+        if ($num>$maxwaitnum) return "Possibly down: more than $maxwaitnum queuings.";
+        return "Normal";
+    }
+}
+
+
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_pku())."' where name='PKU'";
 mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_hdu())."' where name='HDU'";
@@ -347,6 +365,8 @@ $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_openjudge()
 mysql_query($sql);
 $sql="update ojinfo set lastcheck=now(), status='".convert_str(check_scu())."' where name='SCU'";
 mysql_query($sql);
+$sql="update ojinfo set lastcheck=now(), status='".convert_str(check_hust())."' where name='HUST'";
+mysql_query($sql);
 
 // echo check_pku();
 // echo check_hdu();
@@ -365,4 +385,5 @@ mysql_query($sql);
 // echo check_sysu();
 // echo check_openjudge();
 // echo check_scu();
+// echo check_hust();
 ?>
