@@ -37,34 +37,34 @@ class Problem {
         $vid=$db->escape($this->info["vid"]);
 
         if ($vname=="PKU")  $this->info["to_url"]="<a href='http://acm.pku.edu.cn/JudgeOnline/problem?id=$vid' target='_blank'>$vid</a>";
-        if ($vname=="OpenJudge")  $this->info["to_url"]="<a href='http://poj.openjudge.cn/practice/$vid' target='_blank'>$vid</a>";
-        if ($vname=="CodeForces")  {
+        else if ($vname=="OpenJudge")  $this->info["to_url"]="<a href='http://poj.openjudge.cn/practice/$vid' target='_blank'>$vid</a>";
+        else if ($vname=="CodeForces")  {
             $ov=$vid;
             $v1=$vid[strlen($vid)-1];
             $tv=$vid;
             $tv[strlen($vid)-1]='/';
             $this->info["to_url"]="<a href='http://codeforces.com/problemset/problem/$tv$v1' target='_blank'>$ov</a>";
         }
-        if ($vname=="HDU")  $this->info["to_url"]="<a href='http://poj.org/problem?id=$vid' target='_blank'>$vid</a>";
-        if ($vname=="SGU")  $this->info["to_url"]="<a href='http://acm.sgu.ru/problem.php?contest=0&problem=$vid' target='_blank'>$vid</a>";
-        if ($vname=="LightOJ")  $this->info["to_url"]="<a href='http://www.lightoj.com/volume_showproblem.php?problem=$vid' target='_blank'>$vid</a>";
-        if ($vname=="Ural")  $this->info["to_url"]="<a href='http://acm.timus.ru/problem.aspx?num=$vid' target='_blank'>$vid</a>";
-        if ($vname=="ZJU")  $this->info["to_url"]="<a href='http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=$vid' target='_blank'>$vid</a>";
-        if ($vname=="SPOJ")  $this->info["to_url"]="<a href='http://www.spoj.pl/problems/$vid/' target='_blank'>$vid</a>";
-        if ($vname=="UESTC")  $this->info["to_url"]="<a href='http://acm.uestc.edu.cn/problem.php?pid=$vid' target='_blank'>$vid</a>";
-        if ($vname=="FZU")  $this->info["to_url"]="<a href='http://acm.fzu.edu.cn/problem.php?pid=$vid' target='_blank'>$vid</a>";
-        if ($vname=="NBUT")  $this->info["to_url"]="<a href='http://cdn.ac.nbutoj.com/Problem/view.xhtml?id=$vid' target='_blank'>$vid</a>";
-        if ($vname=="WHU")  $this->info["to_url"]="<a href='http://acm.whu.edu.cn/land/problem/detail?problem_id=$vid' target='_blank'>$vid</a>";
-        if ($vname=="SYSU")  $this->info["to_url"]="<a href='http://soj.me/$vid' target='_blank'>$vid</a>";
-        if ($vname=="SCU")  $this->info["to_url"]="<a href='http://cstest.scu.edu.cn/soj/problem.action?id=$vid' target='_blank'>$vid</a>";
-        if ($vname=="HUST")  $this->info["to_url"]="<a href='http://acm.hust.edu.cn/problem.php?id=$vid' target='_blank'>$vid</a>";
-        if ($vname=="UVALive")  {
+        else if ($vname=="HDU")  $this->info["to_url"]="<a href='http://poj.org/problem?id=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="SGU")  $this->info["to_url"]="<a href='http://acm.sgu.ru/problem.php?contest=0&problem=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="LightOJ")  $this->info["to_url"]="<a href='http://www.lightoj.com/volume_showproblem.php?problem=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="Ural")  $this->info["to_url"]="<a href='http://acm.timus.ru/problem.aspx?num=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="ZJU")  $this->info["to_url"]="<a href='http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="SPOJ")  $this->info["to_url"]="<a href='http://www.spoj.pl/problems/$vid/' target='_blank'>$vid</a>";
+        else if ($vname=="UESTC")  $this->info["to_url"]="<a href='http://acm.uestc.edu.cn/problem.php?pid=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="FZU")  $this->info["to_url"]="<a href='http://acm.fzu.edu.cn/problem.php?pid=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="NBUT")  $this->info["to_url"]="<a href='http://cdn.ac.nbutoj.com/Problem/view.xhtml?id=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="WHU")  $this->info["to_url"]="<a href='http://acm.whu.edu.cn/land/problem/detail?problem_id=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="SYSU")  $this->info["to_url"]="<a href='http://soj.me/$vid' target='_blank'>$vid</a>";
+        else if ($vname=="SCU")  $this->info["to_url"]="<a href='http://cstest.scu.edu.cn/soj/problem.action?id=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="HUST")  $this->info["to_url"]="<a href='http://acm.hust.edu.cn/problem.php?id=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="UVALive")  {
             if (intval($vid)>5722) $svid=intval($vid)+10;
             else $svid=$vid;
             $this->info["to_url"]="<a href='http://livearchive.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=".(intval($svid)-1999)."' target='_blank'>$vid</a>";
         }
-        if ($vname=="UVA")  {
-            list($url)=$db->get_row("select url from vurl where voj='UVA' and vid='$vid'",ARRAY_N);
+        else {
+            list($url)=$db->get_row("select url from vurl where voj='$vname' and vid='$vid'",ARRAY_N);
             $this->info["to_url"]="<a href='$url' target='_blank'>$vid</a>";
         }
         return $this->info["to_url"];
