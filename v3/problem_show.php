@@ -101,8 +101,8 @@ if (!$show_problem->is_valid()||($show_problem->get_val("hide")==1&&!$current_us
 <?php
     if ($current_user->is_root()) {
 ?>
-                Weight: <input class="input-mini" type="text" name="weight" value="10" />
-                Force?: <input type="checkbox" name="force" value="1" />
+                <label class="inline input">Weight: <input class="input-mini" type="text" name="weight" value="10" /></label>
+                <label class="inline checkbox"><input type="checkbox" name="force" value="1" />Force </label>
 <?php
     }
 ?>
