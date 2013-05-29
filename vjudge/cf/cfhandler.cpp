@@ -127,7 +127,7 @@ string getPara() {
         curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl");
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cf.cookie");
         curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "cf.cookie");
-        curl_easy_setopt(curl, CURLOPT_URL,"http://www.codeforces.com/enter");
+        curl_easy_setopt(curl, CURLOPT_URL,"http://codeforces.com/enter");
         res = curl_easy_perform(curl);
         //curl_easy_cleanup(curl);
     }
@@ -144,7 +144,7 @@ bool login()
     string tts=getPara();
     curl = curl_easy_init();
     curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "cf.cookie");
-    curl_easy_setopt(curl, CURLOPT_URL, "http://www.codeforces.com/enter");
+    curl_easy_setopt(curl, CURLOPT_URL, "http://codeforces.com/enter");
     res = curl_easy_perform(curl);
     curl_easy_cleanup(curl);
 
@@ -155,10 +155,10 @@ bool login()
     {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
-        curl_easy_setopt(curl, CURLOPT_REFERER, "http://www.codeforces.com/enter");
+        curl_easy_setopt(curl, CURLOPT_REFERER, "http://codeforces.com/enter");
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cf.cookie");
         curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "cf.cookie");
-        curl_easy_setopt(curl, CURLOPT_URL, "http://www.codeforces.com/enter");
+        curl_easy_setopt(curl, CURLOPT_URL, "http://codeforces.com/enter");
         string post=(string)tts+"submitted=true&action=enter&handle="+username+"&password="+password+"&remember=on&_tta="+getttaValue();
         cout<<post;
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
@@ -251,7 +251,7 @@ int submit(string pid,string lang,string source)
     {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
-        curl_easy_setopt(curl, CURLOPT_URL, "http://www.codeforces.com/problemset/submit");
+        curl_easy_setopt(curl, CURLOPT_URL, "http://codeforces.com/problemset/submit");
         curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cf.cookie");
         curl_multi_add_handle(multi_handle, curl);
@@ -354,7 +354,7 @@ string getCEinfo(string runid)
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cf.cookie");
-        string url=(string)"http://www.codeforces.com/data/judgeProtocol";
+        string url=(string)"http://codeforces.com/data/judgeProtocol";
         string post=(string)"submissionId="+runid;
         //cout<<post;
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
@@ -434,7 +434,7 @@ string getExtern(string pid,string runid) {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cf.cookie");
-        string url=(string)"http://www.codeforces.com/contest/"+pid+"/submission/"+runid;
+        string url=(string)"http://codeforces.com/contest/"+pid+"/submission/"+runid;
         //cout<<url;
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         res = curl_easy_perform(curl);
