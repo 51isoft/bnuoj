@@ -26,7 +26,8 @@ function adjustlist(flag,name) {
         return;
     }
     if (name=="BNU") {
-        for(var i=14;i>=5;i--) sel.remove(i);
+        for(var i=14;i>=9;i--) sel.remove(i);
+        for(var i=7;i>=5;i--) sel.remove(i);
         return;
     }
     if (name=="PKU") {
