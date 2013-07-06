@@ -1,2 +1,5 @@
 .DS_Store
 v3/uploadstand/*
+tags
+*.cookie
+v3/images/*

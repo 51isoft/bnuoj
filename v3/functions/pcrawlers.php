@@ -3,8 +3,8 @@ include_once(dirname(__FILE__)."/global.php");
 include_once(dirname(__FILE__)."/simple_html_dom.php");
 
 $crawled=array();
-function process_and_get_image($ori,$path,$baseurl,$space_deli) {
-    $para["path"]=$path;$para["base"]=$baseurl;$para["trans"]=!$space_deli;
+function process_and_get_image($ori,$path,$baseurl,$space_deli,$cookie) {
+    $para["path"]=$path;$para["base"]=$baseurl;$para["trans"]=!$space_deli;$para["cookie"]=$cookie;
     if ($space_deli) $reg="/< *im[a]?g[^>]*src *= *[\"\\']?([^\"\\' >]*)[^>]*>/si";
     else $reg="/< *im[a]?g[^>]*src *= *[\"\\']?([^\"\\'>]*)[^>]*>/si";
     return preg_replace_callback($reg,
@@ -29,6 +29,7 @@ function process_and_get_image($ori,$path,$baseurl,$space_deli) {
                                     $ch = curl_init();
                                     curl_setopt($ch, CURLOPT_URL, $url);
                                     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                                    if ($para["cookie"]!="") curl_setopt($ch, CURLOPT_COOKIEFILE, $para["cookie"]);
                                     curl_setopt($ch, CURLOPT_HEADER, 0);
                                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                                     $content = curl_exec($ch); 
@@ -43,11 +44,11 @@ function process_and_get_image($ori,$path,$baseurl,$space_deli) {
                                 $ori);
 }
 
-function pcrawler_process_info($ret,$path,$baseurl,$space_deli=true) {
-    $ret["description"]=process_and_get_image($ret["description"],$path,$baseurl,$space_deli);
-    $ret["input"]=process_and_get_image($ret["input"],$path,$baseurl,$space_deli);
-    $ret["output"]=process_and_get_image($ret["output"],$path,$baseurl,$space_deli);
-    $ret["hint"]=process_and_get_image($ret["hint"],$path,$baseurl,$space_deli);
+function pcrawler_process_info($ret,$path,$baseurl,$space_deli=true,$cookie="") {
+    $ret["description"]=process_and_get_image($ret["description"],$path,$baseurl,$space_deli,$cookie);
+    $ret["input"]=process_and_get_image($ret["input"],$path,$baseurl,$space_deli,$cookie);
+    $ret["output"]=process_and_get_image($ret["output"],$path,$baseurl,$space_deli,$cookie);
+    $ret["hint"]=process_and_get_image($ret["hint"],$path,$baseurl,$space_deli,$cookie);
     return $ret;
 }
 
@@ -110,7 +111,7 @@ function pcrawler_cf_one($cid,$num) {
     else return false;
 }
 
-function pcrawler_cf($cid) {
+function pcrawler_codeforces($cid) {
     $msg="";
     $num='A';
     while ($row=pcrawler_cf_one($cid,$num)) {
@@ -124,7 +125,7 @@ function pcrawler_cf($cid) {
 }
 
 
-function pcrawler_cf_num() {
+function pcrawler_codeforces_num() {
     global $db;
     $i=1;$one=0;
     while (true) {
@@ -445,6 +446,115 @@ function pcrawler_hust_num() {
     }
 
     return "Done";
+}
+
+function pcrawler_pku($pid){
+    $url = "http://poj.org/problem?id=$pid";
+    $content = file_get_contents($url);
+    $ret = array();
+    
+    if (trim($content) == "") return "No problem called PKU $pid.<br>";
+    if (stripos($content, "Can not find problem") === false){
+        if (preg_match('/<div class="ptt" lang="en-US">(.*)<\/div>/sU', $content, $matches)) $ret["title"] = trim($matches[1]);
+        if (preg_match('/<td><b>Time Limit:<\/b> (.*)MS<\/td>/sU', $content, $matches)) $ret["time_limit"] = intval(trim($matches[1]));
+        $ret["case_time_limit"] = $ret["time_limit"];
+        if (preg_match('/<td><b>Memory Limit:<\/b> (.*)K<\/td>/sU', $content, $matches)) $ret["memory_limit"] = intval(trim($matches[1]));
+        if (preg_match('/<p class="pst">Description<\/p><div class="ptx" lang="en-US">(.*)<\/div><p class="pst">Input<\/p>/sU', $content, $matches)) $ret["description"] = trim($matches[1]);
+        if (preg_match('/<p class="pst">Input<\/p><div class="ptx" lang="en-US">(.*)<\/div><p class="pst">Output<\/p>/sU', $content, $matches)) $ret["input"] = trim($matches[1]);
+        if (preg_match('/<p class="pst">Output<\/p><div class="ptx" lang="en-US">(.*)<\/div><p class="pst">Sample Input<\/p>/sU', $content, $matches)) $ret["output"] = trim($matches[1]);
+        if (preg_match('/<p class="pst">Sample Input<\/p><pre class="sio">(.*)<\/pre><p class="pst">Sample Output<\/p>/sU', $content, $matches)) $ret["sample_in"] = trim($matches[1]);
+        if (preg_match('/<p class="pst">Sample Output<\/p><pre class="sio">(.*)<\/pre><p class="pst">Source<\/p>/sU', $content, $matches)) $ret["sample_out"] = trim($matches[1]);
+        if (preg_match('/<p class="pst">Source<\/p><div class="ptx" lang="en-US">(.*)<\/div>/sU', $content, $matches)) $ret["source"] = trim(strip_tags($matches[1]));
+        if (strpos($content, '<td style="font-weight:bold; color:red;">Special Judge</td>') !== false) $ret["special_judge_status"] = 1;
+        else $ret["special_judge_status"] = 0;
+
+        $ret = pcrawler_process_info($ret, "pku", "http://poj.org/");
+        $id = pcrawler_insert_problem($ret, "PKU", $pid);
+        return "PKU $pid has been crawled as $id.<br>";
+    }
+    else{
+        return "No problem called PKU $pid.<br>";
+    }
+}
+
+
+function pcrawler_lightoj($pid){
+
+    global $config;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "http://www.lightoj.com/login_check.php");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_COOKIEJAR, "/tmp/lightoj.cookie");
+    curl_setopt($ch, CURLOPT_POST, 1); 
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "myuserid=".urlencode($config["accounts"]["lightoj"]["username"])."&mypassword=".urlencode($config["accounts"]["lightoj"]["password"])."&Submit=Login");
+    $content = curl_exec($ch);
+    curl_close($ch); 
+
+    $url = "http://www.lightoj.com/volume_showproblem.php?problem=$pid";
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_COOKIEFILE, "/tmp/lightoj.cookie");
+    $content = curl_exec($ch); 
+    curl_close($ch); 
+
+    $ret = array();
+
+    if (trim($content) == "<script>location.href='volume_problemset.php'</script>") return "No problem called LIGHTOJ $pid.<br>";
+    if (stripos($content, "Can not find problem") === false){
+        if (preg_match('/<div id="problem_name">(.*) - (.*)<\/div>/sU', $content, $matches)) $ret["title"] = trim($matches[2]);
+        if (preg_match('/Time Limit: <span style="color: #B45F04;">(.*) second/sU', $content, $matches)) $ret["time_limit"] = intval(trim($matches[1])) * 1000;
+        $ret["case_time_limit"] = $ret["time_limit"];
+        if (preg_match('/Memory Limit: <span style="color: #B45F04;">(.*) MB/sU', $content, $matches)) $ret["memory_limit"] = intval(trim($matches[1])) * 1024;
+        if (preg_match('/<div class=Section1>(.*)<h1>Input<\/h1>/sU', $content, $matches)) $ret["description"] = trim($matches[1]);
+        if (preg_match('/<h1>Input<\/h1>.*<p class=MsoNormal>(.*)<\/p>/sU', $content, $matches)) $ret["input"] = trim($matches[1]);
+        if (preg_match('/<h1>Output<\/h1>.*<p class=MsoNormal>(.*)<\/p>/sU', $content, $matches)) $ret["output"] = trim($matches[1]);
+        if (preg_match('/<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0.*>.*<h1>Sample Input<\/h1>.*<\/table>/sU', $content, $matches)) $ret["sample_in"] = trim($matches[0]);
+//        if (preg_match('', $content, $matches)) $ret["sample_out"] = trim($matches[1]);
+        $ret["sample_out"] = "";
+        if (preg_match('/<div id="problem_setter">.*Problem Setter:(.*)<\/div>/sU', $content, $matches)) $ret["source"] = trim(strip_tags($matches[1]));
+        $ret["special_judge_status"] = 0;
+
+        $ret = pcrawler_process_info($ret, "lightoj/$pid", "http://www.lightoj.com/",true,"/tmp/lightoj.cookie");
+        $id = pcrawler_insert_problem($ret, "LightOJ", $pid);
+        return "LightOJ $pid has been crawled as $id.<br>";
+    }
+    else{
+        return "No problem called LightOJ $pid.<br>";
+    }
+    unlink("/tmp/lightoj.cookie");
+}
+
+function pcrawler_uestc($pid){
+    $url = "http://acm.uestc.edu.cn/problem.php?pid=$pid";
+    $content = file_get_contents($url);
+    $ret = array();
+
+    if (strpos($content, '<h2><center>ERROR!</center></h2>
+') !== false) return "No problem called UESTC $pid.<br>";
+    if (stripos($content, "Can not find problem") === false){
+        if (preg_match('/<div id="big_title">.*<h2>(.*)<\/h2>/sU', $content, $matches)) $ret["title"] = trim($matches[1]);
+        if (preg_match('/<h3>Time Limit: <span class="h4">(.*)ms<\/span>/sU', $content, $matches)) $ret["time_limit"] = intval(trim($matches[1]));
+        $ret["case_time_limit"] = $ret["time_limit"];
+        if (preg_match('/Memory Limit: <span class="h4">(.*)kB<\/span>/sU', $content, $matches)) $ret["memory_limit"] = intval(trim($matches[1]));
+        if (preg_match('/<h2>Description<\/h2>.*<div class="bg">.*<\/div>(.*)<div class="bg">.*<\/div>/sU', $content, $matches)) $ret["description"] = trim($matches[1]);
+        if (preg_match('/<h2>Input<\/h2>.*<div class="bg">.*<\/div>(.*)<div class="bg">.*<\/div>/sU', $content, $matches)) $ret["input"] = trim($matches[1]);
+        if (preg_match('/<h2>Output<\/h2>.*<div class="bg">.*<\/div>(.*)<div class="bg">.*<\/div>/sU', $content, $matches)) $ret["output"] = trim($matches[1]);
+        if (preg_match('/<h2>Sample Input<\/h2>.*<div class="bg">.*<\/div>(.*)<div class="bg">.*<\/div>/sU', $content, $matches)) $ret["sample_in"] = trim($matches[1]);
+        if (preg_match('/<h2>Sample Output<\/h2>.*<div class="bg">.*<\/div>(.*)<div class="bg">.*<\/div>/sU', $content, $matches)) $ret["sample_out"] = trim($matches[1]);
+        if (preg_match('/<h2>Source<\/h2>.*<div class="bg">.*<\/div>(.*)<div class="bg">.*<\/div>/sU', $content, $matches)) $ret["source"] = trim(strip_tags($matches[1]));
+        if (preg_match('/<h2>Hint<\/h2>.*<div class="bg">.*<\/div>(.*)<div class="bg">.*<\/div>/sU', $content, $matches)) $ret["hint"] = trim(strip_tags($matches[1]));
+        if (strpos($content, '') !== false) $ret["special_judge_status"] = 1;
+        else $ret["special_judge_status"] = 0;
+
+        $ret = pcrawler_process_info($ret, "uestc", "http://acm.uestc.edu.cn/");
+        $id = pcrawler_insert_problem($ret, "UESTC", $pid);
+        return "UESTC $pid has been crawled as $id.<br>";
+    }
+    else{
+        return "No problem called UESTC $pid.<br>";
+    }
 }
 
 ?>

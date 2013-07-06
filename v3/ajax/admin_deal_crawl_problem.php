@@ -8,14 +8,9 @@ if (!$current_user->is_root()) {
     die(json_encode($ret));
 }
 
-if ($_GET["pcoj"]=="CodeForces") $func="pcrawler_cf";
-else if ($_GET["pcoj"]=="FZU") $func="pcrawler_fzu";
-else if ($_GET["pcoj"]=="HDU") $func="pcrawler_hdu";
-else if ($_GET["pcoj"]=="OpenJudge") $func="pcrawler_openjudge";
-else if ($_GET["pcoj"]=="SYSU") $func="pcrawler_sysu";
-else if ($_GET["pcoj"]=="SCU") $func="pcrawler_scu";
-else if ($_GET["pcoj"]=="HUST") $func="pcrawler_hust";
-else {
+$func="pcrawler_".strtolower($_GET["pcoj"]);
+
+if (!function_exists($func)) {
     $ret["msg"]="Invalid OJ!";
     die(json_encode($ret));
 }
@@ -32,8 +27,11 @@ if ($_GET["type"]==0) {//single
 
 } else if ($_GET["type"]==2) {//num
     $func.="_num";
-    $ret["msg"]=$func();
-    $ret["code"]=0;
+    if (!function_exists($func)) $ret["msg"]="Invalid OJ!";
+    else {
+        $ret["msg"]=$func();
+        $ret["code"]=0;
+    }
     echo json_encode($ret);
 } else {
     $ret["msg"]="Invalid request!";
