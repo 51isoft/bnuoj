@@ -86,16 +86,15 @@ string getttaValue() {
 }
 
 
-string getCFLineFromFile(char *filename) {
+string getCFLineFromFile(char *filename,string mark) {
     string res="",ts;
     FILE * fp=fopen(filename,"r");
     while (fgets(tmps,1000000,fp)) {
         res=tmps;
-        if (res.find("<input type=\'hidden\' ")==0) {
+        if (res.find(mark)!=string::npos) {
             while (fgets(tmps,1000000,fp)) {
-                ts=tmps;
-                if (ts.find("<input type=\'hidden\' ")==string::npos) break;
-                res=res+ts;
+                res=tmps;
+                if (res.find("<input type=\'hidden\' ")!=string::npos) break;
             }
             break;
         }
@@ -104,21 +103,21 @@ string getCFLineFromFile(char *filename) {
     int loc=0,tp;
     // cout<<res;
     string rres="";
-    while ((loc=res.find("name=\"",loc))!=string::npos) {
-        loc=loc+strlen("name=\"");
-        tp=res.find("\"",loc);
+    while ((loc=res.find("name=\'",loc))!=string::npos) {
+        loc=loc+strlen("name=\'");
+        tp=res.find("\'",loc);
         //cout <<loc <<" " << tp <<" "<<res.substr(loc,tp-loc)<<endl;
-        rres=rres+escapeURL(res.substr(loc,tp-loc));
-        loc=res.find("value=\"",tp);
-        loc=loc+strlen("value=\"");
-        tp=res.find("\"",loc);
+        rres=rres+res.substr(loc,tp-loc);
+        loc=res.find("value=\'",tp);
+        loc=loc+strlen("value=\'");
+        tp=res.find("\'",loc);
         //cout <<loc <<" " << tp <<" "<<res.substr(loc,tp-loc)<<endl;
         rres=rres+"="+escapeURL(res.substr(loc,tp-loc))+"&";
     }
     return rres;
 }
-string getPara() {
-    FILE * fp=fopen(tfilename,"w+");
+string getPara(string mark) {
+    FILE * fp=fopen(tfilename,"w");
     curl = curl_easy_init();
     if(curl) {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
@@ -133,7 +132,7 @@ string getPara() {
     }
     fclose(fp);
     if (res) return "";
-    string ts=getCFLineFromFile(tfilename);
+    string ts=getCFLineFromFile(tfilename,mark);
     //cout<<ts;
     return ts;
 }
@@ -141,30 +140,35 @@ string getPara() {
 
 bool login()
 {
-    string tts=getPara();
     curl = curl_easy_init();
     curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "cf.cookie");
-    curl_easy_setopt(curl, CURLOPT_URL, "http://codeforces.com/enter");
-    res = curl_easy_perform(curl);
+    curl_easy_setopt(curl, CURLOPT_URL, "http://codeforces.com/");
+    curl_easy_perform(curl);
     curl_easy_cleanup(curl);
-
-    FILE * fp=fopen(tfilename,"w+");
+    
+    string tts=getPara("Login into Codeforces");    
+    
+    struct curl_slist *headers=NULL;
+    
+    FILE * fp=fopen(tfilename,"w");
     //cout<<tfilename<<endl;
     curl = curl_easy_init();
     if(curl)
     {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl");
         curl_easy_setopt(curl, CURLOPT_REFERER, "http://codeforces.com/enter");
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cf.cookie");
         curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "cf.cookie");
-        curl_easy_setopt(curl, CURLOPT_URL, "http://codeforces.com/enter");
-        string post=(string)tts+"submitted=true&action=enter&handle="+username+"&password="+password+"&remember=on&_tta="+getttaValue();
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        string post=(string)tts+"action=enter&handle="+username+"&password="+password+"&_tta="+getttaValue();
         cout<<post;
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, "http://codeforces.com/enter");
         res = curl_easy_perform(curl);
 
-//        print_cookies(curl);
+        //print_cookies(curl);
 
         curl_easy_cleanup(curl);
     }
@@ -177,9 +181,40 @@ bool login()
     return true;
 }
 
+
+string getCFActionFromFile(char *filename) {
+    string res="",ts;
+    FILE * fp=fopen(filename,"r");
+    while (fgets(tmps,1000000,fp)) {
+        res=tmps;
+        if (res.find("<form class=\"submit-form\"")!=string::npos) break;
+    }
+    fclose(fp);
+    int loc=0,tp;
+    cout<<res;
+    string rres="";
+    loc=res.find("action=\"",loc);
+    loc=loc+strlen("action=\"");
+    tp=res.find("\"",loc);
+    rres=res.substr(loc,tp-loc);
+    return rres;
+}
+
 int submit(string pid,string lang,string source)
 {
-    FILE * fp=fopen(tfilename,"w+");
+    FILE * fp=fopen(tfilename,"w");
+    curl = curl_easy_init();
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+    curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cf.cookie");
+    curl_easy_setopt(curl, CURLOPT_URL, "http://codeforces.com/problemset/submit");
+    curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+    fclose(fp);
+    
+    string ta=getCFActionFromFile(tfilename);
+    
+    fp=fopen(tfilename,"w");
     //curl = curl_easy_init();
     static const char buf[] = "Expect:";
     string cid;
@@ -191,10 +226,10 @@ int submit(string pid,string lang,string source)
     formpost=NULL;
     lastptr=NULL;
     headerlist=NULL;
-    source+="\n/*";
     srand(time(NULL));
-    for (int i=0;i<50;i++) source+='a'+rand()%20;
-    source+="*/";
+    int tmp=rand()%120;
+    source+='\n';
+    for (int i=0;i<tmp;i++) source+=' ';
     curl_formadd(&formpost,
                  &lastptr,
                  CURLFORM_COPYNAME, "action",
@@ -243,66 +278,19 @@ int submit(string pid,string lang,string source)
 
 
     curl = curl_easy_init();
-    multi_handle = curl_multi_init();
 
     headerlist = curl_slist_append(headerlist, buf);
 
-    if(curl && multi_handle)
+    if(curl)
     {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
-        curl_easy_setopt(curl, CURLOPT_URL, "http://codeforces.com/problemset/submit");
+        curl_easy_setopt(curl, CURLOPT_URL, ((string)"http://codeforces.com/problemset/submit"+ta).c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cf.cookie");
-        curl_multi_add_handle(multi_handle, curl);
-        curl_multi_perform(multi_handle, &still_running);
-        while(still_running)
-        {
-            struct timeval timeout;
-            int rc;
-
-            fd_set fdread;
-            fd_set fdwrite;
-            fd_set fdexcep;
-            int maxfd = -1;
-
-            long curl_timeo = -1;
-
-            FD_ZERO(&fdread);
-            FD_ZERO(&fdwrite);
-            FD_ZERO(&fdexcep);
-
-            timeout.tv_sec = 1;
-            timeout.tv_usec = 0;
-
-            curl_multi_timeout(multi_handle, &curl_timeo);
-            if(curl_timeo >= 0)
-            {
-                timeout.tv_sec = curl_timeo / 1000;
-                if(timeout.tv_sec > 1)
-                    timeout.tv_sec = 1;
-                else
-                    timeout.tv_usec = (curl_timeo % 1000) * 1000;
-            }
-
-            curl_multi_fdset(multi_handle, &fdread, &fdwrite, &fdexcep, &maxfd);
-
-            rc = select(maxfd+1, &fdread, &fdwrite, &fdexcep, &timeout);
-
-            switch(rc)
-            {
-            case -1:
-                break;
-            case 0:
-            default:
-                //printf("perform!\n");
-                curl_multi_perform(multi_handle, &still_running);
-                //printf("running: %d!\n", still_running);
-                break;
-            }
-        }
-
-        curl_multi_cleanup(multi_handle);
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+        curl_easy_perform(curl);
+        
         curl_easy_cleanup(curl);
         curl_formfree(formpost);
         curl_slist_free_all (headerlist);
@@ -345,9 +333,38 @@ string getRunid(string s)
 
 char tempce[MAX_DATA_SIZE];
 
+string getCFProtocolFromFile(char *filename) {
+    string res="",ts;
+    FILE * fp=fopen(filename,"r");
+    while (fgets(tmps,1000000,fp)) {
+        res=tmps;
+        if (res.find("<meta name=\"X-Csrf-Token\"")!=string::npos) break;
+    }
+    fclose(fp);
+    int loc=0,tp;
+    cout<<res;
+    string rres="";
+    loc=res.find("content=\"",loc);
+    loc=loc+strlen("content=\"");
+    tp=res.find("\"",loc);
+    rres=res.substr(loc,tp-loc);
+    return rres;
+}
+
 string getCEinfo(string runid)
 {
-    FILE * fp=fopen(tfilename,"w+");
+    FILE * fp=fopen(tfilename,"w");
+    curl = curl_easy_init();
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+    curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cf.cookie");
+    curl_easy_setopt(curl, CURLOPT_URL, "http://codeforces.com/problemset/submit");
+    curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+    fclose(fp);
+    string csrf=getCFProtocolFromFile(tfilename);
+
+    fp=fopen(tfilename,"w+");
     curl = curl_easy_init();
     if(curl)
     {
@@ -355,7 +372,7 @@ string getCEinfo(string runid)
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "cf.cookie");
         string url=(string)"http://codeforces.com/data/judgeProtocol";
-        string post=(string)"submissionId="+runid;
+        string post=(string)"submissionId="+runid+"&csrf_token="+csrf;
         //cout<<post;
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
         //cout<<url;
@@ -574,6 +591,13 @@ void judge(string pid,string lang,string runid,string src)
     toBottFile(runid,tu,mu,result,ce_info);
 }
 
+/*
+int main() {
+    init();
+    judge("1A","1","1",getAllFromFile("test.cpp"));
+    return 0;
+}
+*/
 
 struct Judger_data {
     char src[MAX_DATA_SIZE];
@@ -680,8 +704,6 @@ int main(int argc, char *argv[])
     writelog("Connected!\n");
     send_register_info();
     //return 0;
-    /*getchar();
-    printf("After\n");*/
     char templog[3000]={0};
     FILE *target_file;
     while (1)
