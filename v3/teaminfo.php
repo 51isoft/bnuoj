@@ -10,7 +10,7 @@ include_once("functions/sidebars.php");
               <li><a href="#teaminfo">队伍简介</a></li>
               <li><a href="#memberinfo">队员现况</a></li>
               <li><a href="#honorinfo">ICPC成绩</a></li>
-              <li><a id="tplan" href="#trainingplan">2012暑期训练计划</a></li>
+              <li><a id="tplan" href="#trainingplan">暑期训练计划</a></li>
             </ul>
             <div class="tab-content">
               <div class="tab-pane" id="memberinfo">
@@ -185,19 +185,15 @@ include_once("functions/sidebars.php");
                 </p>
               </div>
               <div class="tab-pane" id="trainingplan">
-                <p>以下是2012年暑期的训练计划（<b>暂定，随时可能修改</b>），放在了Google Calendar上，加载较慢，看不见的同学请点<a href="https://www.google.com/calendar/embed?src=7v94d82vuutb9cd3m5rjphghoo%40group.calendar.google.com&ctz=Asia/Shanghai" target="_blank"><b>&gt;&gt;这里&lt;&lt;</b></a>查看。另外<b style="color:red">请务必仔细阅读页面下方的说明。</b></p>
+                <p>以下是2013年暑期的训练计划，放在了Google Calendar上，加载较慢，看不见的同学请点<a href="https://www.google.com/calendar/embed?src=73ipa6fqajrvdfqnnhnlo2jac0%40group.calendar.google.com&ctz=Asia/Shanghai" target="_blank"><b>&gt;&gt;这里&lt;&lt;</b></a>查看。另外<b style="color:red">请务必仔细阅读页面下方的说明。</b></p>
                 <div id="calendar"></div>
                 <div>
                   一些说明：
                   <ol>
-                    <li>实践周日期为暂定日期，确切日期还需等待学院通知。</li>
-                    <li>参加暑期训练的每位同学都可以选择7.7-7.28之间的任意两至三周休息。</li>
-                    <li>专题训练除了讲解以外，简要解题报告以及参考程序均会在专题训练结束后给出。</li>
-                    <li>机房自由训练期间同学可以来电子楼机房做题，或者参加同时进行的一二队组队训练。</li>
-                    <li>7.29-7.31期间将进行三场积分赛，题目由一二队准备，积分规则将提前2天给出。</li>
-                    <li>我们将根据积分赛的结果顺序进行组队，在参考各同学的组队意向的同时进行部分调整。</li>
-                    <li>8月进行进行组队赛，我们将会对每次组队赛进行积分，最终结合暑期组队赛积分（20%-40%）以及5场网络预赛的表现情况（60%-80%）决定参加区域赛的队伍。具体规则将在8月前给出。</li>
-                    <li>组队赛期间，我们将根据队伍通过题目的情况以及排名情况来报销各队的晚餐费用。具体规则也将在8月前给出。</li>
+                    <li>参加暑期训练的每位同学都可以选择一至两周休息，具体时间队内协商。但注意积分赛的时间。</li>
+                    <li>7.15-7.17将进行三场个人积分赛，题目由一二队准备。将根据积分赛的结果顺序进行组队，在参考各同学的组队意向的同时进行部分调整。</li>
+                    <li>7.22开始进行进行组队积分赛，最终结合暑期组队赛积分（20%-40%）以及5场网络预赛的表现情况（60%-80%）决定参加区域赛的队伍。</li>
+                    <li>组队赛期间，我们将根据队伍通过题目的情况以及排名情况来报销各队的晚餐费用。</li>
                   </ol>
                 </div>
               </div>
@@ -216,11 +212,11 @@ $('#myTabs a').click(function (e) {
 })
 $("#tplan").click(function() {
     $('#calendar').html("").fullCalendar({
-        events: 'http://www.google.com/calendar/feeds/7v94d82vuutb9cd3m5rjphghoo%40group.calendar.google.com/public/basic',
+        events: 'http://www.google.com/calendar/feeds/73ipa6fqajrvdfqnnhnlo2jac0%40group.calendar.google.com/public/basic',
         className: 'gcal-event',
         aspectRatio: 2,
         firstDay: 1,
-        year: 2012,
+        year: 2013,
         month: 6
     });
 });

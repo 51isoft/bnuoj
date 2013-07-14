@@ -45,7 +45,7 @@ class Problem {
             $tv[strlen($vid)-1]='/';
             $this->info["to_url"]="<a href='http://codeforces.com/problemset/problem/$tv$v1' target='_blank'>$ov</a>";
         }
-        else if ($vname=="HDU")  $this->info["to_url"]="<a href='http://poj.org/problem?id=$vid' target='_blank'>$vid</a>";
+        else if ($vname=="HDU")  $this->info["to_url"]="<a href='http://acm.hdu.edu.cn/showproblem.php?pid=$vid' target='_blank'>$vid</a>";
         else if ($vname=="SGU")  $this->info["to_url"]="<a href='http://acm.sgu.ru/problem.php?contest=0&problem=$vid' target='_blank'>$vid</a>";
         else if ($vname=="LightOJ")  $this->info["to_url"]="<a href='http://www.lightoj.com/volume_showproblem.php?problem=$vid' target='_blank'>$vid</a>";
         else if ($vname=="Ural")  $this->info["to_url"]="<a href='http://acm.timus.ru/problem.aspx?num=$vid' target='_blank'>$vid</a>";

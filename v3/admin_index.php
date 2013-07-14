@@ -43,7 +43,7 @@ if ($current_user->is_root()) {
               <form id="pdetail" method="post" action="ajax/admin_deal_problem.php" class="form-horizontal ajform">
                 <h4>Problem Details</h4>
                 <table class="table table-bordered table-condensed" style="width:100%">
-                  <tr><td>Problem ID</td><td><input type="text" name="p_id" readonly="readonly" class="input-small" /></td></tr>
+                  <tr><td>Problem ID</td><td><input type="text" name="p_id" class="input-small" /></td></tr>
                   <tr><td>Title</td><td><input type="text" name="p_name" class="input-xxlarge" /></tr>
                   <tr>
                     <td>Hide</td>
@@ -104,7 +104,7 @@ if ($current_user->is_root()) {
                 <form method="post" action="ajax/admin_deal_contest.php" id="cdetail" class="ajform form-horizontal">
                     <h4>Contest Information</h4>
                     <table style="width:100%" class="table table-condensed table-bordered">
-                        <tr><td>Contest ID</td><td><input type="text" readonly="readonly" name="cid" class="input-small" /></td></tr>
+                        <tr><td>Contest ID</td><td><input type="text" name="cid" class="input-small" /></td></tr>
                         <tr><td>Title</td><td><input type="text" name="title" class="input-xxlarge" /></td></tr>
                         <tr>
                           <td>Type </td>
@@ -123,7 +123,7 @@ if ($current_user->is_root()) {
                         <tr><td>Description</td><td><textarea name="description" class="input-block-level" rows="8"></textarea></td></tr>
                         <tr><td>Start Time</td><td><input type="text" name="start_time" class="datepick" value='<?= date("Y-m-d")." 09:00:00" ?>'/></td></tr>
                         <tr><td>End Time</td><td><input type="text" name="end_time" class="datepick" value='<?= date("Y-m-d")." 14:00:00" ?>'/></td></tr>
-                        <tr><td>Lock Board Time</td><td><input type="text" name="lock_board_time" class="datepick" value='<?= date("Y-m-d")." 15:00:00" ?>'/></td></tr>
+                        <tr><td>Lock Board Time</td><td><input type="text" name="lock_board_time" class="datepick" value='<?= date("Y-m-d")." 14:00:00" ?>'/></td></tr>
                         <tr class="chatimerow" style="display:none"><td>Challenge Start Time</td><td><input type="text" name="challenge_start_time" class="datepick" value='<?= date("Y-m-d")." 14:10:00" ?>'/></td></tr>
                         <tr class="chatimerow" style="display:none"><td>Challenge End Time</td><td><input type="text" name="challenge_end_time" class="datepick" value='<?= date("Y-m-d")." 14:25:00" ?>'/></td></tr>
                         <tr>

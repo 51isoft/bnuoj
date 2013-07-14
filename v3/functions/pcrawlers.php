@@ -104,7 +104,7 @@ function pcrawler_cf_one($cid,$num) {
         if (preg_match("/Sample test\\(s\\)<\\/div>(.*<\\/div><\\/div>)<\\/div>/sU", $content,$matches)) $ret["sample_in"]=trim($matches[1]);
         $ret["sample_out"]="";
         if (preg_match("/Note<\\/div>(.*)<\\/div><\\/div>/sU", $content,$matches)) $ret["hint"]=trim($matches[1]);
-        if (preg_match("/<th class=\"left\" style=\"width:100%;\">(.*)<\\/th>/sU", $content,$matches)) $ret["source"]=trim($matches[1]);
+        if (preg_match("/<th class=\"left\" style=\"width:100%;\">(.*)<\\/th>/sU", $content,$matches)) $ret["source"]=trim(strip_tags($matches[1]));
         $ret["special_judge_status"]=0;
         return $ret;
     }
@@ -556,5 +556,35 @@ function pcrawler_uestc($pid){
         return "No problem called UESTC $pid.<br>";
     }
 }
+
+
+function pcrawler_ural($pid){
+    $url = "http://acm.timus.ru/problem.aspx?space=1&num=$pid";
+    $content = file_get_contents($url);
+    $ret = array();
+
+    if (strpos($content, '<DIV STYLE="color:Red; text-align:center;">Problem not found</DIV>') !== false) return "No problem called ural $pid.<br>";
+    if (stripos($content, "Can not find problem") === false){
+        if (preg_match('/<H2 class="problem_title">.*\. (.*)<\/H2>/sU', $content, $matches)) $ret["title"] = trim($matches[1]);
+        if (preg_match('/<DIV class="problem_limits">Time limit: (.*) second<BR>/sU', $content, $matches)) $ret["time_limit"] = intval(doubleval(trim($matches[1])) * 1000);
+        $ret["case_time_limit"] = $ret["time_limit"];
+        if (preg_match('/<DIV class="problem_limits">.*<BR>Memory limit: (.*) MB<BR>/sU', $content, $matches)) $ret["memory_limit"] = intval(trim($matches[1])) * 1024;
+        if (preg_match('/<DIV ID="problem_text">(.*)<H3 CLASS="problem_subtitle">Input<\/H3>/sU', $content, $matches)) $ret["description"] = trim($matches[1]);
+        if (preg_match('/<H3 CLASS="problem_subtitle">Input<\/H3>(.*)<H3 CLASS="problem_subtitle">Output<\/H3>/sU', $content, $matches)) $ret["input"] = trim($matches[1]);
+        if (preg_match('/<H3 CLASS="problem_subtitle">Output<\/H3>(.*)<H3 CLASS="problem_subtitle">Sample/sU', $content, $matches)) $ret["output"] = trim($matches[1]);
+        if (preg_match('/<TABLE CLASS="sample">.*<\/TABLE>/sU', $content, $matches)) $ret["sample_in"] = trim($matches[0]);
+        $ret["sample_out"] = "";
+        if (preg_match('/<B>Problem Source: <\/B>(.*)<BR>/sU', $content, $matches)) $ret["source"] = trim(strip_tags($matches[1]));
+        $ret["special_judge_status"] = 0;
+
+        $ret = pcrawler_process_info($ret, "ural", "http://acm.ural.edu.cn/");
+        $id = pcrawler_insert_problem($ret, "Ural", $pid);
+        return "ural $pid has been crawled as $id.<br>";
+    }
+    else{
+        return "No problem called ural $pid.<br>";
+    }
+}
+
 
 ?>
