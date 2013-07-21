@@ -52,6 +52,7 @@ function check_uvalive() {
             $result=$row->find("td",4)->plaintext;
             // echo $result;
             if ($result=="In judge queue") $num++;
+            if ($result=="Submission error") $num++;
         }
         if ($num>$maxwaitnum) return "Possibly down: more than $maxwaitnum queuings.";
         return "Normal";
@@ -94,8 +95,8 @@ function check_sgu() {
 
 function check_lightoj() {
     global $maxwaitnum;
-    $ojuser="youruser";
-    $ojpass="yourpassword";
+    $ojuser="lightojuser";
+    $ojpass="lightojpass";
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, "http://www.lightoj.com/login_check.php");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -171,6 +172,7 @@ function check_uva() {
             $result=$row->find("td",4)->plaintext;
             // echo $result;
             if ($result=="In judge queue") $num++;
+            if ($result=="Submission error") $num++;
         }
         if ($num>$maxwaitnum) return "Possibly down: more than $maxwaitnum queuings.";
         return "Normal";

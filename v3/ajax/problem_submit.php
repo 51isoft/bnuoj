@@ -22,7 +22,7 @@ if (strlen($src)==0) {
     echo json_encode($ret);
     die();
 }
-if (!$current_user->is_valid()) {
+if (!$current_user->is_valid()||!$current_user->match($uname)) {
     clear_cookies();
     $ret["msg"]="Invalid User.";
     echo json_encode($ret);

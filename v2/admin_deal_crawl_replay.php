@@ -60,7 +60,14 @@ function hustv_convert($oj) {
 
 function crawl_hustv($cid) {
     global $res;
-    $html=file_get_html("http://acm.hust.edu.cn:8080/judge/contest/view.action?cid=$cid");
+    $tuCurl=curl_init();
+    curl_setopt($tuCurl,CURLOPT_URL,"http://acm.hust.edu.cn/vjudge/contest/view.action?cid=$cid");
+    curl_setopt($tuCurl,CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($tuCurl,CURLOPT_FOLLOWLOCATION,1);
+    curl_setopt($tuCurl,CURLOPT_USERAGENT,"BNUOJ, Orz Isun");
+    $html=curl_exec($tuCurl);
+    curl_close($tuCurl);
+    $html=str_get_html($html);
     if ($html->find("#viewContest")==null) {
         $res["result"]=1;
         return;

@@ -59,7 +59,14 @@ function replay_move_uploaded_file($filename) {
         move_uploaded_file($_FILES["file"]["tmp_name"], "../uploadstand/" . $filename);
     }
     else {
-        file_put_contents("../uploadstand/" . $filename,file_get_contents($_POST["repurl"]));
+        $tuCurl=curl_init();
+        curl_setopt($tuCurl,CURLOPT_URL,$_POST["repurl"]);
+        curl_setopt($tuCurl,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($tuCurl,CURLOPT_FOLLOWLOCATION,1);
+        curl_setopt($tuCurl,CURLOPT_USERAGENT,"BNUOJ");
+        $html=curl_exec($tuCurl);
+        curl_close($tuCurl);
+        file_put_contents("../uploadstand/" . $filename,$html);
     }
     $ret["msg"].="Stored in: " . "uploadstand/" . $filename."<br />";
 }
