@@ -290,7 +290,7 @@ if ($current_user->is_root()) {
             <div id="replaytab" class="tab-pane">
                 <form id="replaycrawl" method="get" action="ajax/admin_deal_crawl_replay.php" class="form-inline">
                   <h4>Auto Crawl</h4>
-                  OJ: <select name="oj" id="vcojname" class="input-medium">
+                  <label>OJ: <select name="oj" id="vcojname" class="input-medium">
                       <option value="HUSTV">HUST Vjudge</option>
                       <option value="ZJU">ZJU</option>
                       <option value="UESTC">UESTC</option>
@@ -298,12 +298,21 @@ if ($current_user->is_root()) {
                       <option value="OpenJudge">OpenJudge</option>
                       <option value="SCU">SCU</option>
                       <option value="HUST">HUST</option>
-                  </select>
+                    </select>
+                  </label>
                   <div class="input-append">
                     <input name="cid" id="vcid" type="text" class="input-small" placeholder="Contest ID" />
                     <button class="btn btn-primary">Crawl!</button>
                   </div>
                   <span id="msgbox" style="display:none"></span>
+                </form>
+                <form id="replaycrawlall" method="get" class="ajform form-inline" action="ajax/admin_crawl_hust_all.php">
+                  <h4>Crawl All HUSTV Contests</h4>
+                  <div class="input-append">
+                    <input type="text" name="cid" placeholder="Contest ID" class="input-medium">
+                    <button class="btn btn-danger">Crawl!</button>
+                  </div>
+                  <div id="msgbox" style="display:none;clear:both"></div>
                 </form>
                 <form id='replayform' method='post' class="ajform form-horizontal" action="ajax/admin_deal_replay.php" enctype="multipart/form-data">
                     <h4>Replay Contest Information</h4>

@@ -54,7 +54,7 @@ function insac($tnum,$sttime,$act,$pid,$name,$mcid,$pert=10) {
 
 
 function replay_move_uploaded_file($filename) {
-    global $_FILES,$POST,$ret;
+    global $_FILES,$_POST,$ret;
     if (sizeof($_FILES)!=0) {
         move_uploaded_file($_FILES["file"]["tmp_name"], "../uploadstand/" . $filename);
     }
@@ -912,12 +912,20 @@ function replay_hustv_convert($oj) {
 
 function replay_crawl_hustv($cid) {
     $res=array();
-    $html=file_get_html("http://acm.hust.edu.cn:8080/judge/contest/view.action?cid=$cid");
+    $tuCurl=curl_init();
+    curl_setopt($tuCurl,CURLOPT_URL,"http://acm.hust.edu.cn/vjudge/contest/view.action?cid=$cid");
+    curl_setopt($tuCurl,CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($tuCurl,CURLOPT_FOLLOWLOCATION,1);
+    curl_setopt($tuCurl,CURLOPT_USERAGENT,"BNUOJ");
+    $html=curl_exec($tuCurl);
+    curl_close($tuCurl);
+    $html=str_get_html($html);
     if ($html->find("#viewContest")==null) {
         $res["code"]=1;
         return $res;
     }
     $titles=$html->find("#viewContest td.center a");
+    $res["pnum"]=sizeof($titles);
     for ($i=0;$i<sizeof($titles);$i++) {
         //echo $titles[$i]->plaintext;
         $oj=strstr($titles[$i]->plaintext," ",true);
@@ -932,11 +940,15 @@ function replay_crawl_hustv($cid) {
     }
     $sttime=date("Y-m-d H:i:s",$html->find("#overview tr",1)->find("td",1)->plaintext/1000);
     $edtime=date("Y-m-d H:i:s",$html->find("#overview tr",2)->find("td",1)->plaintext/1000);
+    if ($html->find("#contest_title img")!=null) {
+        $res["code"]=1;
+        return $res;
+    }
     $title=trim($html->find("#contest_title",0)->plaintext);
     $res["start_time"]=$sttime;
     $res["end_time"]=$edtime;
     $res["name"]=$title;
-    $res["description"]=$res["repurl"]="http://acm.hust.edu.cn:8080/judge/data/standing/$cid.json";
+    $res["description"]=$res["repurl"]="http://acm.hust.edu.cn/vjudge/data/standing/$cid.json";
     $res["ctype"]="hustvjson";
     $res["code"]=0;
     $res["isvirtual"]=1;
