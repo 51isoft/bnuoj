@@ -23,7 +23,7 @@ if ($current_user->get_username()==$username) {
         die();
     }
     if ($ps=="") {
-        $ps=$ops;
+        $ps=addslashes($_POST['ol_password']);
     }
     else if (strlen($ps)<3) {
         $ret["msg"]="Password too short!";

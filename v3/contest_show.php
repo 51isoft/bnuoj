@@ -38,6 +38,17 @@ if (contest_exist($cid)&&($current_user->is_root()||contest_get_val($cid,"ispriv
           <li id="creport_a"><a href="#report">Report</a></li>
           <div class="pull-right btn-group">
 <?php
+    if ($current_user->is_root()) {
+?>
+            <a class="btn btn-danger" id="cdel_a">Delete</a>
+<?php
+    } else if ($current_user->match(contest_get_val($cid,"owner"))&&!contest_started($cid)) {
+?>
+            <a class="btn btn-danger" id="cdel_a">Delete</a>
+<?php
+    }
+?>
+<?php
     if (contest_get_val($cid,"has_cha")!=1) {//no challenge
 ?>
             <a class="btn btn-info" id="cset_a">Settings</a>
@@ -150,7 +161,7 @@ var lim_times=<?=$config["status"]["max_refresh_times"]?>;
 <script type="text/javascript" src="js/adjlist.js?<?=filemtime("js/adjlist.js")?>" ></script>
 <script type="text/javascript" src="js/animator.js"></script>
 <script type="text/javascript" src="js/rankingTableUpdate.js"></script>
-<script type="text/javascript" src="js/contest_show.js?<?php echo filemtime("js/contest_show.js"); ?>"></script>
+<script type="text/javascript" src="js/contest_show.js?<?= filemtime("js/contest_show.js") ?>"></script>
 <?php
 include("footer.php");
 ?>

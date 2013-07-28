@@ -22,13 +22,13 @@ $(document).ready(function() {
                 "mRender": function ( data, type, full ) {
                     return "<a href='status.php?showname="+full[1]+"&showres=Accepted'>"+data+"</a>";
                 },
-                "aTargets": [ 3 ]
+                "aTargets": [ 3,4 ]
             },
             {
                 "mRender": function ( data, type, full ) {
                     return "<a href='status.php?showname="+full[1]+"'>"+data+"</a>";
                 },
-                "aTargets": [ 4 ]
+                "aTargets": [ 5 ]
             }
         ],
         "aaSorting": [ [0,'asc'] ],

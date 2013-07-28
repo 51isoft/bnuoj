@@ -2,7 +2,7 @@
 
 include_once(dirname(__FILE__)."/../functions/global.php");
 
-$aColumns = array( 'uid', 'username', 'nickname', 'total_ac', 'total_submit' );
+$aColumns = array( 'uid', 'username', 'nickname', 'local_ac', 'total_ac', 'total_submit' );
 $sIndexColumn = "uid";
 $sTable = "ranklist";
 // $sTable = "(
@@ -28,9 +28,9 @@ if ( isset( $_GET['iSortCol_0'] ) )
     {
         if ( $_GET[ 'bSortable_'.intval($_GET['iSortCol_'.$i]) ] == "true" )
         {
-            if ($i==0) {
-                if (convert_str( $_GET['sSortDir_'.$i] )=="asc") $sOrder .= "total_ac desc, total_submit, username, ";
-                else $sOrder .= "total_ac, total_submit desc, username desc, ";
+            if (intval( $_GET['iSortCol_'.$i] )==0) {
+                if (convert_str( $_GET['sSortDir_'.$i] )=="asc") $sOrder .= "local_ac desc, total_ac desc, total_submit, username, ";
+                else $sOrder .= "local_ac, total_ac, total_submit desc, username desc, ";
             }
             else $sOrder .= $aColumns[ intval( $_GET['iSortCol_'.$i] ) ]."
                 ".convert_str( $_GET['sSortDir_'.$i] ) .", ";
@@ -118,9 +118,10 @@ $sQuery = "
 foreach ( (array)$db->get_results( $sQuery,ARRAY_A ) as $aRow )
 {
     $row = array();
-    list($rank)=$db->get_row("select count(*)+1 from user where total_ac>".$aRow["total_ac"]." or 
-        (total_ac=".$aRow["total_ac"]." and total_submit<".$aRow["total_submit"].") or 
-        (total_ac=".$aRow["total_ac"]." and total_submit=".$aRow["total_submit"]." and username<'".$aRow["username"]."' )",ARRAY_N);
+    list($rank)=$db->get_row("select count(*)+1 from user where local_ac>".$aRow["local_ac"]." or 
+        (local_ac=".$aRow["local_ac"]." and total_ac>".$aRow["total_ac"].") or 
+        (local_ac=".$aRow["local_ac"]." and total_ac=".$aRow["total_ac"]." and total_submit<".$aRow["total_submit"].") or 
+        (local_ac=".$aRow["local_ac"]." and total_ac=".$aRow["total_ac"]." and total_submit=".$aRow["total_submit"]." and username<'".$aRow["username"]."' )",ARRAY_N);
     $row[]=$rank;
     for ( $i=1 ; $i<count($aColumns) ; $i++ )
     {

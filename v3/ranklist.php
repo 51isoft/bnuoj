@@ -10,8 +10,9 @@ include_once("functions/sidebars.php");
               <tr>
                 <th width='10%'> Rank </th>
                 <th width='20%'> Username </th>
-                <th width='50%'> Nickname </th>
-                <th width='10%'> AC </th>
+                <th width='40%'> Nickname </th>
+                <th width='10%'> Local AC </th>
+                <th width='10%'> Total AC </th>
                 <th width='10%'> All </th>
               </tr>
             </thead>

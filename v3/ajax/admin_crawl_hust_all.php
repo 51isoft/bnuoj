@@ -21,7 +21,10 @@ if ($current_user->is_root()) {
     $total=0;
     foreach ($contests as $cid) {
         $res=replay_crawl_hustv($cid);
-        if ($res["code"]) continue;
+        if ($res["code"]) {
+            if ($res["msg"]) $ret["msg"].=$res["msg"]."<br>";
+            continue;
+        }
         $row = $db->get_row("SHOW TABLE STATUS LIKE 'contest'",ARRAY_A);
         $mcid = $row['Auto_increment'];
         $pnum=$res["pnum"];
@@ -41,6 +44,8 @@ if ($current_user->is_root()) {
         curl_setopt($tuCurl,CURLOPT_USERAGENT,"BNUOJ");
         curl_exec($tuCurl);
         curl_close($tuCurl);
+        set_time_limit(10);
+        sleep(2);
 
         $filename="replay_cid_".$mcid.".json";
         replay_move_uploaded_file($filename);

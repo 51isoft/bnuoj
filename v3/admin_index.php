@@ -420,9 +420,16 @@ if ($current_user->is_root()) {
                 <br />
             </div>
             <div id="othertab" class="tab-pane">
-                <button id="spinfo" class="btn btn-danger syncbutton">Sync Problem Info</button>
-                <button id="suinfo" class="btn btn-danger syncbutton">Sync User Info</button>
-                <div class="alert alert-block" id="syncwait" style="display:none"></div>
+              <button id="spinfo" class="btn btn-danger syncbutton">Sync Problem Info</button>
+              <button id="suinfo" class="btn btn-danger syncbutton">Sync User Info</button>
+              <div class="alert alert-block" id="syncwait" style="display:none"></div>
+              <h4>Delete virtual replays in range</h4>
+              <form id='delcontest' method="get" action="ajax/admin_deal_delete_vreplay.php" class="ajform form-inline">
+                From: <input type="text" name="fcid" placeholder="Contest ID" />
+                To: <input type="text" name="tcid" placeholder="Contest ID" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <div id="msgbox" style="display:none;clear:both"></div>
+              </form>
             </div>
             <div id="pcrawlertab" class="tab-pane">
               <h4>Crawl a single problem/contest</h4>

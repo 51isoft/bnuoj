@@ -952,6 +952,15 @@ function replay_crawl_hustv($cid) {
     $res["ctype"]="hustvjson";
     $res["code"]=0;
     $res["isvirtual"]=1;
+
+    global $db;
+    $row = $db->get_results("select cid from contest where description = '".$db->escape($res["description"])."'", ARRAY_N);
+    if ($db->num_rows) {
+        $rcid=$row[0][0];
+        $res["msg"]="Contest $cid already exists! CID: <a href='contest_show.php?cid=$rcid' target='_blank'>$rcid</a>";
+        $res["code"]=1;
+    }
+
     return $res;
 }
 

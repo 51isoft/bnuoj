@@ -2,36 +2,43 @@
 $pagetitle="2013年暑期训练积分榜";
 include_once("header.php");
 
-$contests=array(613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628);
+$contests=array(1892,2007,2013,1895,1896,1897,1898,1899,1900,1901,1902,1903,1904,1905,1906,1907,1908,1909,1910,1911,1912,1913,1914,1915,1916,1917,1918,1919);
 
 $team=array();
-$team[]=array("random","易超 龚治 李思源");
-$team[]=array("Attiix","赵力 王骁 王梦非");
-$team[]=array("_CD","吴浪 龙翔 张伯威");
-$team[]=array("Sellamoe","黎明明 于馨培 袁伟舜");
-$team[]=array("chd","董自鸣 何冬杰 陈辉");
-$team[]=array("11621","刘芳 盛乔一 焦璐");
-$team[]=array("xuanmei","徐丽妹 王奕轩 吴锦昊");
-$team[]=array("actravel","李奕 李安然 孙萧育");
+$team[]=array("latte","李思源 张伯威 赵力","team100   北京师范大学");
+$team[]=array("crazier","吴浪 陈辉 董自鸣","team099   北京师范大学");
+$team[]=array("cappu","周奕洋 刘芳 盛乔一","team097   北京师范大学");
+$team[]=array("idonotknow","王梦非 郑培凯 陈高翔","team091   北京师范大学");
+$team[]=array("xiaohai","李奕 李安然 马凌霄","team095   北京师范大学");
+$team[]=array("hwd","何伟强 吴雷 段兰君","team093   北京师范大学");
 
-for ($i=0;$i<8;$i++) $team[$i]["punish"]=0.0;
-$team[4]["punish"]=-0.4;
-$team[6]["punish"]=-0.4;
-$team[7]["punish"]=-0.2;
-$team[2]["punish"]=-0.4;
-$team[3]["punish"]=-0.2;
+for ($i=0;$i<6;$i++) $team[$i]["punish"]=0.0;
 foreach ($team as $j => $v) {
     $team[$j]["tval"]=array();
     $team[$j]["csum"]=0;
     $team[$j]["psum"]=array();
     foreach ($contests as $i) {
-        list($team[$j]["cac".$i])=mysql_fetch_array(mysql_query("select count(distinct(pid)) from status 
-            where result='Accepted' and username='".$v[0]."' and contest_belong='$i'"));
+        list($team[$j]["cac".$i])=mysql_fetch_array(mysql_query("
+            select count(distinct(pid)) from (
+                select pid from status
+                where result='Accepted' and username='".$v[0]."' and contest_belong='$i'
+                union
+                select pid from replay_status
+                where result='Accepted' and username='".$v[2]."' and contest_belong='$i'
+            ) as a
+        "));
         list($fitime)=mysql_fetch_array(mysql_query("select unix_timestamp(end_time) from contest where cid='$i'"));
-        list($team[$j]["aac".$i])=mysql_fetch_array(mysql_query("select count(distinct(pid)) from status
-            where result='Accepted' and username='".$v[0]."'
-            and unix_timestamp(time_submit) <= ".($fitime+2*24*60*60)."
-            and pid=any(select pid from contest_problem where cid='$i')"));
+        list($team[$j]["aac".$i])=mysql_fetch_array(mysql_query("
+            select count(distinct(pid)) from (
+                select pid from status
+                where result='Accepted' and username='".$v[0]."'
+                and unix_timestamp(time_submit) <= ".($fitime+(2*24+7)*60*60)."
+                and pid=any(select pid from contest_problem where cid='$i')
+                union
+                select pid from replay_status
+                where result='Accepted' and username='".$v[2]."' and contest_belong='$i'
+            ) as a
+        "));
         $team[$j]["aac".$i]=($team[$j]["aac".$i]-$team[$j]["cac".$i])*0.3;
         $team[$j]["tval"][]=$team[$j]["aac".$i]+$team[$j]["cac".$i];
         $team[$j]["csum"]+=$team[$j]["cac".$i];
@@ -40,7 +47,7 @@ foreach ($team as $j => $v) {
     }
     sort($team[$j]["tval"]);
     $team[$j]["sum"]=0;
-    for ($i=sizeof($team[$j]["tval"])-1;$i>=sizeof($team[$j]["tval"])-14;$i--) {
+    for ($i=sizeof($team[$j]["tval"])-1;$i>=sizeof($team[$j]["tval"])-24;$i--) {
         $team[$j]["sum"]+=$team[$j]["tval"][$i];
     }
     $team[$j]["sum"]+=$team[$j]["punish"];
@@ -64,7 +71,7 @@ foreach ($team as $j => $v) {
               </thead>
               <tbody>
                 <?php foreach ($team as $j => $v) { ?>
-                <tr> 
+                <tr>
                   <td><?= $v[0]."<br />".$v[1] ?></td>
                   <td><?= $v["sum"] ?></td>
                   <td><?= $v["rsum"] ?></td>
@@ -78,7 +85,7 @@ foreach ($team as $j => $v) {
                 </tr>
               </tbody>
             </table>
-            <p align="center">1. 积分为16取14。</p>
+            <p align="center">1. 积分为28取24。</p>
             <div id="rank_chart" style="min-width: 400px; height: 400px; margin: 0 auto">
             </div>
             <div id="score_sum_chart" style="min-width: 400px; height: 400px; margin: 0 auto">
@@ -87,7 +94,7 @@ foreach ($team as $j => $v) {
 
 <script type="text/javascript" src="js/highcharts.js"></script>
 <script type="text/javascript">
-$("table").tablesorter({sortList: [[1,1]]}); 
+$("table").tablesorter({sortList: [[1,1]]});
 
 var chart = new Highcharts.Chart({
     chart: {
@@ -130,29 +137,23 @@ var chart = new Highcharts.Chart({
                 borderWidth: 0
         },
         series: [{
-            name: 'random',
-                data: [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+            name: 'latte',
+                data: [1, 1, 1, 1]
         }, {
-            name: 'Attiix',
-                data: [1,2,3,2,2,5,2,2,2,2,2,4,3,2,2,3]
+            name: 'cappu',
+                data: [5, 4, 5, 6]
         },{
-            name: '_CD',
-                data: [3,4,4,4,3,3,3,3,7,4,5,5,2,3,4,2]
+            name: 'crazier',
+                data: [2, 2, 2, 3]
         },{
-            name: 'Sellamoe',
-                data: [4,7,2,3,6,2,7,4,6,3,3,2,5,4,3,4]
+            name: 'hwd',
+                data: [6, 6, 4, 4]
         },{
-            name: 'chd',
-                data: [6,5,6,5,4,4,4,5,4,6,4,3,4,6,5,5]
+            name: 'idontknow',
+                data: [3, 3, 3, 2]
         },{
-            name: '11621',
-                data: [5,3,5,6,5,6,6,6,3,5,7,6,6,5,6,6]
-        },{
-            name: 'xuanmei',
-                data: [7,8,7,7,8,8,5,7,5,7,6,8,7,7,8,7]
-        },{
-            name: 'actravel',
-                data: [7,6,8,8,7,7,7,8,8,8,8,7,8,8,7,8]
+            name: 'xiaohai',
+                data: [4, 5, 6, 5]
         }]
 });
 var sumchart = new Highcharts.Chart({

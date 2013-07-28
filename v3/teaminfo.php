@@ -187,6 +187,7 @@ include_once("functions/sidebars.php");
               </div>
               <div class="tab-pane" id="trainingplan">
                 <p>以下是2013年暑期的训练计划，放在了Google Calendar上，加载较慢，看不见的同学请点<a href="https://www.google.com/calendar/embed?src=73ipa6fqajrvdfqnnhnlo2jac0%40group.calendar.google.com&ctz=Asia/Shanghai" target="_blank"><b>&gt;&gt;这里&lt;&lt;</b></a>查看。另外<b style="color:red">请务必仔细阅读页面下方的说明。</b></p>
+                <p>积分看<a href="http://acm.bnu.edu.cn/v3/score2013.php" target="_blank"><b>&gt;&gt;这里&lt;&lt;</b></a></p>
                 <div id="calendar"></div>
                 <div>
                   一些说明：

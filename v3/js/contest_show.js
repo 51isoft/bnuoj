@@ -624,6 +624,22 @@ $(document).ready(function() {
         return false;
     });
 
+    $("#cdel_a").click(function() {
+        var conf=confirm("Do you really want to delete this contest?");
+        if (conf) {
+            clearTimeout(reftable);
+            clearTimeout(refr);
+            $("#contest_nav li, #contest_nav .btn").attr("disabled",true).addClass("disabled");
+            $.get("ajax/contest_delete.php",{cid: gcid, randomid: Math.random()},function(data) {
+                data=eval("("+data+")");
+                alert(data.msg);
+                if (data.code==0) window.location.href="contest.php";
+                else $("#contest_nav li, #contest_nav .btn").removeAttr("disabled").removeClass("disabled");
+            });
+        }
+        return false;
+    });
+
     $(window).hashchange( function(){
         var dest=self.document.location.hash.substring(1);
         clearTimeout(reftable);

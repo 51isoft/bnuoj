@@ -306,5 +306,13 @@ function contest_get_val($cid,$str) {
     return contest_get_col($cid,$str);
 }
 
+function contest_delete($cid) {
+    global $db,$contest_infos;
+    $db->query("delete from contest where cid='$cid'");
+    $db->query("delete from contest_problem where cid='$cid'");
+    $db->query("delete from replay_status where contest_belong='$cid'");
+    unset($contest_infos[$cid]);
+}
+
 
 ?>
