@@ -1,6 +1,7 @@
 <?php
 include_once(dirname(__FILE__)."/global.php");
 include_once(dirname(__FILE__)."/simple_html_dom.php");
+include_once(dirname(__FILE__)."/normalize_url.php");
 
 $crawled=array();
 function process_and_get_image($ori,$path,$baseurl,$space_deli,$cookie) {
@@ -15,6 +16,7 @@ function process_and_get_image($ori,$path,$baseurl,$space_deli,$cookie) {
                                         if ($para["trans"]) $url=str_replace(" ","%20",$url);
                                         $url=$para["base"].$url;
                                     }
+                                    $url=normalizeURL($url);
                                     if ($crawled[$url]) return $result;
                                     $crawled[$url]=true;
                                     $name=basename($url);

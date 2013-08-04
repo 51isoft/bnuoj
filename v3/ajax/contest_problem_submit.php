@@ -35,9 +35,8 @@ if (!contest_exist($cid)) {
     echo json_encode($ret);
     die();
 }
-if (!(contest_get_val($cid,"isprivate")==0||
-    (contest_get_val($cid,"isprivate")==1&&$current_user->is_in_contest($cid)))) {
-    $ret["msg"]="No in this contest.";
+if (contest_get_val($cid,"isprivate")==1&&!$current_user->is_in_contest($cid)) {
+    $ret["msg"]="Not in this contest.";
     echo json_encode($ret);
     die();
 }
