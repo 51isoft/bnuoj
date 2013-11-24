@@ -3,15 +3,16 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2012 年 06 月 10 日 11:40
--- 服务器版本: 5.1.41
--- PHP 版本: 5.3.3-7+squeeze9
+-- 生成日期: 2013 年 11 月 24 日 14:17
+-- 服务器版本: 5.1.66
+-- PHP 版本: 5.3.3-7+squeeze15
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
 -- 数据库: `bnuoj`
 --
+DROP DATABASE `bnuoj`;
 CREATE DATABASE `bnuoj` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `bnuoj`;
 
@@ -21,6 +22,7 @@ USE `bnuoj`;
 -- 表的结构 `category`
 --
 
+DROP TABLE IF EXISTS `category`;
 CREATE TABLE IF NOT EXISTS `category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(2048) NOT NULL,
@@ -34,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `category` (
 -- 表的结构 `challenge`
 --
 
+DROP TABLE IF EXISTS `challenge`;
 CREATE TABLE IF NOT EXISTS `challenge` (
   `cha_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(500) NOT NULL,
@@ -57,11 +60,12 @@ CREATE TABLE IF NOT EXISTS `challenge` (
 -- 表的结构 `config`
 --
 
+DROP TABLE IF EXISTS `config`;
 CREATE TABLE IF NOT EXISTS `config` (
   `lable` int(11) NOT NULL AUTO_INCREMENT,
-  `substitle` text NOT NULL,
+  `substitle` varchar(4096) NOT NULL,
   PRIMARY KEY (`lable`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 -- --------------------------------------------------------
 
@@ -69,6 +73,7 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- 表的结构 `contest`
 --
 
+DROP TABLE IF EXISTS `contest`;
 CREATE TABLE IF NOT EXISTS `contest` (
   `cid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
@@ -103,6 +108,7 @@ CREATE TABLE IF NOT EXISTS `contest` (
 -- 表的结构 `contest_clarify`
 --
 
+DROP TABLE IF EXISTS `contest_clarify`;
 CREATE TABLE IF NOT EXISTS `contest_clarify` (
   `ccid` int(11) NOT NULL AUTO_INCREMENT,
   `cid` int(11) NOT NULL,
@@ -121,6 +127,7 @@ CREATE TABLE IF NOT EXISTS `contest_clarify` (
 -- 表的结构 `contest_problem`
 --
 
+DROP TABLE IF EXISTS `contest_problem`;
 CREATE TABLE IF NOT EXISTS `contest_problem` (
   `cpid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `cid` int(10) unsigned NOT NULL,
@@ -137,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `contest_problem` (
   `para_f` double NOT NULL,
   PRIMARY KEY (`cpid`),
   KEY `cid` (`cid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Contest, its problems and their status';
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Contest, its problems and their status';
 
 -- --------------------------------------------------------
 
@@ -145,6 +152,7 @@ CREATE TABLE IF NOT EXISTS `contest_problem` (
 -- 表的结构 `contest_user`
 --
 
+DROP TABLE IF EXISTS `contest_user`;
 CREATE TABLE IF NOT EXISTS `contest_user` (
   `cuid` int(11) NOT NULL AUTO_INCREMENT,
   `cid` int(10) unsigned NOT NULL,
@@ -160,6 +168,7 @@ CREATE TABLE IF NOT EXISTS `contest_user` (
 -- 表的结构 `discuss`
 --
 
+DROP TABLE IF EXISTS `discuss`;
 CREATE TABLE IF NOT EXISTS `discuss` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `fid` int(10) NOT NULL,
@@ -178,6 +187,7 @@ CREATE TABLE IF NOT EXISTS `discuss` (
 -- 表的结构 `mail`
 --
 
+DROP TABLE IF EXISTS `mail`;
 CREATE TABLE IF NOT EXISTS `mail` (
   `mailid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `sender` varchar(255) NOT NULL,
@@ -198,6 +208,7 @@ CREATE TABLE IF NOT EXISTS `mail` (
 -- 表的结构 `news`
 --
 
+DROP TABLE IF EXISTS `news`;
 CREATE TABLE IF NOT EXISTS `news` (
   `newsid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `time_added` datetime NOT NULL,
@@ -213,14 +224,17 @@ CREATE TABLE IF NOT EXISTS `news` (
 -- 表的结构 `ojinfo`
 --
 
+DROP TABLE IF EXISTS `ojinfo`;
 CREATE TABLE IF NOT EXISTS `ojinfo` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `int64io` varchar(255) NOT NULL,
   `javaclass` varchar(255) NOT NULL,
+  `status` varchar(1024) NOT NULL,
+  `lastcheck` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 -- --------------------------------------------------------
 
@@ -228,14 +242,15 @@ CREATE TABLE IF NOT EXISTS `ojinfo` (
 -- 表的结构 `problem`
 --
 
+DROP TABLE IF EXISTS `problem`;
 CREATE TABLE IF NOT EXISTS `problem` (
   `pid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) DEFAULT NULL,
-  `description` text,
-  `input` text,
-  `output` text,
-  `sample_in` text,
-  `sample_out` text,
+  `title` char(255) NOT NULL,
+  `description` longtext NOT NULL,
+  `input` text NOT NULL,
+  `output` text NOT NULL,
+  `sample_in` text NOT NULL,
+  `sample_out` text NOT NULL,
   `number_of_testcase` int(10) unsigned NOT NULL,
   `total_submit` int(10) unsigned NOT NULL,
   `total_ac` int(10) unsigned NOT NULL,
@@ -247,18 +262,18 @@ CREATE TABLE IF NOT EXISTS `problem` (
   `total_pe` int(10) unsigned NOT NULL,
   `total_ole` int(10) unsigned NOT NULL,
   `total_rf` int(10) unsigned NOT NULL,
-  `special_judge_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'have special judger?',
+  `special_judge_status` smallint(6) NOT NULL DEFAULT '0' COMMENT 'have special judger?',
   `basic_solver_value` int(10) unsigned NOT NULL COMMENT 'the basic value for submitting a solver to this problem',
   `ac_value` int(10) unsigned NOT NULL COMMENT 'value for acceptting this problem',
   `time_limit` int(10) unsigned NOT NULL,
   `case_time_limit` int(10) unsigned NOT NULL,
   `memory_limit` int(10) unsigned NOT NULL DEFAULT '0',
-  `hint` text,
-  `source` text,
+  `hint` text NOT NULL,
+  `source` text NOT NULL,
   `author` text NOT NULL,
   `hide` tinyint(1) NOT NULL,
-  `vid` varchar(100) NOT NULL,
-  `vname` varchar(50) NOT NULL,
+  `vid` char(50) NOT NULL,
+  `vname` char(50) NOT NULL,
   `isvirtual` tinyint(1) NOT NULL,
   `vacnum` int(11) NOT NULL,
   `vtotalnum` int(11) NOT NULL,
@@ -272,7 +287,7 @@ CREATE TABLE IF NOT EXISTS `problem` (
   KEY `hide` (`hide`),
   KEY `title` (`title`),
   FULLTEXT KEY `source` (`source`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Problem list';
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Problem list';
 
 -- --------------------------------------------------------
 
@@ -280,6 +295,7 @@ CREATE TABLE IF NOT EXISTS `problem` (
 -- 表的结构 `problem_category`
 --
 
+DROP TABLE IF EXISTS `problem_category`;
 CREATE TABLE IF NOT EXISTS `problem_category` (
   `pcid` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(11) NOT NULL,
@@ -295,10 +311,12 @@ CREATE TABLE IF NOT EXISTS `problem_category` (
 --
 -- 替换视图以便查看 `ranklist`
 --
+DROP VIEW IF EXISTS `ranklist`;
 CREATE TABLE IF NOT EXISTS `ranklist` (
 `uid` int(10) unsigned
 ,`username` varchar(255)
 ,`nickname` varchar(1024)
+,`local_ac` int(11)
 ,`total_ac` int(10) unsigned
 ,`total_submit` int(10) unsigned
 );
@@ -308,6 +326,7 @@ CREATE TABLE IF NOT EXISTS `ranklist` (
 -- 表的结构 `replay_status`
 --
 
+DROP TABLE IF EXISTS `replay_status`;
 CREATE TABLE IF NOT EXISTS `replay_status` (
   `runid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(10) unsigned NOT NULL,
@@ -321,7 +340,7 @@ CREATE TABLE IF NOT EXISTS `replay_status` (
   KEY `time_submit` (`time_submit`),
   KEY `contest_belong` (`contest_belong`),
   KEY `username` (`username`(333))
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Replay Status';
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='Replay Status';
 
 -- --------------------------------------------------------
 
@@ -329,6 +348,7 @@ CREATE TABLE IF NOT EXISTS `replay_status` (
 -- 表的结构 `solver`
 --
 
+DROP TABLE IF EXISTS `solver`;
 CREATE TABLE IF NOT EXISTS `solver` (
   `solverid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(10) unsigned NOT NULL,
@@ -344,6 +364,7 @@ CREATE TABLE IF NOT EXISTS `solver` (
 -- 表的结构 `solverlist`
 --
 
+DROP TABLE IF EXISTS `solverlist`;
 CREATE TABLE IF NOT EXISTS `solverlist` (
   `uid` int(10) unsigned NOT NULL,
   `solverid` int(10) unsigned NOT NULL
@@ -355,6 +376,7 @@ CREATE TABLE IF NOT EXISTS `solverlist` (
 -- 表的结构 `status`
 --
 
+DROP TABLE IF EXISTS `status`;
 CREATE TABLE IF NOT EXISTS `status` (
   `runid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pid` int(10) unsigned NOT NULL,
@@ -369,6 +391,7 @@ CREATE TABLE IF NOT EXISTS `status` (
   `ce_info` text,
   `ipaddr` varchar(255) DEFAULT NULL,
   `isshared` tinyint(1) NOT NULL,
+  `jnum` smallint(6) NOT NULL,
   PRIMARY KEY (`runid`),
   KEY `pid` (`pid`),
   KEY `result` (`result`),
@@ -385,6 +408,7 @@ CREATE TABLE IF NOT EXISTS `status` (
 -- 表的结构 `time_bbs`
 --
 
+DROP TABLE IF EXISTS `time_bbs`;
 CREATE TABLE IF NOT EXISTS `time_bbs` (
   `rid` int(10) NOT NULL,
   `time` datetime NOT NULL,
@@ -397,6 +421,7 @@ CREATE TABLE IF NOT EXISTS `time_bbs` (
 -- 表的结构 `user`
 --
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(255) DEFAULT NULL,
@@ -413,6 +438,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `lock_status` tinyint(1) NOT NULL DEFAULT '0',
   `isroot` int(11) NOT NULL,
   `ipaddr` varchar(255) DEFAULT NULL,
+  `local_ac` int(11) NOT NULL,
   PRIMARY KEY (`uid`),
   KEY `username` (`username`),
   KEY `nickname` (`nickname`(333)),
@@ -425,6 +451,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- 表的结构 `usertag`
 --
 
+DROP TABLE IF EXISTS `usertag`;
 CREATE TABLE IF NOT EXISTS `usertag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(11) NOT NULL,
@@ -442,12 +469,14 @@ CREATE TABLE IF NOT EXISTS `usertag` (
 -- 表的结构 `vurl`
 --
 
+DROP TABLE IF EXISTS `vurl`;
 CREATE TABLE IF NOT EXISTS `vurl` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `voj` varchar(50) NOT NULL,
   `vid` varchar(50) NOT NULL,
   `url` varchar(2048) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `voj` (`voj`,`vid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -457,5 +486,4 @@ CREATE TABLE IF NOT EXISTS `vurl` (
 --
 DROP TABLE IF EXISTS `ranklist`;
 
-CREATE VIEW `ranklist` AS select `user`.`uid` AS `uid`,`user`.`username` AS `username`,`user`.`nickname` AS `nickname`,`user`.`total_ac` AS `total_ac`,`user`.`total_submit` AS `total_submit` from `user` order by `user`.`total_ac` desc,`user`.`total_submit`;
-
+CREATE VIEW `ranklist` AS select `user`.`uid` AS `uid`,`user`.`username` AS `username`,`user`.`nickname` AS `nickname`,`user`.`local_ac` AS `local_ac`,`user`.`total_ac` AS `total_ac`,`user`.`total_submit` AS `total_submit` from `user` order by `user`.`local_ac` desc,`user`.`total_ac` desc,`user`.`total_submit`;
