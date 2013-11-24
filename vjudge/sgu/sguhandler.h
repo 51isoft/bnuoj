@@ -96,6 +96,7 @@ char tfilename[1000];
 char judger_string[200];
 char logfile[1000];
 int lowprivid;
+bool logged=false;
 map <string,string> corrlang;
 
 void init() {
@@ -109,8 +110,8 @@ void init() {
     corrlang["3"]="JAVA 1.6";
     corrlang["4"]="Delphi 7.0";
     corrlang["6"]="C# (Mono gmcs 2.4)";
-    corrlang["12"]="Visual Studio 8 C++";
-    corrlang["13"]="Visual Studio 8 C";
+    corrlang["12"]="Visual Studio C++ 2010";
+    corrlang["13"]="Visual Studio C 2010";
 }
 
 void writelog(char *);

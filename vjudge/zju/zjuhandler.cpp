@@ -286,39 +286,43 @@ void judge(string pid,string lang,string runid,string src) {
         return;
     }
     lang=corrlang[lang];
-    if (!logged) {
-        if (!login()) {
-            writelog("Login error!\n");
-            toBottFile(runid,"0","0","Judge Error","");
-            return;
-        }
-        else logged=true;
-    }
-    if (!submit(pid,lang,src)) {
-        writelog("Submit error! Assume not logged in.\n");
-        if (!login()) {
-            writelog("Login error!\n");
-            toBottFile(runid,"0","0","Judge Error","");
-            return;
-        }
-        if (!submit(pid,lang,src)) {
-            writelog("Assume should wait a while. Sleep 2 seconds.\n");
-            //usleep(2000000);
-            if (!submit(pid,lang,src)) {
-                writelog("Submit error!\n");
+    try {
+        if (!logged) {
+            if (!login()) {
+                writelog("Login error!\n");
                 toBottFile(runid,"0","0","Judge Error","");
                 return;
             }
+            else logged=true;
         }
-    }
+        if (!submit(pid,lang,src)) {
+            writelog("Submit error! Assume not logged in.\n");
+            if (!login()) {
+                writelog("Login error!\n");
+                toBottFile(runid,"0","0","Judge Error","");
+                return;
+            }
+            if (!submit(pid,lang,src)) {
+                writelog("Assume should wait a while. Sleep 4 seconds.\n");
+                usleep(4000000);
+                if (!submit(pid,lang,src)) {
+                    writelog("Submit error!\n");
+                    toBottFile(runid,"0","0","Judge Error","");
+                    return;
+                }
+            }
+        }
 
-    string result,ce_info,tu,mu;
-    if (!getStatus(pid,lang,result,ce_info,tu,mu)) {
-        writelog("Get Error!\n");
+        string result,ce_info,tu,mu;
+        if (!getStatus(pid,lang,result,ce_info,tu,mu)) {
+            writelog("Get Error!\n");
+            toBottFile(runid,"0","0","Judge Error","");
+            return;
+        }
+        toBottFile(runid,tu,mu,result,ce_info);
+    } catch (exception & e) {
         toBottFile(runid,"0","0","Judge Error","");
-        return;
-    };
-    toBottFile(runid,tu,mu,result,ce_info);
+    }
 }
 
 

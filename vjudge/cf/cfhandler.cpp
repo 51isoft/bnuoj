@@ -559,36 +559,41 @@ void toBottFile(string runid,string tu,string mu,string result,string ce_info)
 
 void judge(string pid,string lang,string runid,string src)
 {
-    if (src.length()<15)
-    {
-        toBottFile(runid,"0","0","Compile Error","");
-        return;
-    }
-    if (!login())
-    {
-        writelog("Login error!\n");
+    try {
+        if (src.length()<15)
+        {
+            toBottFile(runid,"0","0","Compile Error","");
+            return;
+        }
+        if (!login())
+        {
+            writelog("Login error!\n");
+            toBottFile(runid,"0","0","Judge Error","");
+            return;
+        }
+        writelog("Logged in!\n");
+        lang=corrlang[lang];
+        int rcode=0;
+        if (rcode=submit(pid,lang,src))
+        {
+            writelog("Submit error!\n");
+            if (rcode==1) toBottFile(runid,"0","0","Judge Error (Same Code)","");
+            if (rcode==2) toBottFile(runid,"0","0","Judge Error (Invalid Language)","");
+            if (rcode==3) toBottFile(runid,"0","0","Compile Error","");
+            return;
+        }
+        writelog("Submitted!\n");
+        string result,ce_info,tu,mu;
+        if (!getStatus(pid,lang,result,ce_info,tu,mu)) {
+            writelog("Get Error!\n");
+            toBottFile(runid,"0","0","Judge Error","");
+            return;
+        };
+        toBottFile(runid,tu,mu,result,ce_info);
+    } catch (exception e) {
+        writelog("Something went wrong!\n");
         toBottFile(runid,"0","0","Judge Error","");
-        return;
     }
-    writelog("Logged in!\n");
-    lang=corrlang[lang];
-    int rcode=0;
-    if (rcode=submit(pid,lang,src))
-    {
-        writelog("Submit error!\n");
-        if (rcode==1) toBottFile(runid,"0","0","Judge Error (Same Code)","");
-        if (rcode==2) toBottFile(runid,"0","0","Judge Error (Invalid Language)","");
-        if (rcode==3) toBottFile(runid,"0","0","Compile Error","");
-        return;
-    }
-    writelog("Submitted!\n");
-    string result,ce_info,tu,mu;
-    if (!getStatus(pid,lang,result,ce_info,tu,mu)) {
-        writelog("Get Error!\n");
-        toBottFile(runid,"0","0","Judge Error","");
-        return;
-    };
-    toBottFile(runid,tu,mu,result,ce_info);
 }
 
 /*

@@ -6,7 +6,7 @@
     if ( isset($_GET['page']) ) $page = $_GET['page'];
     else $page = 1;
 	$start=($page-1)*$userperpage;
-	$sql = mysql_query("select username,nickname,total_ac,total_submit,uid from ranklist limit $start,$userperpage");
+	$sql = mysql_query("select username,nickname,total_ac,total_submit,uid from ranklist order by total_ac desc, total_submit limit $start,$userperpage");
 	echo "<center><table width=98% class='rlist'><tr>";
 	echo "<th width='10%' class='rlist'> Rank </th>";
 	echo "<th width='20%' class='rlist'> Username </th>";

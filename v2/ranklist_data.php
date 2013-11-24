@@ -7,7 +7,7 @@ include_once("conn.php");
         SELECT @rownum := @rownum +1 rownum, ranklist . * 
         FROM (
             SELECT @rownum :=0
-        )r, ranklist
+        )r, ranklist order by total_ac desc, total_submit
     ) AS t";
     
     //paging

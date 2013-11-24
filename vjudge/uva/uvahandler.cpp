@@ -384,28 +384,34 @@ void toBottFile(string runid,string tu,string mu,string result,string ce_info){
 }
 
 void judge(string pid,string lang,string runid,string src) {
-    if (src.length()<15) {
-        toBottFile(runid,"0","0","Compile Error","");
-        return;
+    try {
+        if (src.length()<15) {
+            toBottFile(runid,"0","0","Compile Error","");
+            return;
+        }
+        if (!login()) {
+            writelog("Login error!\n");
+            toBottFile(runid,"0","0","Judge Error","");
+            return;
+        }
+        lang=corrlang[lang];
+        if (!submit(pid,lang,src)) {
+            writelog("Submit error!\n");
+            toBottFile(runid,"0","0","Judge Error","");
+            return;
+        }
+        string result,ce_info,tu,mu;
+        if (!getStatus(pid,lang,result,ce_info,tu,mu)) {
+            writelog("Get Error!\n");
+            toBottFile(runid,"0","0","Judge Error","");
+            return;
+        }
+        toBottFile(runid,tu,mu,result,ce_info);
     }
-    if (!login()) {
-        writelog("Login error!\n");
+    catch (exception & e) {
+        writelog(((string)"Something went wrong!"+e.what()+"\n").c_str());
         toBottFile(runid,"0","0","Judge Error","");
-        return;
     }
-    lang=corrlang[lang];
-    if (!submit(pid,lang,src)) {
-        writelog("Submit error!\n");
-        toBottFile(runid,"0","0","Judge Error","");
-        return;
-    }
-    string result,ce_info,tu,mu;
-    if (!getStatus(pid,lang,result,ce_info,tu,mu)) {
-        writelog("Get Error!\n");
-        toBottFile(runid,"0","0","Judge Error","");
-        return;
-    };
-    toBottFile(runid,tu,mu,result,ce_info);
 }
 /*
 int main() {
@@ -444,7 +450,7 @@ void send_register_info()
     //sleep(1);
 }
 
-void writelog(char* log)
+void writelog(const char* log)
 {
     FILE * fp=fopen(logfile,"a");
     if (fp!=NULL) {

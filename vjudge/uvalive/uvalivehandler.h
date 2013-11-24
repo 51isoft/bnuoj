@@ -28,7 +28,7 @@
 
 #define MAX_DATA_SIZE 655350
 #define NEED_JUDGE 2
-#define MAX_WAIT_TIME 240
+#define MAX_WAIT_TIME 600
 
 using namespace std;
 
@@ -112,6 +112,6 @@ void init() {
     corrlang["4"]="4";
 }
 
-void writelog(char * a);
+void writelog(const char * a);
 
 #endif // UVALIVEHANDLER_H_INCLUDED

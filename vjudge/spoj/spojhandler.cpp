@@ -202,7 +202,7 @@ int submit(string pid,string lang,string source)
         string ts=getAllFromFile(tfilename);
         cout<<"===sub===\n"<<ts<<"\n=====\n"<<endl;
 //        writelog((char *)ts.c_str());
-        if (ts.find("You can't submit in this language for this problem!")!=string::npos) return 2;
+        if (ts.find("in this language for this problem")!=string::npos) return 2;
     }
     return 0;
 }
@@ -408,9 +408,18 @@ void judge(string pid,string lang,string runid,string src)
     if (rcode=submit(pid,lang,src))
     {
         writelog("Submit error!\n");
-        if (rcode==2) toBottFile(runid,"0","0","Judge Error (Invalid Language)","");
-        else toBottFile(runid,"0","0","Judge Error","");
-        return;
+        if (rcode==2&&lang=="41") { // SPOJ C++ hack
+            writelog("Try another c++\n");
+            rcode=submit(pid,"1",src);
+            if (rcode==2) toBottFile(runid,"0","0","Judge Error (Invalid Language)","");
+            else if (rcode) toBottFile(runid,"0","0","Judge Error","");
+            if (rcode) return;
+        }
+        else {
+            if (rcode==2) toBottFile(runid,"0","0","Judge Error (Invalid Language)","");
+            else toBottFile(runid,"0","0","Judge Error","");
+            return;
+        }
     }
     writelog("Submitted!\n");
     string result,ce_info,tu,mu;

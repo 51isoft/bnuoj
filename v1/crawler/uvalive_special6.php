@@ -25,12 +25,14 @@
 //            else $last=stripos($ori,"\"",$now);
 //            echo $ori[$last];
             $url=substr($ori,$now,$last-$now);
+
 //            echo $url;
             //die();
 //            $url=substr($url,stripos($url,"data"));
 //            echo $url;
 //            die();
-            file_put_contents("/var/www/contest/external/$cate/".$url, file_get_contents("http://livearchive.onlinejudge.org/external/$cate/".$url));
+            if (!$crawled[$url]) file_put_contents("/var/www/contest/external/$cate/".$url, file_get_contents("http://livearchive.onlinejudge.org/external/$cate/".$url));
+            $crawled[$url]=true;
             $ori=substr($ori,0,$now)."external/$cate/".$url.substr($ori,$last);
 //            echo $ori;die();
             //$fp=fopen("/var/www/contest/".$url,"w+");
@@ -210,7 +212,7 @@
             $spj=0;
 
 if ($num=="") $sql_add_pro = "insert into problem (title,description,input,output,sample_in,sample_out,hint,source,hide,memory_limit,time_limit,special_judge_status,case_time_limit,basic_solver_value,number_of_testcase,isvirtual,vname,vid) values ('".addslashes($title)."','".addslashes($desc)."','".addslashes($inp)."','".addslashes($oup)."','".addslashes($sin)."','".addslashes($sout)."','".addslashes($hint)."','".addslashes($source)."','0','$mem_limit','$time_limit','$spj','$case_limit','0','0',1,'UVALive','$pid')";
-else $sql_add_pro = "update problem set title='".addslashes($title)."',description='".addslashes($desc)."',input='".addslashes($inp)."',output='".addslashes($oup)."',sample_in='".addslashes($sin)."',sample_out='".addslashes($sout)."',hint='".addslashes($hint)."',source='".addslashes($source)."',hide='0',memory_limit='$mem_limit',time_limit='$time_limit',special_judge_status='$spj',case_time_limit='$case_limit',vname='UVALive',vid='$pid' where pid= $num";
+else $sql_add_pro = "update problem set title='".addslashes($title)."',description='".addslashes($desc)."',input='".addslashes($inp)."',output='".addslashes($oup)."',sample_in='".addslashes($sin)."',sample_out='".addslashes($sout)."',hint='".addslashes($hint)."',hide='0',memory_limit='$mem_limit',time_limit='$time_limit',special_judge_status='$spj',case_time_limit='$case_limit',vname='UVALive',vid='$pid' where pid= $num";
 
             //$search  = array('\n', '\t', '\r');
             //$replace = array('\\n', '\\t', '\\r');

@@ -68,7 +68,8 @@ string getPara() {
         curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl");
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "uvalive.cookie");
         curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "uvalive.cookie");
-        curl_easy_setopt(curl, CURLOPT_URL,"http://livearchive.onlinejudge.org/");
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_easy_setopt(curl, CURLOPT_URL,"https://icpcarchive.ecs.baylor.edu/");
         res = curl_easy_perform(curl);
         //curl_easy_cleanup(curl);
     }
@@ -92,7 +93,8 @@ bool login() {
         //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "uvalive.cookie");
         curl_easy_setopt(curl, CURLOPT_COOKIEJAR, "uvalive.cookie");
-        curl_easy_setopt(curl, CURLOPT_URL, "http://livearchive.onlinejudge.org/index.php?option=com_comprofiler&task=login");
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_easy_setopt(curl, CURLOPT_URL, "https://icpcarchive.ecs.baylor.edu/index.php?option=com_comprofiler&task=login");
         post=post+"username="+username+"&passwd="+escapeURL(password)+"&remember=yes&Submit=Login";
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
         res = curl_easy_perform(curl);
@@ -164,10 +166,11 @@ bool submit(string pid,string lang,string source)
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl");
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
-        curl_easy_setopt(curl, CURLOPT_URL, "http://livearchive.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
+        curl_easy_setopt(curl, CURLOPT_URL, "https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=25&page=save_submission");
         //curl_easy_setopt(curl, CURLOPT_REFERER, "http://livearchive.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=25");
         //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
         curl_easy_setopt(curl, CURLOPT_HEADER, 1);
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerlist);
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "uvalive.cookie");
@@ -224,7 +227,8 @@ string getCEinfo(string runid) {
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
         curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl");
         curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "uvalive.cookie");
-        string url=(string)"http://livearchive.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=9&page=show_compilationerror&submission="+runid;
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+        string url=(string)"https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=9&page=show_compilationerror&submission="+runid;
         //cout<<url;
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         res = curl_easy_perform(curl);
@@ -303,7 +307,8 @@ bool getStatus(string pid,string lang,string & result,string& ce_info,string &tu
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
             curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "uvalive.cookie");
             curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl");
-            string url=(string)"http://livearchive.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=9";
+            curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+            string url=(string)"https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=9";
             curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
             res = curl_easy_perform(curl);
             curl_easy_cleanup(curl);
@@ -386,30 +391,34 @@ void toBottFile(string runid,string tu,string mu,string result,string ce_info){
 }
 
 void judge(string pid,string lang,string runid,string src) {
-    if (src.length()<15) {
-        toBottFile(runid,"0","0","Compile Error","");
-        return;
+    try {
+        if (src.length()<15) {
+            toBottFile(runid,"0","0","Compile Error","");
+            return;
+        }
+        if (!login()) {
+            writelog("Login error!\n");
+            toBottFile(runid,"0","0","Judge Error","");
+            return;
+        }
+        lang=corrlang[lang];
+        if (!submit(pid,lang,src)) {
+            writelog("Submit error!\n");
+            toBottFile(runid,"0","0","Judge Error","");
+            return;
+        }
+        string result,ce_info,tu,mu;
+        if (!getStatus(pid,lang,result,ce_info,tu,mu)) {
+            writelog("Get Error!\n");
+            toBottFile(runid,"0","0","Judge Error","");
+            return;
+        }
+        toBottFile(runid,tu,mu,result,ce_info);
     }
-    if (!login()) {
-        writelog("Login error!\n");
+    catch (exception & e) {
+        writelog(((string)"Something went wrong!"+e.what()+"\n").c_str());
         toBottFile(runid,"0","0","Judge Error","");
-        return;
     }
-    writelog("Logined!\n");
-    lang=corrlang[lang];
-    if (!submit(pid,lang,src)) {
-        writelog("Submit error!\n");
-        toBottFile(runid,"0","0","Judge Error","");
-        return;
-    }
-    writelog("Submitted!\n");
-    string result,ce_info,tu,mu;
-    if (!getStatus(pid,lang,result,ce_info,tu,mu)) {
-        writelog("Get Error!\n");
-        toBottFile(runid,"0","0","Judge Error","");
-        return;
-    };
-    toBottFile(runid,tu,mu,result,ce_info);
 }
 
 
@@ -442,7 +451,7 @@ void send_register_info()
     //sleep(1);
 }
 
-void writelog(char* log)
+void writelog(const char* log)
 {
     FILE * fp=fopen(logfile,"a");
     if (fp!=NULL) {

@@ -4,7 +4,7 @@ include("simple_html_dom.php");
 ?>
 <center>
 <?php
-for ($i=1;$i<27;$i++) {
+for ($i=1;$i<29;$i++) {
     $html=file_get_html("http://acm.zju.edu.cn/onlinejudge/showProblems.do?contestId=1&pageNumber=$i");
     $table=$html->find("table.list",0);
     $rows=$table->find("tr");

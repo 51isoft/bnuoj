@@ -4,7 +4,7 @@ include("simple_html_dom.php");
 ?>
 <center>
 <?php
-for ($i=1;$i<3;$i++) {
+for ($i=1;$i<6;$i++) {
     $html=file_get_html("http://cdn.ac.nbutoj.com/Problem.xhtml?page=$i");
     //echo $html;
     $table=$html->find("table tbody",0);
