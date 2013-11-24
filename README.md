@@ -19,6 +19,14 @@ An Online Judge system for Beijing Normal University, featuring following awesom
 
 And it's still developing!!
 
+Version 3:
+
+http://www.bnuoj.com/v3
+
+http://acm.bnu.edu.cn/v3
+
+http://oj.51isoft.com/v3
+
 Version 2:
 
 http://www.bnuoj.com/bnuoj
