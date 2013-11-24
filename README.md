@@ -13,8 +13,6 @@ An Online Judge system for Beijing Normal University, featuring following awesom
 
 *  Contest with challenge sections, like Topcoder and Codeforces;
 
-*  Training stats, track your performances through contests;
-
 *  Problem categories, delicious for new comers.
 
 And it's still developing!!
