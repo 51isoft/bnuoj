@@ -4,18 +4,9 @@
 [submodule "bnuoj-web-v2"]
 	path = web-v2
 	url = git@github.com:51isoft/bnuoj-web-v2.git
-[submodule "web-v1-oi"]
-	path = web-v1-oi
-	url = git@github.com:51isoft/bnuoj-web-v1-oi.git
-[submodule "web-v2-lite"]
-	path = web-v2-lite
-	url = git@github.com:51isoft/bnuoj-web-v2-lite.git
 [submodule "backend"]
 	path = backend
 	url = git@github.com:51isoft/bnuoj-backend.git
 [submodule "vjudge"]
 	path = vjudge
 	url = git@github.com:51isoft/bnuoj-vjudge.git
-[submodule "web-v1"]
-	path = web-v1
-	url = git@github.com:51isoft/bnuoj-web-v1.git
