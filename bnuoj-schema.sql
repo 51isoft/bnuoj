@@ -280,6 +280,7 @@ CREATE TABLE IF NOT EXISTS `problem` (
   `ignore_noc` tinyint(1) NOT NULL,
   `vacpnum` int(11) NOT NULL,
   `vtotalpnum` int(11) NOT NULL,
+  `is_interactive` tinyint(1) NOT NULL,
   PRIMARY KEY (`pid`),
   KEY `vname` (`vname`),
   KEY `isvirtual` (`isvirtual`),
