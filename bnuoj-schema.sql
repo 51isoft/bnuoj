@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS `contest` (
   `challenge_end_time` datetime NOT NULL,
   `challenge_start_time` datetime NOT NULL,
   `password` varchar(2048) NOT NULL,
+  `owner_viewable` tinyint(1) NOT NULL,
   PRIMARY KEY (`cid`),
   KEY `allp` (`allp`(333)),
   KEY `start_time` (`start_time`),
