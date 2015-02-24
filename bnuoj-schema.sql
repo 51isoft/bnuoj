@@ -62,9 +62,11 @@ CREATE TABLE IF NOT EXISTS `challenge` (
 
 DROP TABLE IF EXISTS `config`;
 CREATE TABLE IF NOT EXISTS `config` (
-  `lable` int(11) NOT NULL AUTO_INCREMENT,
-  `substitle` varchar(4096) NOT NULL,
-  PRIMARY KEY (`lable`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `value` varchar(4096) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 -- --------------------------------------------------------
