@@ -234,6 +234,7 @@ CREATE TABLE IF NOT EXISTS `ojinfo` (
   `int64io` varchar(255) NOT NULL,
   `javaclass` varchar(255) NOT NULL,
   `status` varchar(1024) NOT NULL,
+  `supportlang` varchar(1024) NOT NULL,
   `lastcheck` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
